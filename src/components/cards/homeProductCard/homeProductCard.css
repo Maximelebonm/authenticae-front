@@ -1,0 +1,52 @@
+.homeProductCardsContainer {
+    position: relative;
+    border-radius: 15px;
+    width : 100%;
+    max-width: 300px;
+    height: 200px;
+    color: rgb(0, 0, 0);
+    overflow : hidden;
+    
+    &:hover {
+        box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.1);
+        cursor : pointer;
+        & .homeProductTextHover{
+            opacity : 1
+        }
+    }
+}
+.homeProductPictures{
+    border-radius: 15px;
+    width : 300px;
+    height : 200px;
+    object-fit: cover;
+}
+.homeProductTextHover{
+    opacity : 0;
+    transition: 0.25s ease;   
+}
+.homeProductFav{
+    position : absolute;
+    font-size: x-large;
+    background-color: white;
+    border-radius: 50%;
+    width: 30px;
+    height : 30px;
+    right : 10px;
+    top : 5px;
+    transition: 0.20s ease-in-out;
+    cursor : pointer;
+    &:hover {
+        color : white;
+        background-color: rgba(255,177,170,1);
+    }
+}
+.homeProductPrice{
+    position : absolute;
+    bottom : 10px;
+    right : 10px;
+    background-color: rgba(255,177,170,1);
+    border-radius: 20px;
+    font-weight: bold;
+    padding : 5px 10px;
+}
