@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+### dotenv ###
+.env.development
+.env.production
+.env
