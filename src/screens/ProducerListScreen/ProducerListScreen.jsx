@@ -1,7 +1,7 @@
 import { ProducteurCard } from '../../components/cards/producteurCard/producteurCard'
-import './producteurScreen.css'
+import './ProducerListScreen.css'
 
-export const ProducteurScreen = () => {
+export const ProducerListScreen = () => {
     return (
         <div id='producteursScreenContainer'>
         <section>

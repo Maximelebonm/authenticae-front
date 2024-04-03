@@ -2,7 +2,7 @@ section#producteursScreenProducts{
     padding : 10px;
     display : grid;
     grid-template-columns: repeat(2, 1fr); /* 3 colonnes de largeur égale */
-    gap: 10px;
+    gap: 20px;
     
 }
 @media (min-width : 640px){

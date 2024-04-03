@@ -1,6 +1,13 @@
-import './ProducteurProfileScreen.css'
+import './ProducerShopScreen.css'
 
-export const ProducteurProfileScreen = (props) => {
+export const ProducerShopScreen = (props) => {
+    const profilget = {
+        name : 'John',
+        surname : 'Doe',
+        article : 'list',
+        contact : 'contact'
+    }
+
     return (
         <div>
             <section id="profileGlobalInfo">

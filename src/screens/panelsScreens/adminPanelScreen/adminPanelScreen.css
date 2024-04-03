@@ -1,0 +1,26 @@
+#adminPanelContainer{
+    
+}
+.adminPanelItem{
+    display : flex;
+    height : 50px;
+    align-items: center;
+    margin : 10px 0px;
+}
+.adminPanelValue{
+    border-left : 2px solid var(--nuance_color2);
+    width : 20%;
+    height : 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+#adminPanelRole{
+    &>div{
+        margin : 0px 5px;
+    }
+}
+#adminPanelItemBC {
+    background-color: var(--nuance_color4);
+}

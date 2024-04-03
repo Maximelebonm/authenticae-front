@@ -3,6 +3,7 @@ import doudou from '../../../assets/test/doudou.jpg';
 import { Heart } from 'lucide-react';
 
 export const HomeProductCards = () => {
+    
     return (
 
         <div className='homeProductCardsContainer'>

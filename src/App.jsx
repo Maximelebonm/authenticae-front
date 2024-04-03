@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import { HomeScreen } from './screens/homeScreen/homeScreen'
 import { Header } from './components/header/header'
-import { RoutesContainer } from './Routes/routes';
+import { RoutesContainer } from './routes/routes'
 import { BrowserRouter } from 'react-router-dom';
 
 

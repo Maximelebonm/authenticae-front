@@ -1,12 +1,12 @@
 #root {
   margin: 0 auto;
-  padding: 0;
+  padding: 10px 50px;
   text-align: center;
   height : 100%;
 }
 
 #mainContainer {
-  padding-top : 60px;
+  padding-top : 80px;
   height : 100%;
-  background-color: #fdf1e9;
+  background-color: var(--primary_color);
 }
