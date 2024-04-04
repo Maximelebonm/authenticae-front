@@ -31,12 +31,10 @@ export const AdminPanelScreen =()=>{
     }
 
     const addProducer = async (id) =>{
-   
         const addRole = await addProducerRole(id)
         setChangeRole(!ChangeRole)
     }
 
-    
     const deleteProducer = async (id) =>{
         const deleteRole = await deleteProducerRole(id)
         setChangeRole(!ChangeRole)

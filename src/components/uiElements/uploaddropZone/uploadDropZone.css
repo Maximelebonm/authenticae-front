@@ -1,0 +1,27 @@
+#dropZoneContainer{
+    display : flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.drop-zone {
+    border: 2px dashed var(--nuance_color1);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 1.2em;
+    margin: 20px;
+    width: 100px;
+    height: 100px;
+}
+
+#ImageDropped{
+    width : 100px;
+    height : 100px;
+    &>img{
+        width: 100px;
+        height : 100px;
+    }
+}
