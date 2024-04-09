@@ -1,7 +1,23 @@
+import { useEffect } from 'react'
 import { ProducteurCard } from '../../components/cards/producteurCard/producteurCard'
 import './ProducerListScreen.css'
+import { getAllShop} from '../../api/backEnd/producer/shop.backend'
+import { useState } from 'react'
 
 export const ProducerListScreen = () => {
+    const [shop,setShop] = useState()
+    useEffect(()=>{
+        const fetchShop = async() =>{
+            const response = await getAllShop()
+            const shop = response.json()
+            .then(data =>{
+                console.log(data)
+                setShop(data.data)
+            })
+        }
+        fetchShop()
+    },[])
+console.log(shop)
     return (
         <div id='producteursScreenContainer'>
         <section>
@@ -10,12 +26,13 @@ export const ProducerListScreen = () => {
             </h1>
         </section>
             <section id="producteursScreenProducts">
-                <ProducteurCard profile={'test'}/>
-                <ProducteurCard/>
-                <ProducteurCard/>
-                <ProducteurCard/>
-                <ProducteurCard/>
-                <ProducteurCard/>
+            {
+            shop?.map((item,index)=>{
+                return (
+                    <ProducteurCard props={item} key={index} />
+                )
+            })
+        }
             </section>
         </div>
     )

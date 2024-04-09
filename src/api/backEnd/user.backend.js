@@ -35,6 +35,21 @@ export const loginUser = async (email,password) => {
     }
 }
 
+export const createPseudo = async (id,pseudo) => {
+    try {
+        const user = await ky.post(`${InitRequest()}/users/pseudo/${id}`,{
+            json: {
+                pseudo: pseudo,
+            },
+            credentials : 'include'
+        })
+        return user
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+
 export const registerUser = async (firstname,lastname,birthdate,email,phone,password) => {
     console.log('ok')
     try {

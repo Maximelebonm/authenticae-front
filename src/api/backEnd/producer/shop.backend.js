@@ -10,7 +10,6 @@ export const createShop = async (id,name, description) => {
             },
             credentials : 'include'
         })
-        console.log(response)
         return response
     } catch (err){
         return "erreur : " + err;
@@ -19,24 +18,44 @@ export const createShop = async (id,name, description) => {
 
 export const getShop = async (id) => {
     try {
-        const userList = await ky.get(`${InitRequest()}/shop/${id}`,
+        const shop = await ky.get(`${InitRequest()}/shop/${id}`,
         {credentials : 'include'})
-        return userList
+        return shop
     } catch (err){
         return "erreur : " + err;
     }
 }
-
-export const updateShop = async (id,name, description) => {
+export const getAllShop = async () => {
+    try {
+        const shopList = await ky.get(`${InitRequest()}/shop`,
+        {credentials : 'include'})
+        return shopList
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+export const updateShop = async (id,name,description) => {
     try {
         const response = await ky.put(`${InitRequest()}/shop/update/${id}`,{
             json : {
                 name : name,
                 description : description,
             },
-            credentials : 'include'
+            credentials : 'include',
         })
-        console.log(response)
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const updateAvatarShop = async (id,formData,route) => {
+    console.log('passe api')
+    try {
+        const response = await ky.post(`${InitRequest()}/shop/${route}/${id}`,{
+            body: formData,
+            credentials : 'include',
+        })
         return response
     } catch (err){
         return "erreur : " + err;

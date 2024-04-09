@@ -71,6 +71,10 @@ export const RegisterScreen = ()=> {
                 <span><Mail /></span>
             </div>
             <div className='registerScreenItemContainer'>
+                <input type='text' placeholder='Pseudonyme' name='registerScreenPseudo' id='registerScreenPseudo' required minLength={6} maxLength={50}/>
+                <span><User /></span>
+            </div>
+            <div className='registerScreenItemContainer'>
                 <input type='text' placeholder='numéro de téléphone' name='registerScreenPhone' id='registerScreenPhone' required minLength={10} maxLength={10}/>
                 <span><Phone /></span>
             </div>

@@ -4,14 +4,17 @@ import doudou from '../../../assets/test/doudou.jpg';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-export const ProducteurCard = (props) => {
-    const profile = props.profile;
+export const ProducteurCard = ({props}) => {
+    const {profile,description,name,profil_picture} = props;
+    const Base_URL = import.meta.env.VITE_BASE_URL_BACK
+    console.log(Base_URL)
+    
 
     return (
         <Link to={'/producteurs/'+ profile}>
             <div className='producteurCardContainer'>
                 <div className='producteurCardPicturesContainer'>
-                    <img className='producteurCardPictures' src={doudou}/>
+                    <img className='producteurCardPictures' src={Base_URL+ profil_picture}/>
                 </div>
                 <div className='producteurCardTextHover'>
                     <div className='producteurCardFav'>
@@ -19,7 +22,7 @@ export const ProducteurCard = (props) => {
                     </div>
                     <div className='producteurCardName'>
                     <h3>
-                        Dou'crochet {profile}
+                        {name}
                     </h3>
                     </div>
                     <div className='description'>

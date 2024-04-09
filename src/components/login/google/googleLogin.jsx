@@ -6,7 +6,7 @@ export const GoogleLogin=()=>{
         const env = import.meta.env.VITE_MODE
         if(env === 'development'){
             window.location.href = (
-                `${import.meta.env.VITE_URL_BACK}/users/google`
+                `${import.meta.env.VITE_BASE_URL_BACK}users/google`
                 
             )
         }

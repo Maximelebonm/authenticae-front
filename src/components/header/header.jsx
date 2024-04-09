@@ -22,6 +22,7 @@ export const Header =()=>{
         if(document.cookie){
             const auth = async()=>{
                 const cookie = await decodeCookies(document.cookie)
+                console.log(cookie)
                 const cookieTab = cookie.role.map((item)=> item.name)
                 setRoleCookie(cookieTab)
             }

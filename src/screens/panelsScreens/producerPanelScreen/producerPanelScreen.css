@@ -1,0 +1,18 @@
+/* .ProducerPanelDropZoneForm{
+ 
+} */
+
+.ProducerPanelDropZoneContainer{
+    display : flex;
+    justify-content: center;
+    align-items: center;
+    &>img{
+        border : 2px solid;
+        width : 150px;
+        height : 150px;
+    }
+}
+#ProducerPanelDropZoneImg{
+    width : 300px;
+    height : 100px;
+}

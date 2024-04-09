@@ -96,9 +96,10 @@ input {
   color : black;
   outline: none;
   &:valid {
-      border: 2px green solid;
+      border: 2px var(--white_only);
   }
   &::placeholder{
     font-weight: 700;
+    color: var(--nuance_color2);
   }
 }
