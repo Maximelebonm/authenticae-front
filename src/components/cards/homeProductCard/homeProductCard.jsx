@@ -2,12 +2,14 @@ import './homeProductCard.css'
 import doudou from '../../../assets/test/doudou.jpg';
 import { Heart } from 'lucide-react';
 
-export const HomeProductCards = () => {
-    
+export const HomeProductCards = ({props}) => {
+    const {name} = props
     return (
-
         <div className='homeProductCardsContainer'>
         <div className='homeProductTextHover'>
+            <div className='homeProductName'>
+                {name}
+            </div>
             <div className='homeProductFav'>
                     <Heart strokeWidth={2}/>
             </div>
@@ -19,7 +21,6 @@ export const HomeProductCards = () => {
             <div className='homeProductPicturesContainer'>
                 <img className='homeProductPictures' src={doudou}/>
             </div>
-   
         </div>
     )
 }

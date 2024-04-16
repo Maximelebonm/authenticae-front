@@ -1,0 +1,8 @@
+.productCardContainer{
+    height : 200px;
+    width : 300px;
+    background-color: var(--nuance_color2);
+    color : var(--white_only);
+    border-radius: 25px;
+    padding : 10px;
+}

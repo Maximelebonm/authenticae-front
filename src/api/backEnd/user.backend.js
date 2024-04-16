@@ -50,7 +50,7 @@ export const createPseudo = async (id,pseudo) => {
 }
 
 
-export const registerUser = async (firstname,lastname,birthdate,email,phone,password) => {
+export const registerUser = async (firstname,lastname,birthdate,email,phone,password,identifiant) => {
     console.log('ok')
     try {
         const user = await ky.post(`${InitRequest()}/users/register`,{
@@ -60,7 +60,8 @@ export const registerUser = async (firstname,lastname,birthdate,email,phone,pass
                 birthdate : birthdate,
                 phone : phone,
                 email : email,
-                password : password
+                password : password,
+                identifiant : identifiant,
             },
             credentials : 'include'
         })

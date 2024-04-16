@@ -1,21 +1,37 @@
 import './homeScreen.css';
-import { HomeProductCards } from "../../components/cards/homeProductCard/homeProductCard"
-import { GoogleLogin } from '../../components/login/google/googleLogin';
+import { Link } from 'react-router-dom';
+import { useEffect,useState } from 'react';
+import { getAllProduct } from '../../api/backEnd/producer/product.backend';
+import { HomeProductCards } from './../../components/cards/homeProductCard/homeProductCard';
 
 export const HomeScreen = () => {
-    console.log(import.meta.env)
-    return (
-        <div id='homeScreenContainer'>
+
+    const [product,setProduct] = useState()
+    useEffect(()=>{
+        const fetchproduct = async() =>{
+            const response = await getAllProduct()
+            console.log(response)
+            const products = response.json()
+            .then(data =>{
+                if(data.message == 'products geted')
+                setProduct(data.data)
+        })
+    }
+    fetchproduct()
+},[])
+return (
+    <div id='homeScreenContainer'>
         <section>
 
         </section>
         <section id="homeScreenProducts">
-            <HomeProductCards/>
-            <HomeProductCards/>
-            <HomeProductCards/>
-            <HomeProductCards/>
-            <HomeProductCards/>
-            <HomeProductCards/>
+            {product?.map((item,index)=>{
+                return(
+                    <Link to={`/product/${item.Id_product}`}>
+                        <HomeProductCards props={item} key={index} />
+                    </Link>
+                )
+            })}
         </section>
         </div>
     )

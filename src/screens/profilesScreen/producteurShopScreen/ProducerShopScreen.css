@@ -1,0 +1,29 @@
+#ProducerShopMainContainer{
+
+}
+#producerShopPictureContainer{
+    position : relative;
+}
+#ProducerShopCoverPicture{
+    width : 100%;
+    border-radius: 25px;
+    height : 400px;
+    object-fit: cover;
+}
+#ProducerShopProfilPicture{
+    position : absolute;
+    width : 200px;
+    background-color: var(--body_color);
+    height : 200px;
+    border-radius: 100%;
+    left : 50%;
+    bottom : -125px;
+    margin-left : -110px;
+    border : 10px var(--nuance_color4) solid;
+}
+#producerShopName{
+    color: var(--nuance_color 4);
+    font-weight: bold;
+    font-size: 30px;
+    margin-top: 120px;
+}

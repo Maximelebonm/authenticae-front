@@ -14,6 +14,9 @@ import { LogoutScreen } from '../screens/authScreens/logoutScreen/logoutScreen';
 import { RegisterScreen } from '../screens/authScreens/registerScreen/registerScreen';
 import { AdminPanelScreen } from '../screens/panelsScreens/adminPanelScreen/adminPanelScreen';
 import { AdminUserPanelScreen } from '../screens/panelsScreens/adminPanelScreen/adminUserPanel/adminUserPanelScreen';
+import { ProducerPanelProductScreen } from '../screens/panelsScreens/producerPanelScreen/producerPanelproductScreen';
+import { ProducelPanelProductUpdate } from '../screens/panelsScreens/producerPanelScreen/producerPanelProductUpdate';
+import { ProductScreen } from '../screens/productScreen/productScreen';
 
 export const RoutesContainer = () =>{
 
@@ -21,7 +24,7 @@ export const RoutesContainer = () =>{
         <Routes>
         
             <Route path={URL_FRONT.PRODUCER_PANEL} element={ 
-                <PrivateRoutes role={'producer'}>
+                <PrivateRoutes role={['producer']}>
                         <ProducerPanelScreen/>
                 </PrivateRoutes>}/>
             <Route path='/' element={<HomeScreen/>}/>
@@ -45,12 +48,29 @@ export const RoutesContainer = () =>{
               <Route path='/register' element={
                     <RegisterScreen/>
             }/>
+                  <Route path='/product/:id' element={
+                    <ProductScreen/>
+            }/>
             <Route path='/login' element={
                     <LoginScreen/>
             }/>   
             <Route path='/logout' element={
                     <LogoutScreen/>
+            }/>
+            <Route path='/shop/:id' element={
+                    <ProducerShopScreen/>
             }/>   
+                <Route path='/myshop/product/createProduct' element={
+                <PrivateRoutes role={['producer']}>
+                    <ProducerPanelProductScreen/>
+                </PrivateRoutes>
+            }/>   
+            <Route path='/myshop/product/:id' element={
+                <PrivateRoutes role={['producer']}>
+                    <ProducelPanelProductUpdate/>
+                </PrivateRoutes>
+            }/>   
+
 
             
         </Routes>

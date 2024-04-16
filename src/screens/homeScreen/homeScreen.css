@@ -2,18 +2,26 @@
 section#homeScreenProducts{
     padding : 10px;
     display : grid;
-    grid-template-columns: repeat(2, 1fr); /* 3 colonnes de largeur égale */
+    grid-template-columns: repeat(1, 1fr); /* 3 colonnes de largeur égale */
     gap: 10px;
-    
 }
-@media (min-width : 640px){
+@media (min-width : 740px){
+    section#homeScreenProducts{
+        grid-template-columns: repeat(2, 1fr); /* 3 colonnes de largeur égale */
+    }
+}
+@media (min-width : 1000px){
     section#homeScreenProducts{
         grid-template-columns: repeat(3, 1fr); /* 3 colonnes de largeur égale */
     }
 }
 
-@media (min-width : 960px){
+@media (min-width : 1340px){
     section#homeScreenProducts{
-        grid-template-columns: repeat(5, 1fr); /* 3 colonnes de largeur égale */
+        grid-template-columns: repeat(4, 1fr); /* 3 colonnes de largeur égale */
     }
+}
+
+#homeScreenProducts{
+    width : 100%;   
 }

@@ -18,20 +18,21 @@ export const Header =()=>{
         setIsActive(!isActive);
     }
     const [roleCookie,setRoleCookie]=useState()
+    const [cookie, setCookie] = useState()
     useEffect(()=>{
         if(document.cookie){
             const auth = async()=>{
                 const cookie = await decodeCookies(document.cookie)
-                console.log(cookie)
                 const cookieTab = cookie.role.map((item)=> item.name)
                 setRoleCookie(cookieTab)
+                setCookie(cookie)
             }
             auth()
         }
     },[])
-
+    
+    console.log(cookie?.identifiant)
     useEffect(()=>{
-        
         const nav = document.querySelectorAll('#headerNav .headerItem');
         nav.forEach(item => {
             item.addEventListener('click', function() {
@@ -98,14 +99,14 @@ export const Header =()=>{
                             </>
                         }
                         {roleCookie?.includes('producer') &&
-                        <Link  to={"/Myshop"}>
+                        <Link  to={cookie?.identifiant == null ? "/profil" : "/myshop"}>
                                     <li className='headerItem'> <Store />Shop</li>
                         </Link>}
                         </div> 
                 </div>
-                <Link  to={roleCookie ? "/cart" : '/login'}>
-                    <li className='headerItem'><ShoppingCart /> Panier</li>
-                </Link>
+                        <Link  to={roleCookie ? "/cart" : '/login'}>
+                            <li className='headerItem'><ShoppingCart /> Panier</li>
+                        </Link>
             </ul>
         <div id='icons' onClick={toggleActive}>
         </div>

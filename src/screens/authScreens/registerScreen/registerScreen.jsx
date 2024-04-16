@@ -21,14 +21,15 @@ export const RegisterScreen = ()=> {
             const birthdate = formData.get("registerScreenBirthDate");
             const email = formData.get("registerScreenEmail");
             const phone = formData.get("registerScreenPhone");
+            const identifiant = formData.get("registerScreenIdentifiant");
             const password1 = formData.get("registerScreenPassword");
             const password2 = formData.get("registerScreenPassword2");
             if(password1==password2){
                 console.log('pass')
                 const fetch = async ()=>{
-                   const log = await registerUser(firstname,lastname,birthdate,email,phone,password1)
+                   const log = await registerUser(firstname,lastname,birthdate,email,phone,password1,identifiant)
                    if(log){
-                    window.location.href = '/'
+                    window.location.href = '/login'
                    }
                 }
                 fetch()
@@ -71,7 +72,7 @@ export const RegisterScreen = ()=> {
                 <span><Mail /></span>
             </div>
             <div className='registerScreenItemContainer'>
-                <input type='text' placeholder='Pseudonyme' name='registerScreenPseudo' id='registerScreenPseudo' required minLength={6} maxLength={50}/>
+                <input type='text' placeholder='Pseudonyme' name='registerScreenIdentifiant' id='registerScreenIdentifiant' required minLength={6} maxLength={50}/>
                 <span><User /></span>
             </div>
             <div className='registerScreenItemContainer'>

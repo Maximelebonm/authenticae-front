@@ -1,0 +1,70 @@
+import { useState,useEffect } from "react"
+import { createProduct } from "../../../api/backEnd/producer/product.backend"
+import { getShop } from "../../../api/backEnd/producer/shop.backend";
+import { decodeCookies } from "../../../helpers/decodeToken";
+
+
+export const ProducerPanelProductScreen =()=> {
+    const [product,setProduct] = useState();
+    const [shop, setShop] = useState()
+    const cookie =  decodeCookies(document.cookie)
+    console.log(cookie)
+    const Id_user = cookie.Id_user
+    const Id_shop = shop?.Id_shop
+
+   
+
+    useEffect(()=>{
+        const fetch = async ()=>{
+            try {
+                const response = await getShop(Id_user)
+                if(response){
+                    response.json()
+                    .then(data=>{
+                        if(data.message== 'shop exist'){
+                            setShop(data.data.shop)
+                        }
+                    })
+                }
+            } catch (error) {
+                console.log(error)                
+            }
+
+        }
+        fetch()
+    },[])
+
+
+    const productSubmit = async (e) =>{
+        e.preventDefault()
+        try {
+            const form = e.target
+            const formData = new FormData(form);
+            const productName = formData.get("productName");
+            const productDescription = formData.get("productDescription");
+            const fetch = async()=>{
+                const response = await createProduct(Id_user,Id_shop,productName,productDescription)
+                if(response){
+                    const articleCreate = response.json()
+                    .then((data)=>{
+                        if(data.message === 'product created'){
+                            window.location.href = `${import.meta.env.VITE_BASE_URL_FRONT}/myshop/product/${data.data.Id_product}`
+                        }
+                    })
+                }
+            }
+            fetch();
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return (
+    <form onSubmit={productSubmit}>
+        <input type='text' placeholder="nom du produit" name='productName' minLength={1} maxLength={30} required/>
+        <input type='text' placeholder="Description rapide du produit" name='productDescription' minLength={1} maxLength={255} required/>
+        <button type='submit'> creer mon article </button>
+    </form>
+    )
+}

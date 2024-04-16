@@ -15,8 +15,6 @@ export const ProfilScreen = ()=>{
         }
     },[pseudo])
 
-
-
     const pseudoSubmit = async (e)=>{
         e.preventDefault()
         try {
@@ -24,14 +22,14 @@ export const ProfilScreen = ()=>{
             const formData = new FormData(form);
             const pseudo = formData.get("pseudo");
             const id = token.Id_user
-            console.log(id)
-                const fetch = async ()=> {                       
-                    const response = await createPseudo(id,pseudo)
-                    if(response){
-                        response.json()
-                        .then((data)=>{
+            const fetch = async ()=> {                       
+                const response = await createPseudo(id,pseudo)
+                if(response){
+                    console.log(response)
+                    const pseudoCreate =response.json()
+                    .then((data)=>{
                             if(data.message === 'pseudo created'){
-                                setPseudo(!pseudo)
+                                setPseudo(true)
                             }
                         })
                     }
@@ -42,7 +40,7 @@ export const ProfilScreen = ()=>{
             }
     }
 
-    return <div>
+    return (<div>
           
                 {
                 token?.identifiant ? 
@@ -52,11 +50,8 @@ export const ProfilScreen = ()=>{
                 </>
                 : 
                 <div>
-                Pour modifier votre profil veuiller creer votre identifiant unique : <br/>
-                - celui ci n'est pas modifiable, veuillez bien le choisir.<br/>
-                - votre pseudonyme doit être conforme aux règles d'utilisation<br/>
-                - il n'est pas utilisé pour se connecter<br/>
-                - il permet le stockage de vos de données.
+                Veuillez choisir un pseudonyme afin de finaliser votre compte. <br/>
+                ATTENTION Celui ci n'est pas modifiable !
                 <div>
                 <form onSubmit={pseudoSubmit}>
                 <input type='text' placeholder="Votre pseudo"  name='pseudo' required minLength={3} maxLength={50}/>
@@ -67,5 +62,5 @@ export const ProfilScreen = ()=>{
                 </div>
                 </div>
                 }
-            </div>               
+            </div>)               
 }

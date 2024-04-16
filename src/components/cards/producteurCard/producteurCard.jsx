@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 export const ProducteurCard = ({props}) => {
-    const {profile,description,name,profil_picture} = props;
+    const {profile,description,name,profil_picture,Id_shop} = props;
+    console.log(props)
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK
-    console.log(Base_URL)
     
-
     return (
-        <Link to={'/producteurs/'+ profile}>
+        <Link to={'/shop/'+ Id_shop}>
             <div className='producteurCardContainer'>
                 <div className='producteurCardPicturesContainer'>
                     <img className='producteurCardPictures' src={Base_URL+ profil_picture}/>
@@ -26,7 +25,7 @@ export const ProducteurCard = ({props}) => {
                     </h3>
                     </div>
                     <div className='description'>
-                        fabrication de doudou en crochet
+                        {description}
                     </div>
                 </div>
             </div>

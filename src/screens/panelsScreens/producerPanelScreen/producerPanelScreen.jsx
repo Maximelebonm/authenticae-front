@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react"
 import { UploadDropZone } from "../../../components/uiElements/uploaddropZone/uploadDropZone";
 import { decodeCookies } from "../../../helpers/decodeToken";
-import './producerPanelScreen.css'
+import './producerPanelScreen.css';
+import { Link } from "react-router-dom";
 import { createShop, getShop, updateShop,updateAvatarShop } from "../../../api/backEnd/producer/shop.backend";
+import { ProductCard } from "../../../components/cards/productCard/productCard";
 
 export const ProducerPanelScreen = () =>{
     const cookie =  decodeCookies(document.cookie)
-    console.log(cookie)
     const id = cookie.Id_user
     const [shop, setShop] = useState();
     const [avatarFile, setAvatarFile] = useState();
     const [couvFile, setCouvFile] = useState();
     const [imgUrlAvatar,setImgUrlAvatar] = useState();
     const [imgUrlCover,setImgUrlCover] = useState();
+    const [change,setChange] = useState(false)
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK
+    const [product, setProduct] = useState()
 
     useEffect(()=>{
         const fetch = async ()=>{
@@ -23,7 +26,10 @@ export const ProducerPanelScreen = () =>{
                     response.json()
                     .then(data=>{
                         if(data.message== 'shop exist'){
-                            setShop(data.data)
+                            console.log(data.data)
+                            setShop(data.data.shop)
+                            setProduct(data.data.products)
+            
                         }
                     })
                 }
@@ -33,7 +39,7 @@ export const ProducerPanelScreen = () =>{
 
         }
         fetch()
-    },[])
+    },[change])
 
     
     const handleSubmit =async (e)=>{
@@ -52,7 +58,7 @@ export const ProducerPanelScreen = () =>{
                             .then((data)=>{
                                 console.log(data)
                                 if(data.message === 'shop updated'){
-                                    setShop(data.data)
+                                    setShop(data.data.shop)
                                 }
                             })
                         }
@@ -60,7 +66,7 @@ export const ProducerPanelScreen = () =>{
                 }
                 fetch()
             } catch (err) {
-            alert(err)
+            console.log(err)
             }
     }
     const avatarSubmit =async (e)=>{
@@ -76,10 +82,12 @@ export const ProducerPanelScreen = () =>{
                     if(shop){
                         if(name){
                             const route = 'updateAvatar'
-                            const upload = await updateAvatarShop(id,formData,route)
+                            const upload = await updateAvatarShop(id,formData,route);
+                            setChange(!change)
                         }else{
                             const route = 'updateCover'
-                            const upload = await updateAvatarShop(id,formData,route)
+                            const upload = await updateAvatarShop(id,formData,route);
+                            setChange(!change)
                         }
     
                     }
@@ -120,8 +128,6 @@ export const ProducerPanelScreen = () =>{
 
 return(
     <>
-
-
     { shop !=null ?
         <div>
         <form encType="multipart/form-data" onSubmit={avatarSubmit} className="ProducerPanelDropZoneForm">
@@ -130,7 +136,7 @@ return(
         </div>
         <div className="ProducerPanelDropZoneContainer">
         <img src={shop?.profil_picture &&  Base_URL+shop.profil_picture}/>
-            <UploadDropZone setFile={setAvatarFile} loadImg={setImgUrlAvatar} imageSet={imgUrlAvatar} name='avatar'/>
+            <UploadDropZone setFile={setAvatarFile} loadUrlImg={setImgUrlAvatar} imageSet={imgUrlAvatar} name='avatar'/>
             <button type='submit'> Envoyer l'image</button>
         </div>
         </form>
@@ -140,13 +146,11 @@ return(
         <form encType="multipart/form-data" onSubmit={avatarSubmit}>
             <div className="ProducerPanelDropZoneContainer">
                 <img src={shop?.cover_picture && Base_URL+shop.cover_picture}/>
-                <UploadDropZone setFile={setCouvFile} loadImg={setImgUrlCover} imageSet={imgUrlCover} name='cover'/>
+                <UploadDropZone setFile={setCouvFile} loadUrlImg={setImgUrlCover} imageSet={imgUrlCover} name='cover'/>
                 <button type='submit'> Envoyer l'image </button>
             </div>
         </form>
-        <form onSubmit={handleSubmit}
-        //method="POST" action="http://localhost:4000/shop/update/:id"
-        >
+        <form onSubmit={handleSubmit}>
             <input type='text' placeholder='nom du shop' defaultValue={shop?.name}  name='shopName' minLength={1} maxLength={30} required/>
             <input type='text' placeholder={'Description du shop'} name='shopDescriptiopn' defaultValue={shop?.description} minLength={1} maxLength={255} required/>
             <button type='submit'> valider </button>
@@ -159,6 +163,21 @@ return(
         <button type='submit'> creer mon shop </button>
     </form>
     }
+    <Link to='/myshop/product/createProduct'>
+    <button>
+        Creer un nouvel article
+    </button>
+    </Link>
+    <div id='ProducerPanelProductsContainer'>
+    {product?.map((item,index)=>{
+ 
+        return (
+            <Link to={`/myshop/product/${item.Id_product}`} key={index}>
+                <ProductCard props={item} key={index}/>   
+            </Link>
+        )
+    })}
+    </div>
     </>
     )
 }

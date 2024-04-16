@@ -16,3 +16,12 @@
     width : 300px;
     height : 100px;
 }
+
+#ProducerPanelProductsContainer{
+    padding : 10px;
+    display : grid;
+    grid-template-columns: repeat(4, 1fr); /* 3 colonnes de largeur égale */
+    gap: 10px;
+    width : 100%;
+    justify-content: center;
+}

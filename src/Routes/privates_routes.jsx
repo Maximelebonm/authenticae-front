@@ -13,7 +13,6 @@ export const PrivateRoutes = ({children,role}) => {
             }
             decodeCookie()
         }
-        // console.log(children)
     },[])
     if(roleCookie != null){
         const roleMap = roleCookie.map(item => item.name)

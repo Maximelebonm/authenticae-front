@@ -117,7 +117,7 @@
         justify-content: center;
         &:hover {
             box-sizing: border-box;
-            border :#ffffff 2px solid;
+            border :var(--nuance_color1) 2px solid;
             border-radius : 50%;
             
         }
@@ -141,7 +141,7 @@
         flex-direction: column;
         text-align: center;
         width : 100%;
-        background-color: rgba(255,177,170,1);
+        background-color: var(--nuance_color2);
        
     }
     .active #headerNav{
@@ -160,11 +160,11 @@
         font-size: medium;
         text-align : center;
         justify-content: center;
-        border-bottom : #ffffff 2px solid;
+        border-bottom : var(--nuance_color1) 2px solid;
         color: white;
         &:hover{
             transform: scale(1);
-            background-color: rgb(201, 139, 133);      
+            background-color: var(--nuance_color3);      
         }
     }
 }
