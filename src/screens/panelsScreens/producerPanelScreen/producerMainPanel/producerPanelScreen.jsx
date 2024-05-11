@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
-import { UploadDropZone } from "../../../components/uiElements/uploaddropZone/uploadDropZone";
-import { decodeCookies } from "../../../helpers/decodeToken";
+import { UploadDropZone } from "../../../../components/uiElements/uploaddropZone/uploadDropZone";
+import { decodeCookies } from "../../../../helpers/decodeToken";
 import './producerPanelScreen.css';
 import { Link } from "react-router-dom";
-import { createShop, getShop, updateShop,updateAvatarShop } from "../../../api/backEnd/producer/shop.backend";
-import { ProductCard } from "../../../components/cards/productCard/productCard";
+import { createShop, getShop, updateShop,updateAvatarShop } from "../../../../api/backEnd/producer/shop.backend";
+import { ProductCard } from "../../../../components/cards/productCard/productCard";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const ProducerPanelScreen = () =>{
     const cookie =  decodeCookies(document.cookie)
@@ -58,17 +60,20 @@ export const ProducerPanelScreen = () =>{
                             .then((data)=>{
                                 console.log(data)
                                 if(data.message === 'shop updated'){
-                                    setShop(data.data.shop)
+                                    setChange(!change)
+                                    notifySuccessUpload()
                                 }
                             })
                         }
 
                 }
+                
                 fetch()
             } catch (err) {
             console.log(err)
             }
     }
+
     const avatarSubmit =async (e)=>{
         e.preventDefault()
         try {
@@ -76,18 +81,20 @@ export const ProducerPanelScreen = () =>{
             const elements = e.target.elements
             const formData = new FormData(form);
             const name = formData.get("avatar");
-
-            console.log(name)
                 const fetch = async ()=> {                   
                     if(shop){
                         if(name){
                             const route = 'updateAvatar'
                             const upload = await updateAvatarShop(id,formData,route);
                             setChange(!change)
+                            setImgUrlAvatar()
+                            notifySuccessPicture()
                         }else{
                             const route = 'updateCover'
                             const upload = await updateAvatarShop(id,formData,route);
                             setChange(!change)
+                            setImgUrlCover()
+                            notifySuccessPicture()
                         }
     
                     }
@@ -95,7 +102,10 @@ export const ProducerPanelScreen = () =>{
                         const log = await createShop(id,shopName,shopDesc,avatar,couvFile)
                     }
                 }
-                fetch()
+                if(imgUrlAvatar || imgUrlCover){
+                    console.log('pass img')
+                    fetch()
+                }
             } catch (err) {
             alert(err)
             }
@@ -126,8 +136,12 @@ export const ProducerPanelScreen = () =>{
             }
     }
 
+    const notifySuccessUpload = () => toast.success("votre shop a été mis à jour avec succès");
+    const notifySuccessPicture = () => toast.success("image télécharger avec succès")
+
 return(
     <>
+    <ToastContainer />
     { shop !=null ?
         <div>
         <form encType="multipart/form-data" onSubmit={avatarSubmit} className="ProducerPanelDropZoneForm">
@@ -150,33 +164,32 @@ return(
                 <button type='submit'> Envoyer l'image </button>
             </div>
         </form>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='producerPanelform'>
             <input type='text' placeholder='nom du shop' defaultValue={shop?.name}  name='shopName' minLength={1} maxLength={30} required/>
             <input type='text' placeholder={'Description du shop'} name='shopDescriptiopn' defaultValue={shop?.description} minLength={1} maxLength={255} required/>
             <button type='submit'> valider </button>
         </form>
         </div>
     : 
-    <form onSubmit={shopSubmit}>
+    <form onSubmit={shopSubmit} className='producerPanelform'>
         <input type='text' placeholder='nom du shop' name='shopName' minLength={1} maxLength={30} required/>
         <input type='text' placeholder='Description du shop' name='shopDescriptiopn' minLength={1} maxLength={255} required/>
         <button type='submit'> creer mon shop </button>
     </form>
     }
     <Link to='/myshop/product/createProduct'>
-    <button>
+    { shop && <button>
         Creer un nouvel article
-    </button>
+    </button>}
     </Link>
     <div id='ProducerPanelProductsContainer'>
-    {product?.map((item,index)=>{
- 
-        return (
-            <Link to={`/myshop/product/${item.Id_product}`} key={index}>
-                <ProductCard props={item} key={index}/>   
-            </Link>
-        )
-    })}
+        {product?.map((item,index)=>{
+            return (
+                <Link to={`/myshop/product/${item.Id_product}`} key={index}>
+                    <ProductCard props={item} key={index}/>   
+                </Link>
+            )
+        })}
     </div>
     </>
     )

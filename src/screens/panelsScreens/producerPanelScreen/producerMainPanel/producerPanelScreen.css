@@ -25,3 +25,14 @@
     width : 100%;
     justify-content: center;
 }
+.producerPanelform {
+    width : 500px;
+    margin : auto;
+    &>input {
+        border-radius: 25px;
+        font-size : 14px;
+    }
+    &>textarea {
+       width : 480px
+    }
+}

@@ -11,7 +11,6 @@ import { Store } from 'lucide-react';
 export const Header =()=>{
     const [isActive, setIsActive] = useState(false);
 
-
     const logo = '../../assets/logos/src/assets/logos/logo_authenticae_blanc.png'
     
     const toggleActive = () => {
@@ -21,8 +20,9 @@ export const Header =()=>{
     const [cookie, setCookie] = useState()
     useEffect(()=>{
         if(document.cookie){
-            const auth = async()=>{
-                const cookie = await decodeCookies(document.cookie)
+            const auth = ()=>{
+                const cookie = decodeCookies(document.cookie)           
+                console.log(cookie)
                 const cookieTab = cookie.role.map((item)=> item.name)
                 setRoleCookie(cookieTab)
                 setCookie(cookie)
@@ -99,7 +99,7 @@ export const Header =()=>{
                             </>
                         }
                         {roleCookie?.includes('producer') &&
-                        <Link  to={cookie?.identifiant == null ? "/profil" : "/myshop"}>
+                        <Link  to={cookie?.identifiant === null ? "/profil" : "/myshop"}>
                                     <li className='headerItem'> <Store />Shop</li>
                         </Link>}
                         </div> 

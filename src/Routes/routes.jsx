@@ -3,7 +3,7 @@ import { PrivateRoutes } from './privates_routes';
 import { URL_FRONT } from '../constants/urlFrontEnd';
 
 import { HomeScreen } from '../screens/homeScreen/homeScreen';
-import { ProducerPanelScreen } from '../screens/panelsScreens/producerPanelScreen/producerPanelScreen';
+import { ProducerPanelScreen } from '../screens/panelsScreens/producerPanelScreen/producerMainPanel/producerPanelScreen.jsx';
 import { ProducerListScreen } from '../screens/ProducerListScreen/ProducerListScreen';
 import { ProducerShopScreen } from '../screens/profilesScreen/producteurShopScreen/ProducerShopScreen';
 import { ProfilScreen } from '../screens/profilesScreen/profilScreen/profilScreen';
@@ -14,15 +14,16 @@ import { LogoutScreen } from '../screens/authScreens/logoutScreen/logoutScreen';
 import { RegisterScreen } from '../screens/authScreens/registerScreen/registerScreen';
 import { AdminPanelScreen } from '../screens/panelsScreens/adminPanelScreen/adminPanelScreen';
 import { AdminUserPanelScreen } from '../screens/panelsScreens/adminPanelScreen/adminUserPanel/adminUserPanelScreen';
-import { ProducerPanelProductScreen } from '../screens/panelsScreens/producerPanelScreen/producerPanelproductScreen';
-import { ProducelPanelProductUpdate } from '../screens/panelsScreens/producerPanelScreen/producerPanelProductUpdate';
+import { ProducerPanelProductScreen } from '../screens/panelsScreens/producerPanelScreen/productUpdateScreen/producerPanelproductScreen.jsx'; 
+import { ProducelPanelProductUpdate } from '../screens/panelsScreens/producerPanelScreen/productUpdateScreen/producerPanelProductUpdate.jsx';
 import { ProductScreen } from '../screens/productScreen/productScreen';
+import { ValidationScreen } from '../screens/authScreens/valdationScreen/validationScreen';
 
 export const RoutesContainer = () =>{
 
     return (
         <Routes>
-        
+            <Route path='/validation/:token' element={<ValidationScreen/>} />
             <Route path={URL_FRONT.PRODUCER_PANEL} element={ 
                 <PrivateRoutes role={['producer']}>
                         <ProducerPanelScreen/>

@@ -3,7 +3,7 @@ import './registerScreen.css';
 import { GoogleLogin } from "../../../components/login/google/googleLogin";
 import { Mail,Phone,User, Lock } from "lucide-react";
 import { useState } from "react";
-import { registerUser } from "../../../api/backEnd/user.backend";
+import { ValidationUser} from "../../../api/backEnd/user.backend";
 
 export const RegisterScreen = ()=> {
 
@@ -27,7 +27,7 @@ export const RegisterScreen = ()=> {
             if(password1==password2){
                 console.log('pass')
                 const fetch = async ()=>{
-                   const log = await registerUser(firstname,lastname,birthdate,email,phone,password1,identifiant)
+                   const log = await ValidationUser(firstname,lastname,birthdate,email,phone,password1,identifiant)
                    if(log){
                     window.location.href = '/login'
                    }

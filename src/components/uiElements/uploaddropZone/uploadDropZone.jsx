@@ -50,8 +50,7 @@ export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple})=> 
         loadUrlImg(ImgUrltab)
         setFile(files)
     }
-
-    console.log(imageSet)
+    
     return(
         <div id='dropZoneContainer'>
             <div className="drop-zone" id="drop-zone" name={name}

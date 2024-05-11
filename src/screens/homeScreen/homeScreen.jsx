@@ -27,8 +27,8 @@ return (
         <section id="homeScreenProducts">
             {product?.map((item,index)=>{
                 return(
-                    <Link to={`/product/${item.Id_product}`}>
-                        <HomeProductCards props={item} key={index} />
+                    <Link to={`/product/${item.Id_product}`}  key={index}>
+                        <HomeProductCards props={item} />
                     </Link>
                 )
             })}

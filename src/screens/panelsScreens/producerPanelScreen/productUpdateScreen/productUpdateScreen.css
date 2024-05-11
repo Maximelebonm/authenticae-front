@@ -1,0 +1,42 @@
+.productUpdateInputContainer{
+    width : 300px;
+
+    & > span {
+        color : red
+    }
+}
+.productUpdateInputContainerNumber{
+    display : flex;
+    width : 300px;
+    align-items: center;
+    & > label{
+        width : 100%;
+        margin : 0px 10px;
+        text-align: start;
+        display : flex;
+        flex-direction: row;
+        color : var(--white_only);
+    }
+
+ 
+}
+#productUpdateNumberContainer{
+    background-color: var(--nuance_color3);
+    box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.2);
+    border-radius: 25px;
+    padding : 20px;
+
+  
+}
+
+#productPanelformContainer{
+    /* display : flex; */
+}
+#productUpdateFirst{
+    display : flex;
+    justify-content: center;
+}
+
+#productUpdateMainInfo{
+    width : 50%;
+}

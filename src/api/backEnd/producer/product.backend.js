@@ -39,7 +39,7 @@ export const getAllProduct = async () => {
     }
 }
 
-export const updateProduct = async (id,productName,productDescription,productSpecification,productPrice,productQuantity,productPackaging,productWeight,productHeight,productWidth) => {
+export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productPrice,productQuantity,productPackaging,productWeight,productHeight,productWidth) => {
     console.log('update')
     try {
         const response = await ky.put(`${InitRequest()}/product/update/${id}`,{
@@ -47,12 +47,10 @@ export const updateProduct = async (id,productName,productDescription,productSpe
                 name : productName,
                 description : productDescription,
                 specification : productSpecification,
+                Id_material : producmaterial,
                 price : productPrice,
                 quantity : productQuantity,
                 packaging : productPackaging,
-                weight : productWeight,
-                height : productHeight,
-                width : productWidth,
             },
             credentials : 'include',
         })
@@ -67,6 +65,18 @@ export const updatePicturesProduct = async (id,formData) => {
     try {
         const response = await ky.post(`${InitRequest()}/product/uploadPictures/${id}`,{
             body: formData,
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const deleteProduct = async (id) => {
+    console.log('passe api', id)
+    try {
+        const response = await ky.delete(`${InitRequest()}/product/delete/${id}`,{
             credentials : 'include',
         })
         return response

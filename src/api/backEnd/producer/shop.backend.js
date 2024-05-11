@@ -1,3 +1,4 @@
+import { decodeCookies } from "../../../helpers/decodeToken";
 import { InitRequest } from "../../initRequest";
 import ky from "ky";
 
@@ -35,8 +36,9 @@ export const getAllShop = async () => {
     }
 }
 export const updateShop = async (id,name,description) => {
+   
     try {
-        const response = await ky.put(`${InitRequest()}/shop/update/${id}`,{
+        const response = await ky.put(`${InitRequest()}/shop/update/${id}`, {
             json : {
                 name : name,
                 description : description,

@@ -31,7 +31,7 @@
     flex-direction: column;
     align-items: center;
     & span {
-        background-color: var(--nuance_color1);
+        background-color: var(--nuance_color4);
         color: var(--font_color);
         padding: 10px;
         height :30px;
@@ -46,6 +46,7 @@
         }
     }
 }
+
 
 .loginScreenItemContainer{
     display: flex;

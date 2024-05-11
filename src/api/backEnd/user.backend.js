@@ -50,8 +50,27 @@ export const createPseudo = async (id,pseudo) => {
 }
 
 
+export const ValidationUser = async (firstname,lastname,birthdate,email,phone,password,identifiant) => {
+    try {
+        const user = await ky.post(`${InitRequest()}/users/validation`,{
+            json: {
+                firstname: firstname,
+                lastname : lastname,
+                birthdate : birthdate,
+                phone : phone,
+                email : email,
+                password : password,
+                identifiant : identifiant,
+            },
+            credentials : 'include'
+        })
+        return user
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
 export const registerUser = async (firstname,lastname,birthdate,email,phone,password,identifiant) => {
-    console.log('ok')
     try {
         const user = await ky.post(`${InitRequest()}/users/register`,{
             json: {
@@ -70,7 +89,6 @@ export const registerUser = async (firstname,lastname,birthdate,email,phone,pass
         return "erreur : " + err;
     }
 }
-
 export const logoutApi = async (cookie) => {
     console.log(cookie)
     try {

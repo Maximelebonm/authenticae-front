@@ -8,3 +8,11 @@ export const decodeCookies = (cookie) =>{
         }
         else return 'error'
     }
+
+export const decodetoken = (token) =>{
+    const TokenDecode = jwtDecode(token)
+    if(TokenDecode){
+        return TokenDecode
+        }
+        else return 'error'
+    }

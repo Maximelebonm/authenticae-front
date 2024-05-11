@@ -13,6 +13,7 @@
 #ProducerShopProfilPicture{
     position : absolute;
     width : 200px;
+    object-fit: cover;
     background-color: var(--body_color);
     height : 200px;
     border-radius: 100%;

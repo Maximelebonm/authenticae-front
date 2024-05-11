@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react"
-import { createProduct } from "../../../api/backEnd/producer/product.backend"
-import { getShop } from "../../../api/backEnd/producer/shop.backend";
-import { decodeCookies } from "../../../helpers/decodeToken";
+import { createProduct } from "../../../../api/backEnd/producer/product.backend"
+import { getShop } from "../../../../api/backEnd/producer/shop.backend";
+import { decodeCookies } from "../../../../helpers/decodeToken";
 
 
 export const ProducerPanelProductScreen =()=> {
@@ -29,7 +29,6 @@ export const ProducerPanelProductScreen =()=> {
             } catch (error) {
                 console.log(error)                
             }
-
         }
         fetch()
     },[])
@@ -53,17 +52,16 @@ export const ProducerPanelProductScreen =()=> {
                     })
                 }
             }
-            fetch();
-            
+            fetch();         
         } catch (error) {
             console.log(error)
         }
     }
 
     return (
-    <form onSubmit={productSubmit}>
+    <form onSubmit={productSubmit} className='producerPanelform'>
         <input type='text' placeholder="nom du produit" name='productName' minLength={1} maxLength={30} required/>
-        <input type='text' placeholder="Description rapide du produit" name='productDescription' minLength={1} maxLength={255} required/>
+        <textarea type='text' placeholder="Description rapide du produit" name='productDescription' minLength={1} maxLength={255} required/>
         <button type='submit'> creer mon article </button>
     </form>
     )
