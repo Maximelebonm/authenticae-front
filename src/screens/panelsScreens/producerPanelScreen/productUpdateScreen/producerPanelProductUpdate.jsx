@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { deleteProduct, getProduct, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
+import { deleteProduct, getProduct, getProductAndOption, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
 import { useParams } from 'react-router-dom';
 import { useState } from "react";
 import './productUpdateScreen.css'
@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { OptionComponent } from "./optionComponent/optionComponent";
+import { v4 as uuidv4 } from 'uuid';
+
 
 
 export const ProducelPanelProductUpdate = () => {
@@ -28,14 +30,16 @@ export const ProducelPanelProductUpdate = () => {
         const fetchProduct = async()=>{
             const response = await getProduct(id)
             const materials = await getAllmaterials()
+            console.log(response)
             if(response){
                 response.json()
                 .then(data=>{
                     if(data.message == 'product geted'){
-                        if(data.data.pictures){
-                            console.log(data)
-                            setImgDisplay(data.data.pictures.split(','))
-                            setProduct(data.data);
+                        console.log(data)
+                        if(data.data.product.pictures){
+                            setImgDisplay(data.data.product.pictures.split(','))
+                            setProduct(data.data.product);
+                            setOptions(data.data.option)
                         }
                         else{
                             console.log('else')
@@ -53,7 +57,6 @@ export const ProducelPanelProductUpdate = () => {
                 .then(data=>{
                     if(data.message == 'materials geted'){
                         setMaterials(data.data)
-                        
                     }
                 })
             }
@@ -97,6 +100,37 @@ export const ProducelPanelProductUpdate = () => {
         }
     }
 
+    const handleOptionChange = (e,Id_option)=>{
+        const newOption = [...options]
+        newOption.forEach((item)=> {
+            console.log(item.Id_option)
+            if(item.Id_option == Id_option){
+                item.name = e
+            }
+        })
+        setOptions(newOption)
+    }
+
+    const handleSubOptionChange = (e,idsubOption,obj) => {
+        const newOptionTab = [...options]
+        newOptionTab.forEach((item)=>{
+            console.log(item.subOption)
+            item.subOption.forEach((subItem)=>{
+                if(subItem.Id_subOption == idsubOption){
+                    switch(obj){
+                    case 'name' : subItem.name = e;
+                    break;
+                    case 'price' : subItem.price = e;
+                    break;
+                    case 'quantity' : subItem.quantity = e;
+                    break;
+                }
+                }
+            })
+        })
+        setOptions(newOptionTab)
+    }
+
     const handleSubmit = (e)=>{
         try {
             e.preventDefault()
@@ -116,48 +150,50 @@ export const ProducelPanelProductUpdate = () => {
             const productPrice = formData.get("productPrice");
             const productQuantity = formData.get("productQuantity");
             const producmaterial = formData.get("productMaterial");
+            const formOptionObject = options
 
-            const formOptionObject = {}
-            for (const [key, value] of formData.entries()) {
-                if(key.startsWith("option")){
-                const fieldName = key.split("[")[0];
-                const subFieldName = key.split("[")[1]?.split("]")[0];
-                const subOptionName = key.split("]")[1]
-                console.log(subFieldName)
-                    if (!formOptionObject[fieldName]) {
-                        formOptionObject[fieldName] = {
-                            name : value
-                        };
-                    }
-                    if (subFieldName) {
-                        if (!formOptionObject[fieldName][subFieldName]) {
-                            if(subOptionName.includes('name')){
-                                formOptionObject[fieldName][subFieldName] = {
-                                    name : value
-                                }
-                            }
-                            else {
-                                formOptionObject[fieldName][subFieldName] = {price : value};
-                            }
-                        } else {
-                            if(subOptionName.includes('name')){
-                                formOptionObject[fieldName][subFieldName] = {
-                                    ...formOptionObject[fieldName][subFieldName],name: value
-                                }
-                            }
-                            else {
-                                formOptionObject[fieldName][subFieldName] = {...formOptionObject[fieldName][subFieldName],price : value};
-                            }
+            // for (const [key, value] of formData.entries()) {
+            //     if(key.startsWith("option")){
+            //     const fieldName = key.split("[")[0];
+            //     const optionName = value
+            //     const subFieldName = key.split("[")[1]?.split("]")[0];
+            //     const subOptionName = key.split("]")[1]
+            //     console.log(formOptionObject[fieldName])
+            //         if (!formOptionObject[fieldName]) {
+            //             formOptionObject[fieldName] = {
+            //                 name : value
+            //             };
+            //         }
+            //         if (subFieldName) {
+            //             if (!formOptionObject[fieldName][subFieldName]) {
+            //                 if(subOptionName.includes('name')){
+            //                     formOptionObject[fieldName][subFieldName] = {
+            //                         name : value
+            //                     }
+            //                 }
+            //                 else {
+            //                     console.log(formOptionObject[fieldName][subFieldName])
+            //                     formOptionObject[fieldName][subFieldName] = {...formOptionObject[fieldName][subFieldName],price : value};
+            //                 }
+            //             } else {
+            //                 if(subOptionName.includes('name')){
+            //                     formOptionObject[fieldName][subFieldName] = {
+            //                         ...formOptionObject[fieldName][subFieldName],name: value
+            //                     }
+            //                 }
+            //                 else {
+            //                     formOptionObject[fieldName][subFieldName] = {...formOptionObject[fieldName][subFieldName],price : value};
+            //                 }
                             
-                        }
-                    }
-                }   
-            }
+            //             }
+            //         }
+            //     }   
+            // }
 
             console.log(formOptionObject)
 
             const fetch = async ()=> {                   
-                const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantity)
+                const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantity,formOptionObject)
                 if(response){
                     console.log(response)
                     response.json()
@@ -191,13 +227,52 @@ export const ProducelPanelProductUpdate = () => {
         )
     }
 
-    const optionReturn =()=> {
-        return <OptionComponent/>
+    const addOption =()=> {
+        const uuidOption = uuidv4();
+        const uuidSuboption = uuidv4()
+        setOptions([
+            ...options,
+            { name: '', Id_option : uuidOption, subOption : [{ name: '', price: '', quantity: '', Id_subOption : uuidSuboption}]}
+        ])
     }
+
+    const addSubOption = (option)=> {
+        console.log(option)
+        const updatedOption = [...options]
+        const uuidSuboption = uuidv4()
+        const newSubOption = { name: '', price: '', quantity: '', Id_subOption : uuidSuboption}
+        updatedOption.forEach(opt => {
+            console.log(opt)
+            if (opt.Id_option === option.Id_option) {
+                opt.subOption = [...opt.subOption, newSubOption];
+            }
+        });
+        setOptions(updatedOption)
+    }
+
+    const delsubOption = (option, subOptionId) =>{
+        const updatedOption = [...options]
+        updatedOption.forEach(item => {
+            console.log(item)
+            if (item.Id_option === option.Id_option) {
+                item.subOption = item.subOption.filter(subOpt => subOpt.Id_subOption !== subOptionId);
+            }
+        });
+        setOptions(updatedOption)
+    }
+
+    const deleteOption = (optionId) =>{
+        console.log(optionId)
+        const updatedOption = options.filter(opt => opt.Id_option !== optionId);
+        console.log(updatedOption)
+        setOptions(updatedOption)
+    }
+
 
     const notifySuccessUpload = () => toast.success("Produit mis à jour avec succès",{autoClose : 2000});
     const notifySuccessPicture = () => toast.success("image télécharger avec succès",{autoClose : 2000})
     
+    console.log(options)
     return (
         <>
         <Link to='/myshop'>
@@ -261,12 +336,24 @@ export const ProducelPanelProductUpdate = () => {
             </div>
             <div>
                 {options.map((item,index)=> {
-                    return <OptionComponent props={item} key={index} name={"option"+ index} />
+                    console.log(item)
+                    return <OptionComponent 
+                                props={item} 
+                                key={index} 
+                                indexOption={index} 
+                                nameObject={"option"+ index} 
+                                deleteOption={(optionId)=>deleteOption(optionId) } 
+                                addSubOption={(option)=>addSubOption(option)} 
+                                delSubOption={(option,subOptionId)=>delsubOption(option,subOptionId)}
+                                handlesubOptionChange={(e,idsubOption,obj)=>{handleSubOptionChange(e,idsubOption,obj)}}
+                                handleOptionChange={(e,Idoption)=>{handleOptionChange(e,Idoption)}}
+                            />
                 })}
             </div>
+            <span onClick={addOption}> Ajouter une option</span>
+           
             <button className='panelInput' type='submit'> valider </button>
         </form>
-            <button onClick={()=>setOptions([...options, optionReturn()])}> Ajouter une option</button>
             <button className='panelInput' onClick={deleteP}> suprimer l'article </button>
         </div>
         </>

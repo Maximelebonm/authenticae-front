@@ -19,6 +19,10 @@ export const createProduct = async (Id_user,Id_shop,name, description) => {
     }
 }
 
+export const getProductAndOption = async()=> {
+
+}
+
 export const getProduct = async (id) => {
     try {
         const shop = await ky.get(`${InitRequest()}/product/${id}`,
@@ -39,7 +43,7 @@ export const getAllProduct = async () => {
     }
 }
 
-export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productPrice,productQuantity,productPackaging,productWeight,productHeight,productWidth) => {
+export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productPrice,productQuantity,formOptionObject) => {
     console.log('update')
     try {
         const response = await ky.put(`${InitRequest()}/product/update/${id}`,{
@@ -50,7 +54,7 @@ export const updateProduct = async (id,productName,productDescription,productSpe
                 Id_material : producmaterial,
                 price : productPrice,
                 quantity : productQuantity,
-                packaging : productPackaging,
+                options : formOptionObject,
             },
             credentials : 'include',
         })
