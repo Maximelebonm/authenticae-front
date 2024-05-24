@@ -3,7 +3,7 @@ import "./optionComponent.css"
 export const OptionComponent = (props) => {
     const {nameObject} = props
     const {name, Id_option} = props.props
-    const subOption = props.props.subOption
+    const subOption = props.props.subOptions
     console.log(name)
 
     const addSubOptionform = ()=> {
@@ -40,8 +40,8 @@ export const OptionComponent = (props) => {
                             <input
                                required
                                 name={`${nameObject}[subOption${index}][name]`}
-                                value={item?.name}
-                                onChange={(e) => handleSubOptionChange(e.target.value,item.Id_subOption,'name')}
+                                value={item?.detail}
+                                onChange={(e) => handleSubOptionChange(e.target.value,item.Id_subOption,'detail')}
                             />
                         </div>
                         <div className="subOptionPricecontainer">

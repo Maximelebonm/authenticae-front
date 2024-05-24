@@ -115,10 +115,10 @@ export const ProducelPanelProductUpdate = () => {
         const newOptionTab = [...options]
         newOptionTab.forEach((item)=>{
             console.log(item.subOption)
-            item.subOption.forEach((subItem)=>{
+            item.subOptions.forEach((subItem)=>{
                 if(subItem.Id_subOption == idsubOption){
                     switch(obj){
-                    case 'name' : subItem.name = e;
+                    case 'detail' : subItem.detail = e;
                     break;
                     case 'price' : subItem.price = e;
                     break;
@@ -151,46 +151,6 @@ export const ProducelPanelProductUpdate = () => {
             const productQuantity = formData.get("productQuantity");
             const producmaterial = formData.get("productMaterial");
             const formOptionObject = options
-
-            // for (const [key, value] of formData.entries()) {
-            //     if(key.startsWith("option")){
-            //     const fieldName = key.split("[")[0];
-            //     const optionName = value
-            //     const subFieldName = key.split("[")[1]?.split("]")[0];
-            //     const subOptionName = key.split("]")[1]
-            //     console.log(formOptionObject[fieldName])
-            //         if (!formOptionObject[fieldName]) {
-            //             formOptionObject[fieldName] = {
-            //                 name : value
-            //             };
-            //         }
-            //         if (subFieldName) {
-            //             if (!formOptionObject[fieldName][subFieldName]) {
-            //                 if(subOptionName.includes('name')){
-            //                     formOptionObject[fieldName][subFieldName] = {
-            //                         name : value
-            //                     }
-            //                 }
-            //                 else {
-            //                     console.log(formOptionObject[fieldName][subFieldName])
-            //                     formOptionObject[fieldName][subFieldName] = {...formOptionObject[fieldName][subFieldName],price : value};
-            //                 }
-            //             } else {
-            //                 if(subOptionName.includes('name')){
-            //                     formOptionObject[fieldName][subFieldName] = {
-            //                         ...formOptionObject[fieldName][subFieldName],name: value
-            //                     }
-            //                 }
-            //                 else {
-            //                     formOptionObject[fieldName][subFieldName] = {...formOptionObject[fieldName][subFieldName],price : value};
-            //                 }
-                            
-            //             }
-            //         }
-            //     }   
-            // }
-
-            console.log(formOptionObject)
 
             const fetch = async ()=> {                   
                 const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantity,formOptionObject)
@@ -232,7 +192,7 @@ export const ProducelPanelProductUpdate = () => {
         const uuidSuboption = uuidv4()
         setOptions([
             ...options,
-            { name: '', Id_option : uuidOption, subOption : [{ name: '', price: '', quantity: '', Id_subOption : uuidSuboption}]}
+            { name: '', Id_option : uuidOption, subOptions : [{ detail: '', price: '', quantity: '', Id_subOption : uuidSuboption}]}
         ])
     }
 
@@ -240,11 +200,11 @@ export const ProducelPanelProductUpdate = () => {
         console.log(option)
         const updatedOption = [...options]
         const uuidSuboption = uuidv4()
-        const newSubOption = { name: '', price: '', quantity: '', Id_subOption : uuidSuboption}
+        const newSubOption = { detail: '', price: '', quantity: '', Id_subOption : uuidSuboption}
         updatedOption.forEach(opt => {
             console.log(opt)
             if (opt.Id_option === option.Id_option) {
-                opt.subOption = [...opt.subOption, newSubOption];
+                opt.subOptions = [...opt.subOptions, newSubOption];
             }
         });
         setOptions(updatedOption)
