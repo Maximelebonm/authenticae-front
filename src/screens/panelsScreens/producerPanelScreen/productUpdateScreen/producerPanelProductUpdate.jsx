@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { deleteProduct, getProduct, getProductAndOption, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
+import { deleteOption, deletePersonalizationApi, deleteProduct, deleteSubOption, getProduct, getProductAndOption, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
 import { useParams } from 'react-router-dom';
 import { useState } from "react";
 import './productUpdateScreen.css'
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { OptionComponent } from "./optionComponent/optionComponent";
 import { v4 as uuidv4 } from 'uuid';
+import { PersonalizationComponent } from "./personalizationComponent/personalizationComponent";
 
 
 
@@ -25,6 +26,7 @@ export const ProducelPanelProductUpdate = () => {
     const Base_URL_FRONT = import.meta.env.VITE_BASE_URL_FRONT;
     const [materials,setMaterials] = useState();
     const [options, setOptions] = useState([])
+    const [personlization,setPersonalization] = useState([])
 
     useEffect(()=> {
         const fetchProduct = async()=>{
@@ -40,11 +42,14 @@ export const ProducelPanelProductUpdate = () => {
                             setImgDisplay(data.data.product.pictures.split(','))
                             setProduct(data.data.product);
                             setOptions(data.data.option)
+                            setPersonalization(data.data.personalization)
                         }
                         else{
                             console.log('else')
                             setImgDisplay(data.data.pictures)
-                            setProduct(data.data);
+                            setProduct(data.data.product);
+                            setOptions(data.data.option);
+                            setPersonalization(data.data.personalization);
                         }
                     }
                 })
@@ -148,12 +153,14 @@ export const ProducelPanelProductUpdate = () => {
             const productDescription = formData.get("productDescription");
             const productSpecification = formData.get("productSpecification");
             const productPrice = formData.get("productPrice");
-            const productQuantity = formData.get("productQuantity");
+            const productQuantityAvailable = formData.get("productQuantityAvailable");
+            const productQuantityReservation = formData.get("productQuantityReservation");
             const producmaterial = formData.get("productMaterial");
             const formOptionObject = options
+            const formPersonalizationObject = personlization
 
             const fetch = async ()=> {                   
-                const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantity,formOptionObject)
+                const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject)
                 if(response){
                     console.log(response)
                     response.json()
@@ -196,6 +203,33 @@ export const ProducelPanelProductUpdate = () => {
         ])
     }
 
+    const addPersonalization =()=> {
+        const uuidPersonalization = uuidv4();
+        setPersonalization([
+            ...personlization,
+            { name: '', detail : '', Id_personalization : uuidPersonalization}
+        ])
+    }
+
+    const handlepersonalizationChange = (e,Id_personalization,obj)=>{
+        const newPersonalization = [...personlization]
+        newPersonalization.forEach((item)=> {
+            console.log(item.Id_personalization)
+            if(item.Id_personalization == Id_personalization){
+                switch(obj){
+                    case 'detail' : item.detail = e;
+                    break;
+                    case 'name' : item.name = e;
+                    break;
+                    case 'price' : item.price = e;
+                    break;
+                }
+            }
+        })
+        setPersonalization(newPersonalization)
+    }
+
+
     const addSubOption = (option)=> {
         console.log(option)
         const updatedOption = [...options]
@@ -210,29 +244,45 @@ export const ProducelPanelProductUpdate = () => {
         setOptions(updatedOption)
     }
 
-    const delsubOption = (option, subOptionId) =>{
-        const updatedOption = [...options]
-        updatedOption.forEach(item => {
-            console.log(item)
-            if (item.Id_option === option.Id_option) {
-                item.subOption = item.subOption.filter(subOpt => subOpt.Id_subOption !== subOptionId);
-            }
-        });
-        setOptions(updatedOption)
+    const delsubOption = async (option, subOptionId) =>{
+        const deleteSubOptionApi = await deleteSubOption(option.Id_option,subOptionId)
+        if(deleteSubOptionApi){
+            const updatedOption = [...options]
+            updatedOption.forEach(item => {
+                console.log(item)
+                if (item.Id_option === option.Id_option) {
+                    item.subOptions = item.subOptions.filter(subOpt => subOpt.Id_subOption !== subOptionId);
+                }
+            });
+            toast.success("SubOptionSupprimé avec succès",{autoClose : 2000});
+            setOptions(updatedOption)
+        }
     }
 
-    const deleteOption = (optionId) =>{
+    const delPresonalization = async(id)=>{
+        console.log(id)
+        const deletePersReq = await deletePersonalizationApi(id)
+        if(deletePersReq){ 
+            const updatedPers = personlization.filter(opt => opt.Id_personalization !== id);
+            toast.success("Personalization Supprimé avec succès",{autoClose : 2000});
+            setPersonalization(updatedPers)
+        } 
+    }
+
+    const delOption = async (optionId) =>{
         console.log(optionId)
-        const updatedOption = options.filter(opt => opt.Id_option !== optionId);
-        console.log(updatedOption)
-        setOptions(updatedOption)
+        const deleteOptionReq = await deleteOption(optionId)
+        if(deleteOptionReq){ 
+            const updatedOption = options.filter(opt => opt.Id_option !== optionId);
+            setOptions(updatedOption)
+        } 
     }
 
 
     const notifySuccessUpload = () => toast.success("Produit mis à jour avec succès",{autoClose : 2000});
     const notifySuccessPicture = () => toast.success("image télécharger avec succès",{autoClose : 2000})
     
-    console.log(options)
+    console.log(product)
     return (
         <>
         <Link to='/myshop'>
@@ -244,13 +294,12 @@ export const ProducelPanelProductUpdate = () => {
         <div>
             <form encType="multipart/form-data" onSubmit={productImages} className="ProducerPanelDropZoneForm">
         <div>
-            Changer l'avatar de votre boutique
         </div>
         <div className="ProducerPanelDropZoneContainer">
         { 
-            imgDisplay !== null && imgDisplay.map((item,index)=>{
+            imgDisplay !== null && imgDisplay?.map((item,index)=>{
             return <img src={product?.pictures &&  Base_URL+item} key={index}/>
-        })    
+            })    
         } 
             <UploadDropZone setFile={setFileProduct} loadUrlImg={setImgURLProducts} imageSet={imgUrlProduct} name='pictures' multiple='ok'/>
             <button type='submit'> Envoyer les images</button>
@@ -278,7 +327,8 @@ export const ProducelPanelProductUpdate = () => {
                 <div id='productUpdateNumberContainer'>
                     <div className='productUpdateInputContainerNumber'>
                         <label>*Matière principale utilisé :</label>
-                        <select className='panelInput' placeholder='Prix du produit' name='productMaterial' defaultValue={product?.Id_material} required>
+                        <select className='panelInput' placeholder='Prix du produit' name='productMaterial' defaultValue={product?.Id_material || "none"} required>
+                        <option value="none">None</option>
                             {materials?.map((item)=>{
                                 return <option  key={item.Id_material} value={item.Id_material} > {item.name}</option>
                             })}
@@ -289,20 +339,23 @@ export const ProducelPanelProductUpdate = () => {
                         <input className='panelInput' type='number' placeholder='Prix du produit' name='productPrice' defaultValue={product?.price} minLength={0} step=".01" required/>
                     </div>
                     <div className='productUpdateInputContainerNumber'>
-                        <label>*quantité : </label>
-                        <input className='panelInput' type='number' placeholder='Quantité disponible' name='productQuantity' defaultValue={product?.quantity} min={0} max={100} required/> 
+                        <label>*quantité disponible : </label>
+                        <input className='panelInput' type='number' placeholder='Quantité disponible' name='productQuantityAvailable' defaultValue={product?.quantity_available} min={0} max={100} required/> 
+                    </div>
+                    <div className='productUpdateInputContainerNumber'>
+                        <label>*quantité réservable : (5 maximum) </label>
+                        <input className='panelInput' type='number' placeholder='Quantité reservable' name='productQuantityReservation' defaultValue={product?.quantity_reservation} min={0} max={5} required/> 
                     </div>
                 </div>
             </div>
             <div>
                 {options.map((item,index)=> {
-                    console.log(item)
                     return <OptionComponent 
                                 props={item} 
                                 key={index} 
                                 indexOption={index} 
                                 nameObject={"option"+ index} 
-                                deleteOption={(optionId)=>deleteOption(optionId) } 
+                                deleteOption={(optionId)=>delOption(optionId) } 
                                 addSubOption={(option)=>addSubOption(option)} 
                                 delSubOption={(option,subOptionId)=>delsubOption(option,subOptionId)}
                                 handlesubOptionChange={(e,idsubOption,obj)=>{handleSubOptionChange(e,idsubOption,obj)}}
@@ -310,7 +363,13 @@ export const ProducelPanelProductUpdate = () => {
                             />
                 })}
             </div>
-            <span onClick={addOption}> Ajouter une option</span>
+            <button type="button" onClick={addOption}> Ajouter une option</button>
+            <div>
+                {personlization.map((item,index)=>{
+                    return <PersonalizationComponent key={index}  nameObject={"personalization"+ index} props={item} handlepersonalizationChange={(e,idper,obj)=>handlepersonalizationChange(e,idper,obj)} deletePersonalization={(id)=>delPresonalization(id)} />
+                })}
+            </div>
+            <button type="button" onClick={addPersonalization}> Ajouter une personalisation</button>
            
             <button className='panelInput' type='submit'> valider </button>
         </form>

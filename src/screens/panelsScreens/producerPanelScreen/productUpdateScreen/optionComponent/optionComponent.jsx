@@ -4,7 +4,6 @@ export const OptionComponent = (props) => {
     const {nameObject} = props
     const {name, Id_option} = props.props
     const subOption = props.props.subOptions
-    console.log(name)
 
     const addSubOptionform = ()=> {
         props.addSubOption(props.props)

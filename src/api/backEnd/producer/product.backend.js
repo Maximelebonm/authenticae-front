@@ -43,7 +43,7 @@ export const getAllProduct = async () => {
     }
 }
 
-export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productPrice,productQuantity,formOptionObject) => {
+export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject) => {
     console.log('update')
     try {
         const response = await ky.put(`${InitRequest()}/product/update/${id}`,{
@@ -53,8 +53,10 @@ export const updateProduct = async (id,productName,productDescription,productSpe
                 specification : productSpecification,
                 Id_material : producmaterial,
                 price : productPrice,
-                quantity : productQuantity,
+                quantity_available : productQuantityAvailable,
+                quantity_reservation : productQuantityReservation,
                 options : formOptionObject,
+                personalization : formPersonalizationObject,
             },
             credentials : 'include',
         })
@@ -81,6 +83,51 @@ export const deleteProduct = async (id) => {
     console.log('passe api', id)
     try {
         const response = await ky.delete(`${InitRequest()}/product/delete/${id}`,{
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const deleteSubOption = async (optionId,subOptionId) => {
+    console.log("api")
+    try {
+        const response = await ky.delete(`${InitRequest()}/option/suboption/delete/${optionId}`,{
+            json : {
+                Id_subOption : subOptionId,
+            },
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const deleteOption = async (optionId) => {
+    console.log("api")
+    try {
+        const response = await ky.delete(`${InitRequest()}/option/delete/${optionId}`,{
+            json : {
+                Id_option : optionId,
+            },
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const deletePersonalizationApi = async (id) => {
+    console.log("api")
+    try {
+        const response = await ky.delete(`${InitRequest()}/personalization/delete/${id}`,{
+            json : {
+                Id_personalization : id,
+            },
             credentials : 'include',
         })
         return response

@@ -3,7 +3,7 @@
     display : flex;
     top : 0;
     left:0;
-    width : 100%;
+    width : 90%;
     justify-content: space-between;
     background: var(--nuance_color2);
     align-items: center;
@@ -12,9 +12,11 @@
     font-weight: bold;
     padding : 0px 0px;
     height : 80px;
+    padding : 0px 5%;
     /* box-shadow:  5px 5px 14px #606060,
                  -5px -5px 14px #ffffff; */
     z-index: 9999;
+ 
     /* text-transform: uppercase; */
 }
 

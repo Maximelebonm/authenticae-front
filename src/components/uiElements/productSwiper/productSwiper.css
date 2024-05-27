@@ -1,0 +1,34 @@
+#swiperContainer{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    width : 60%;
+}
+
+.Swiper{
+    width : 90%;
+    height : auto;
+    margin : 10px;
+}
+
+
+.productSwiperMain{
+    width : 90%;
+    height : 600px;
+    border-radius: 25px;
+    object-fit: cover;
+}
+.SwiperNav{
+    width : 60px;
+    height : 575px;
+}
+.productSwiperThumb {
+    width : 50px;
+    height : 50px;
+    border-radius: 15px;
+    object-fit:cover;
+    &:hover{
+        cursor: pointer;
+        transition: 200ms;
+    }
+}

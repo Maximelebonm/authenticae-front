@@ -1,4 +1,22 @@
+.productContainer{
+    display : flex
+}
+
 .productScreenImage{
     width : 150px;
     height : auto;
+}
+.productInfoContainer{
+    width : 40%;
+    text-align: start;
+}
+.productOption{
+    font-size: larger;
+    width : 90%;
+    border-radius: 10px;
+    color : black;
+    background-color: var(--white_only);
+    &>option{
+        background-color: var(--white_only);
+    }
 }
