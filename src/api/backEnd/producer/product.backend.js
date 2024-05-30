@@ -136,9 +136,12 @@ export const deletePersonalizationApi = async (id) => {
     }
 }
 
-export const archivePictureApi = async(id)=> {
+export const archivePictureApi = async(id,Id_product)=> {
     try {
         const response = await ky.put(`${InitRequest()}/product/archivePicture/${id}`,{
+            json : {
+                Id_product : Id_product,
+            },
             credentials : 'include',
         })
         return response
@@ -147,13 +150,46 @@ export const archivePictureApi = async(id)=> {
     }
 }
 
-export const deletePictureApi = async (id,name,pseudo) => {
+export const downPictureApi = async(Id_product_image,order,Id_product)=> {
+    try {
+        const response = await ky.put(`${InitRequest()}/product/downPicture/${Id_product_image}`,{
+            json : {
+                Id_product_image : Id_product_image,
+                order : order,
+                Id_product : Id_product,
+            },
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const upPictureApi = async(Id_product_image,order,Id_product)=> {
+    try {
+        const response = await ky.put(`${InitRequest()}/product/upPicture/${Id_product_image}`,{
+            json : {
+                Id_product_image : Id_product_image,
+                order : order,
+                Id_product : Id_product,
+            },
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const deletePictureApi = async (id,name,pseudo,Id_product) => {
     console.log('api')
     try {
         const response = await ky.delete(`${InitRequest()}/product/deletePicture/${id}`,{
             json : {
                 name : name,
-                pseudo : 'MaxUnluck'
+                pseudo : pseudo,
+                Id_product : Id_product,
             },
             credentials : 'include',
         })

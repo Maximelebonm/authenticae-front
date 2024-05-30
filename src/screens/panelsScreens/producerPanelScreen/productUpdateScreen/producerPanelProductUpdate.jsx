@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { CheckUpdatePictureApi, archivePictureApi, deleteOption, deletePersonalizationApi, deletePictureApi, deleteProduct, deleteSubOption, getProduct, getProductAndOption, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
+import { CheckUpdatePictureApi, archivePictureApi, deleteOption, deletePersonalizationApi, deletePictureApi, deleteProduct, deleteSubOption, downPictureApi, getProduct, getProductAndOption, upPictureApi, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
 import { useParams } from 'react-router-dom';
 import { useState } from "react";
 import './productUpdateScreen.css'
@@ -12,7 +12,8 @@ import { Link } from "react-router-dom";
 import { OptionComponent } from "./optionComponent/optionComponent";
 import { v4 as uuidv4 } from 'uuid';
 import { PersonalizationComponent } from "./personalizationComponent/personalizationComponent";
-import { Trash2,Archive  } from 'lucide-react';
+import { Trash2,Archive,ChevronLeft,ChevronRight  } from 'lucide-react';
+import { decodeCookies } from "../../../../helpers/decodeToken";
 
 export const ProducelPanelProductUpdate = () => {
     const {id} = useParams()
@@ -27,6 +28,7 @@ export const ProducelPanelProductUpdate = () => {
     const [options, setOptions] = useState([])
     const [personlization,setPersonalization] = useState([])
     const navigate = useNavigate()
+    const cookie = decodeCookies(document.cookie)  
 
     useEffect(()=> {
         const fetchProduct = async()=>{
@@ -66,7 +68,7 @@ export const ProducelPanelProductUpdate = () => {
         const form = e.target
         const formData = new FormData(form);
         const name = formData.get("pictures");
-        console.log(fileProduct.length)
+        console.log(fileProduct)
         console.log(name)
         if(name.size > 0){
             const check = await CheckUpdatePictureApi(product.Id_product,fileProduct.length)
@@ -176,22 +178,28 @@ export const ProducelPanelProductUpdate = () => {
             const producmaterial = formData.get("productMaterial");
             const formOptionObject = options
             const formPersonalizationObject = personlization
-
-            const fetch = async ()=> {                   
-                const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject)
-                if(response){
-                    console.log(response)
-                    response.json()
-                    .then((data)=>{
-                    console.log(data)
-                        if(data.message === 'product updated'){
-                            setUpdatePage(!updatePage);
-                            notifySuccessUpload()
-                        }
-                    })
+            console.log(producmaterial)
+            if(producmaterial != 'none'){
+                
+                const fetch = async ()=> {                   
+                    const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject)
+                    if(response){
+                        console.log(response)
+                        response.json()
+                        .then((data)=>{
+                        console.log(data)
+                            if(data.message === 'product updated'){
+                                setUpdatePage(!updatePage);
+                                notifySuccessUpload()
+                            }
+                        })
+                    }
                 }
+                fetch() 
             }
-            fetch() 
+            else {
+                toast.error('Veuillez selectionner une matière utilisé', {autoClose : 2000})
+            }
         } catch (error) {
             console.log(error)
         }
@@ -295,7 +303,7 @@ export const ProducelPanelProductUpdate = () => {
     }
 
     const archivePicture = async (id) => {
-        const response = await archivePictureApi(id)
+        const response = await archivePictureApi(id,product.Id_product)
         if(response){
             console.log(response)
             response.json()
@@ -311,13 +319,47 @@ export const ProducelPanelProductUpdate = () => {
     }
 
     const deletePicture = async (id,name) => {
-        const response = await deletePictureApi(id,name)
+        const response = await deletePictureApi(id,name,cookie.identifiant,product.Id_product)
         if(response){
             console.log(response)
             response.json()
             .then((data)=> {
                 if(data.message == 'image deleted'){
                     toast.success('Photo supprimé vous pouvez en ajouter de nouvelle', {autoClose : 2000})
+                } else {
+                    toast.error('une erreur est survenue', {autoClose : 2000})
+                }
+                setUpdatePage(!updatePage)
+            })
+        }
+    }
+
+    const downPicture = async(Id_product_image, order)=>{
+   
+        const downedPicture = await downPictureApi(Id_product_image,order,product.Id_product)
+        if(downedPicture){
+            downedPicture.json()
+            .then((data)=> {
+                console.log(data.message)
+                if(data.message == 'image down'){
+                    toast.success('photo deplacé', {autoClose : 2000})
+                } else {
+                    toast.error('une erreur est survenue', {autoClose : 2000})
+                }
+                setUpdatePage(!updatePage)
+            })
+        }
+    }
+
+    const upPicture = async(Id_product_image, order)=>{
+   
+        const upedPicture = await upPictureApi(Id_product_image,order,product.Id_product)
+        if(upedPicture){
+            upedPicture.json()
+            .then((data)=> {
+                console.log(data.message)
+                if(data.message == 'image up'){
+                    toast.success('photo deplacé', {autoClose : 2000})
                 } else {
                     toast.error('une erreur est survenue', {autoClose : 2000})
                 }
@@ -349,12 +391,16 @@ export const ProducelPanelProductUpdate = () => {
             { 
                 imgDisplay !== null && imgDisplay?.map((item,index)=>{
                 return (
-                    <div className='producerPanelDisplayContainerItems'>
-                        <img className="producerPanelDisplayImage" src={Base_URL+item.storage} key={index}/>
+                    <div className='producerPanelDisplayItemContainer' key={index}>
+                    {index > 0 && <button className="producerPanelArrowButton" type="button"  onClick={()=>upPicture(item.Id_product_image,item.order)}><ChevronLeft className='displayArrowIconLeft'/></button>}
+                    <div className='producerPanelDisplayImageContainer'>
+                        <img className="producerPanelDisplayImage" src={Base_URL+item.storage} />
                         <div className='producerPanelDisplayButtonContainer'>
                             <button className="producerPanelDisplayButton" type="button"  onClick={()=>deletePicture(item.Id_product_image,item.name)}><Trash2 className='displayIcon'/></button>
-                            <button className="producerPanelDisplayButton" type="button" onClick={()=>archivePicture(item.Id_product_image)} ><Archive /></button>
+                            <button className="producerPanelDisplayButton" type="button" onClick={()=>archivePicture(item.Id_product_image)} ><Archive className='displayIcon'/></button>
                         </div>
+                    </div>
+                    {index < 7 && <button className="producerPanelArrowButton" type="button" onClick={()=>downPicture(item.Id_product_image,item.order)} ><ChevronRight className='displayArrowIconroght'/></button>}
                     </div>
                     )
                 })    

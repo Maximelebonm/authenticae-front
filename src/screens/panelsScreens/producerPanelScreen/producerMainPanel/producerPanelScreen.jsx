@@ -184,9 +184,10 @@ return(
     </Link>
     <div id='ProducerPanelProductsContainer'>
         {product?.map((item,index)=>{
+            const mainPicture = item.productImages.find((item)=> item.order == 0)
             return (
                 <Link to={`/myshop/product/${item.Id_product}`} key={index}>
-                    <ProductCard props={item} key={index}/>   
+                    <ProductCard props={item} picture={mainPicture} key={index}/>   
                 </Link>
             )
         })}

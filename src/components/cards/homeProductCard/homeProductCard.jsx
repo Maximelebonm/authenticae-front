@@ -3,28 +3,11 @@ import logo from '../../../assets/logos/logo_authenticae_blanc.png';
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-export const HomeProductCards = ({props}) => {
-    const [picturesSplited,setPicturessplited] = useState() 
+export const HomeProductCards = ({props,picture}) => {
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK
 
-    const {name,price,pictures} = props
+    const {name,price} = props
 
-    useEffect(()=>{
-        if(pictures){
-            if(pictures.split(',').length > 0){
-                console.log( pictures.split(',').length)
-                setPicturessplited(pictures.split(','))
-            }
-            else{
-                setPicturessplited(pictures)
-            }
-
-        }
-
-    },[])
-
-
-    console.log(pictures)
     return (
         <div className='homeProductCardsContainer'>
         <div className='homeProductTextHover'>
@@ -40,7 +23,7 @@ export const HomeProductCards = ({props}) => {
 
         </div>
             <div className='homeProductPicturesContainer'>
-                <img className='homeProductPictures' src={picturesSplited ? Base_URL+picturesSplited[0] : logo}/>
+                <img className='homeProductPictures' src={ picture?.storage ? Base_URL+ picture.storage : logo}/>
             </div>
         </div>
     )

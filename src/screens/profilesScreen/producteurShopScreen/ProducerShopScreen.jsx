@@ -55,10 +55,10 @@ export const ProducerShopScreen = (props) => {
             <section id="profileArticle">
             <div id='ProducerPanelProductsContainer'>
             {product?.map((item,index)=>{
-                console.log(item)
+                const mainPicture = item.productImages.find((item)=> item.order == 0)
                 return (
-                    <Link to={`/product/${item.Id_product}`}>
-                        <ProductCard props={item} key={index}/>   
+                    <Link to={`/product/${item.Id_product}`} key={index}>
+                        <ProductCard props={item} key={index} picture={mainPicture} />   
                     </Link>
                 )
             })}
