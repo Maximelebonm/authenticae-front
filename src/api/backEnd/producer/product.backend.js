@@ -92,7 +92,7 @@ export const deleteProduct = async (id) => {
 }
 
 export const deleteSubOption = async (optionId,subOptionId) => {
-    console.log("api")
+    console.log(optionId)
     try {
         const response = await ky.delete(`${InitRequest()}/option/suboption/delete/${optionId}`,{
             json : {
@@ -107,7 +107,7 @@ export const deleteSubOption = async (optionId,subOptionId) => {
 }
 
 export const deleteOption = async (optionId) => {
-    console.log("api")
+    console.log(optionId)
     try {
         const response = await ky.delete(`${InitRequest()}/option/delete/${optionId}`,{
             json : {
@@ -122,11 +122,53 @@ export const deleteOption = async (optionId) => {
 }
 
 export const deletePersonalizationApi = async (id) => {
-    console.log("api")
+    console.log(id)
     try {
         const response = await ky.delete(`${InitRequest()}/personalization/delete/${id}`,{
             json : {
                 Id_personalization : id,
+            },
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const archivePictureApi = async(id)=> {
+    try {
+        const response = await ky.put(`${InitRequest()}/product/archivePicture/${id}`,{
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const deletePictureApi = async (id,name,pseudo) => {
+    console.log('api')
+    try {
+        const response = await ky.delete(`${InitRequest()}/product/deletePicture/${id}`,{
+            json : {
+                name : name,
+                pseudo : 'MaxUnluck'
+            },
+            credentials : 'include',
+        })
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const CheckUpdatePictureApi = async (id,numberOfUpload) => {
+    console.log('passe api', id, numberOfUpload)
+    try {
+        const response = await ky.post(`${InitRequest()}/product/checkUploadPictures/${id}`,{
+            json : {
+                numberOfUpload : numberOfUpload,
             },
             credentials : 'include',
         })

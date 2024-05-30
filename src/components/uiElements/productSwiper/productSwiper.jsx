@@ -13,14 +13,14 @@ export const ProductSwiper = (props) => {
     const swiper = useSwiper();
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK
     const pictures = props.props
-    console.log(pictures)
+    // console.log(pictures)
 
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
     return (
         <div id="swiperContainer">
             <Swiper
-                spaceBetween={10}
+                spaceBetween={0}
                 // slidesPerView={1}
                 coverflowEffect={{
                     slideShadows : true
@@ -37,13 +37,12 @@ export const ProductSwiper = (props) => {
                 thumbs={{
                     swiper : thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null
                 }}
-            
             >
             {
                 pictures?.map((item,index)=>{
                     return (
-                        <SwiperSlide>
-                            <img src={Base_URL + item} className="productSwiperMain"/>
+                        <SwiperSlide key={index} >
+                            <img src={Base_URL + item.storage} className="productSwiperMain"/>
                         </SwiperSlide>
                     )
                 })
@@ -51,7 +50,7 @@ export const ProductSwiper = (props) => {
             </Swiper>
             <Swiper
                 onSwiper={setThumbsSwiper}
-                spaceBetween={10}
+                spaceBetween={0}
                 slidesPerView={8}
                 freeMode={true}
                 watchSlidesProgress={true}
@@ -63,7 +62,7 @@ export const ProductSwiper = (props) => {
              {
                 pictures?.map((item,index)=>{
                 return <SwiperSlide key={index} className="productSwiperThumb">
-                    <img src={Base_URL + item}  className="productSwiperThumb"/>
+                    <img src={Base_URL + item.storage}  className="productSwiperThumb"/>
                 </SwiperSlide>
                 })
             }

@@ -1,5 +1,6 @@
 .productContainer{
-    display : flex
+    display : flex;
+    padding-top: 10px;
 }
 
 .productScreenImage{
@@ -9,6 +10,7 @@
 .productInfoContainer{
     width : 40%;
     text-align: start;
+    padding-top: 10px;
 }
 .productOption{
     font-size: larger;
@@ -19,4 +21,11 @@
     &>option{
         background-color: var(--white_only);
     }
+}
+
+.ProductpersonalizationInput{
+    background-color: var(--white_only);
+    min-height : 10px;
+    width: 90%;
+    border-radius : 15px;
 }

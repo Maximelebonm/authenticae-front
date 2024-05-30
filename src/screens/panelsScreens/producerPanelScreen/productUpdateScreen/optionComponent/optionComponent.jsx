@@ -2,7 +2,8 @@ import "./optionComponent.css"
 
 export const OptionComponent = (props) => {
     const {nameObject} = props
-    const {name, Id_option} = props.props
+    const {name, Id_product_option} = props.props
+    console.log(Id_product_option)
     const subOption = props.props.subOptions
 
     const addSubOptionform = ()=> {
@@ -10,7 +11,7 @@ export const OptionComponent = (props) => {
     }
 
     const handleOptionChange = (e) => {
-        props.handleOptionChange(e,Id_option)
+        props.handleOptionChange(e,Id_product_option)
     }
 
     const handleSubOptionChange = (e, Id_subOption,obj) => {
@@ -22,7 +23,7 @@ export const OptionComponent = (props) => {
     };
 
     const delOption = ()=>{
-        props.deleteOption(Id_option)
+        props.deleteOption(Id_product_option)
     }
 
     return (

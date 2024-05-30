@@ -1,6 +1,5 @@
 .productUpdateInputContainer{
     width : 300px;
-
     & > span {
         color : red
     }
@@ -24,13 +23,44 @@
     background-color: var(--nuance_color3);
     box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.2);
     border-radius: 25px;
-    padding : 20px;
-
-  
+    padding : 20px; 
+}
+.ProducerPanelDropZoneContainer{
+    width : 100%;
+    margin-bottom: 30px;
+}
+.ProducerPanelDisplayContainer{
+    width : 100%;
+    display : grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colonnes */
+    grid-template-rows: repeat(2, 1fr);    /* 2 lignes */
+    gap: 10px;
+    
+}
+.producerPanelDisplayContainerItems{
+    position: relative;
+    width : 150px;
+    height : 150px;
+}
+.producerPanelDisplayImage{
+    width : 150px;
+    height : 150px;
+    margin : 0px;
+    object-fit:cover;
 }
 
-#productPanelformContainer{
-    /* display : flex; */
+.producerPanelDisplayButtonContainer{
+    display : flex;
+    position : absolute;
+    bottom: 0px;
+    &>button {
+        border-radius: 0px;
+        padding : 3px;
+        margin : 0px 0px;
+        width : 75px;
+        height : 30px;
+    }
+   
 }
 #productUpdateFirst{
     display : flex;

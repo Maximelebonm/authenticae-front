@@ -16,7 +16,7 @@
   --primary_color : #DBC7AC;
   --nuance_color3 : #86735B;
   --nuance_color4 : #b39e82;
-
+  --nuance_color5 : #b39e82;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -32,6 +32,7 @@
   --primary_color : #4d4d4d;
   --nuance_color3 : #535353;
   --nuance_color4 : #6b6b6b;
+  --nuance_color5 : #949494;
   --font_color : rgb(255, 255, 255);
   --link_color : rgb(255, 255, 255);
   --title_color : rgb(255, 255, 255);
@@ -95,7 +96,7 @@ input {
   height :30px;
   width : 100%;
   border : 2px rgba(0, 0, 0, 0);
-  background-color: var(--nuance_color4);
+  background-color: var(--nuance_color5);
   color : black;
   outline: none;
   &:valid {

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { deleteOption, deletePersonalizationApi, deleteProduct, deleteSubOption, getProduct, getProductAndOption, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
+import { CheckUpdatePictureApi, archivePictureApi, deleteOption, deletePersonalizationApi, deletePictureApi, deleteProduct, deleteSubOption, getProduct, getProductAndOption, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
 import { useParams } from 'react-router-dom';
 import { useState } from "react";
 import './productUpdateScreen.css'
@@ -12,8 +12,7 @@ import { Link } from "react-router-dom";
 import { OptionComponent } from "./optionComponent/optionComponent";
 import { v4 as uuidv4 } from 'uuid';
 import { PersonalizationComponent } from "./personalizationComponent/personalizationComponent";
-
-
+import { Trash2,Archive  } from 'lucide-react';
 
 export const ProducelPanelProductUpdate = () => {
     const {id} = useParams()
@@ -27,6 +26,7 @@ export const ProducelPanelProductUpdate = () => {
     const [materials,setMaterials] = useState();
     const [options, setOptions] = useState([])
     const [personlization,setPersonalization] = useState([])
+    const navigate = useNavigate()
 
     useEffect(()=> {
         const fetchProduct = async()=>{
@@ -37,21 +37,12 @@ export const ProducelPanelProductUpdate = () => {
                 response.json()
                 .then(data=>{
                     if(data.message == 'product geted'){
-                        console.log(data)
-                        if(data.data.product.pictures){
-                            setImgDisplay(data.data.product.pictures.split(','))
-                            setProduct(data.data.product);
-                            setOptions(data.data.option)
-                            setPersonalization(data.data.personalization)
-                        }
-                        else{
-                            console.log('else')
-                            setImgDisplay(data.data.pictures)
+                        console.log(data.data)
+                            setImgDisplay(data.data.images)
                             setProduct(data.data.product);
                             setOptions(data.data.option);
                             setPersonalization(data.data.personalization);
                         }
-                    }
                 })
             }
         }
@@ -75,25 +66,52 @@ export const ProducelPanelProductUpdate = () => {
         const form = e.target
         const formData = new FormData(form);
         const name = formData.get("pictures");
-        console.log(name.size)
+        console.log(fileProduct.length)
+        console.log(name)
         if(name.size > 0){
-            const response = await updatePicturesProduct(product.Id_product,formData)
-            setUpdatePage(!updatePage);
-            notifySuccessPicture();
+            const check = await CheckUpdatePictureApi(product.Id_product,fileProduct.length)
+            if(check){
+                check.json()
+                .then(async(data)=>{
+                    if(data.message == "upload autorisé"){
+                        const response = await updatePicturesProduct(product.Id_product,formData)
+                        if(response){
+                            response.json()
+                            .then((data)=>{
+                                console.log(data.message)
+                                if(data.message === "trop d'image")
+                                    {
+                                        console.log(data)
+                                        toast.error("veuillez archiver ou supprimer des images", {autoClose : 2000})
+                                    }
+                                    else {
+                                        setUpdatePage(!updatePage);
+                                        notifySuccessPicture();
+                                    }
+                                })
+                            }
+                    } else {
+                        toast.error("veuillez archiver ou supprimer des images", {autoClose : 2000})
+                    }
+                })
+            }
+        } else {
+            toast.error('Pas plus de 8 images',{autoClose : 2000})
         }
     }
 
     const handleChange = (e) =>{
         console.log(e)
         const input = e.target;
-        const myRegex = /^[a-zA-Z0-9-\s]+$/
+        const myRegex = /^[a-zA-Z0-9-\sàáâäãåçèéêëìíîïñòóôöõùúûüýÿÀÁÂÄÃÅÇÈÉÊËÌÍÎÏÑÒÓÔÖÕÙÚÛÜÝŸ,."'\-!?]+$/
         const Error = input.nextElementSibling;
-        console.log(input.type)
+        // console.log(input.type)
         if(input.type === "text"){
             if(input.value === ""){
                 Error.innerHTML = "ecrire un nom de produit"
             }
             else if(myRegex.test(input.value)=== false){
+                console.log(input.value)
                 Error.innerHTML = "le nom doit comporter des lettre et tirer uniquement"
             }
             else{
@@ -109,7 +127,7 @@ export const ProducelPanelProductUpdate = () => {
         const newOption = [...options]
         newOption.forEach((item)=> {
             console.log(item.Id_option)
-            if(item.Id_option == Id_option){
+            if(item.Id_product_option == Id_option){
                 item.name = e
             }
         })
@@ -179,8 +197,6 @@ export const ProducelPanelProductUpdate = () => {
         }
     }
 
-    const navigate = useNavigate()
-
     const deleteP = async () => {
         const response = await deleteProduct(product.Id_product)
         response.json()
@@ -245,12 +261,12 @@ export const ProducelPanelProductUpdate = () => {
     }
 
     const delsubOption = async (option, subOptionId) =>{
-        const deleteSubOptionApi = await deleteSubOption(option.Id_option,subOptionId)
+        const deleteSubOptionApi = await deleteSubOption(option.Id_product_option,subOptionId)
         if(deleteSubOptionApi){
             const updatedOption = [...options]
             updatedOption.forEach(item => {
                 console.log(item)
-                if (item.Id_option === option.Id_option) {
+                if (item.Id_product_option === option.Id_product_option) {
                     item.subOptions = item.subOptions.filter(subOpt => subOpt.Id_subOption !== subOptionId);
                 }
             });
@@ -273,16 +289,49 @@ export const ProducelPanelProductUpdate = () => {
         console.log(optionId)
         const deleteOptionReq = await deleteOption(optionId)
         if(deleteOptionReq){ 
-            const updatedOption = options.filter(opt => opt.Id_option !== optionId);
+            const updatedOption = options.filter(opt => opt.Id_product_option !== optionId);
             setOptions(updatedOption)
         } 
+    }
+
+    const archivePicture = async (id) => {
+        const response = await archivePictureApi(id)
+        if(response){
+            console.log(response)
+            response.json()
+            .then((data)=> {
+                if(data.message == 'archived'){
+                    toast.success('Photo archivé vous pouvez en ajouter de nouvelle', {autoClose : 2000})
+                } else {
+                    toast.error('une erreur est survenue', {autoClose : 2000})
+                }
+                setUpdatePage(!updatePage)
+            })
+        }
+    }
+
+    const deletePicture = async (id,name) => {
+        const response = await deletePictureApi(id,name)
+        if(response){
+            console.log(response)
+            response.json()
+            .then((data)=> {
+                if(data.message == 'image deleted'){
+                    toast.success('Photo supprimé vous pouvez en ajouter de nouvelle', {autoClose : 2000})
+                } else {
+                    toast.error('une erreur est survenue', {autoClose : 2000})
+                }
+                setUpdatePage(!updatePage)
+            })
+        }
     }
 
 
     const notifySuccessUpload = () => toast.success("Produit mis à jour avec succès",{autoClose : 2000});
     const notifySuccessPicture = () => toast.success("image télécharger avec succès",{autoClose : 2000})
     
-    console.log(product)
+    console.log(imgDisplay)
+    
     return (
         <>
         <Link to='/myshop'>
@@ -296,12 +345,22 @@ export const ProducelPanelProductUpdate = () => {
         <div>
         </div>
         <div className="ProducerPanelDropZoneContainer">
-        { 
-            imgDisplay !== null && imgDisplay?.map((item,index)=>{
-            return <img src={product?.pictures &&  Base_URL+item} key={index}/>
-            })    
-        } 
-            <UploadDropZone setFile={setFileProduct} loadUrlImg={setImgURLProducts} imageSet={imgUrlProduct} name='pictures' multiple='ok'/>
+        <div className="ProducerPanelDisplayContainer">
+            { 
+                imgDisplay !== null && imgDisplay?.map((item,index)=>{
+                return (
+                    <div className='producerPanelDisplayContainerItems'>
+                        <img className="producerPanelDisplayImage" src={Base_URL+item.storage} key={index}/>
+                        <div className='producerPanelDisplayButtonContainer'>
+                            <button className="producerPanelDisplayButton" type="button"  onClick={()=>deletePicture(item.Id_product_image,item.name)}><Trash2 className='displayIcon'/></button>
+                            <button className="producerPanelDisplayButton" type="button" onClick={()=>archivePicture(item.Id_product_image)} ><Archive /></button>
+                        </div>
+                    </div>
+                    )
+                })    
+            } 
+        </div>
+            <UploadDropZone setFile={(files)=>{setFileProduct(files)}} loadUrlImg={setImgURLProducts} imageSet={imgUrlProduct} name='pictures' multiple='ok' maxImages={8} />
             <button type='submit'> Envoyer les images</button>
         </div>
         </form>

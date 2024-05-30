@@ -2,8 +2,10 @@ import { useState } from 'react';
 import './uploadDropZone.css'
 import { useRef } from 'react';
 import { Upload } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
 
-export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple})=> {
+
+export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple,maxImages})=> {
     const [isDraggingOver,setIsDraggingOver]= useState(false)
     const fileInputRef = useRef(null);
     
@@ -16,7 +18,7 @@ export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple})=> 
         const imgUrl = URL.createObjectURL(file)
         loadImg(imgUrl)
         setFile(file);
-      };
+    };
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -25,30 +27,31 @@ export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple})=> 
 
     const handleDragLeave = () => {
         setIsDraggingOver(false);
-      };
+    };
 
     const handleFileInput = (e) => {
         const files = e.target.files;
-        console.log('un seul')
-            const file = files[0]
-            const imgUrl = URL.createObjectURL(file)
-            loadUrlImg(imgUrl)
-            setFile(file)
-
-
-        ;
+        const file = files[0]
+        const imgUrl = URL.createObjectURL(file)
+        loadUrlImg(imgUrl)
+        setFile(file)
     };
 
     const handleProductFilesInput = (e)=>{
         const files = e.target.files;
-        const ImgUrltab = [];
-        for(let i=0; i< files.length; i++){
-            const file = files[i]
-            ImgUrltab.push(URL.createObjectURL(file))
+        console.log(files)
+        if(files.length <= maxImages){
+            const ImgUrltab = [];
+            for(let i=0; i< files.length; i++){
+                const file = files[i]
+                ImgUrltab.push(URL.createObjectURL(file))
+            }
+            console.log(ImgUrltab)
+            loadUrlImg(ImgUrltab)
+            setFile(files)
+        } else {
+            toast.error(`Maximum ${maxImages} images téléchargeable `,{autoClose : 2000})
         }
-        console.log(ImgUrltab)
-        loadUrlImg(ImgUrltab)
-        setFile(files)
     }
     
     return(

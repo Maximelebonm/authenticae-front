@@ -13,13 +13,13 @@
 
 
 .productSwiperMain{
-    width : 90%;
+    width : 600px;
     height : 600px;
     border-radius: 25px;
     object-fit: cover;
 }
 .SwiperNav{
-    width : 60px;
+    width : 55px;
     height : 575px;
 }
 .productSwiperThumb {
