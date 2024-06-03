@@ -1,17 +1,18 @@
-import "./optionComponent.css"
+import "./optionComponent.css";
+import { Trash2,Archive,ChevronLeft,ChevronRight  } from 'lucide-react';
 
 export const OptionComponent = (props) => {
     const {nameObject} = props
-    const {name, Id_product_option} = props.props
-    console.log(Id_product_option)
+    const {name, Id_product_option,optionActive} = props.props
+    console.log(optionActive)
     const subOption = props.props.subOptions
 
     const addSubOptionform = ()=> {
         props.addSubOption(props.props)
     }
 
-    const handleOptionChange = (e) => {
-        props.handleOptionChange(e,Id_product_option)
+    const handleOptionChange = (e,obj) => {
+        props.handleOptionChange(e,Id_product_option,obj)
     }
 
     const handleSubOptionChange = (e, Id_subOption,obj) => {
@@ -28,10 +29,18 @@ export const OptionComponent = (props) => {
 
     return (
         <div className='optionContainer'>
-                <label>Nom de l'option :  </label>
-                <input name={nameObject} type='text' value={name} onChange={(e)=>handleOptionChange(e.target.value)} className='optionInput' required/>
+                <div className='optionTopContainer'>
+                    <div className='optionInputContainer'>
+                        <label>Nom de l'option :  </label>
+                        <input name={nameObject} type='text' value={name} onChange={(e)=>handleOptionChange(e.target.value,'name')} className='optionInput' required/>
+                    </div>
+                    <div  id="optionInputCheckBox" >
+                        <label> option disponible : </label>
+                        <input type='checkbox' name={`${nameObject}[available]`} checked={optionActive} onChange={(e)=>handleOptionChange(e.target.checked,'available')}/>
+                    </div>
+                </div>
                 <div>
-                <div>
+                <div className='subOptionsContainer'>
                 {subOption.map((item, index) => (
                     <div key={index}>
                         <div className="subOptioncontainer">
@@ -45,7 +54,7 @@ export const OptionComponent = (props) => {
                             />
                         </div>
                         <div className="subOptionPricecontainer">
-                            <label>Prix de l'option</label>
+                            <label>Prix</label>
                             <input
                                 required
                                 name={`${nameObject}[subOption${index}][price]`}
@@ -55,22 +64,34 @@ export const OptionComponent = (props) => {
                             />
                         </div>
                         <div className="subOptionQuantitycontainer">
-                            <label>Quantité</label>
+                            <label>Quantité Disponible</label>
                             <input
                                 required
                                 name={`${nameObject}[subOption${index}][quantity]`}
                                 type='number'
-                                value={item?.quantity}
-                                onChange={(e) => handleSubOptionChange(e.target.value,item.Id_subOption,'quantity')}
+                                value={item?.quantity_available}
+                                onChange={(e) => handleSubOptionChange(e.target.value,item.Id_subOption,'quantity_available')}
                             />
                         </div>
-                        <button type="button" onClick={() => delSubOption(item.Id_subOption)}>supprimer</button>
+                        <div className="subOptionQuantitycontainer">
+                            <label>Quantité Reservable</label>
+                            <input
+                                required
+                                name={`${nameObject}[subOption${index}][quantity]`}
+                                type='number'
+                                value={item?.quantity_reservation}
+                                onChange={(e) => handleSubOptionChange(e.target.value,item.Id_subOption,'quantity_reservation')}
+                            />
+                        </div>
+                        <button className='optionButton' type="button" onClick={() => delSubOption(item.Id_subOption)}> <Trash2/> </button>
                         </div>
                     </div>
                 ))}
                 </div>
-                <button type="button" onClick={delOption}> supprimer une option</button>
-                <button type="button" onClick={addSubOptionform}>+</button>
+                <div>
+                <button className='optionButton' type="button" onClick={addSubOptionform}>+ ajouter une sous option</button>
+                </div>
+                <button className='optionButton' type="button" onClick={delOption}> <Trash2/> </button>
                 </div>
         </div>
     )

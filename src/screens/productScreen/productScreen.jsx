@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useState } from "react";
 import './productScreen.css'
 import { ProductSwiper } from "../../components/uiElements/productSwiper/productSwiper";
+import { ToastContainer, toast } from 'react-toastify';
 
 export const ProductScreen = () => {
     const {id} = useParams()
@@ -127,56 +128,143 @@ export const ProductScreen = () => {
         }
     }
 
+    const selectedChange = () => {
+
+    }
+
+    const handleSubmit = (e)=>{
+        try {
+            e.preventDefault()
+            const form = e.target
+            const elements = e.target.elements
+            const formData = new FormData(form);
+
+            const quantitySelected = formData.get("quandtitySeleted");  
+            const quantityReserved = formData.get("quandtityReservé");
+
+            console.log(quantitySelected)
+            if(quantityReserved >0 && quantitySelected>0) {
+                toast.error('vous ne pouvez pas reserver et selectionner un article en même temps', {autoclose : 2000})
+            } else {
+                const fetch = async ()=> {                   
+                    const response = await updateCart(product.product.Id_product,quantitySelected,quantityReserved,price)
+                    if(response){
+                        console.log(response)
+                        response.json()
+                        .then((data)=>{
+                        console.log(data)
+                            if(data.message === 'product updated'){
+                                
+                                
+                            }
+                        })
+                    }
+                }
+                fetch() 
+            }
+            
+            
+        } catch (error) {
+            
+        }
+    }
+
     console.log(selectedProduct)
 
     return (
         <>
-        {product?.product && 
-        <div className='productContainer'>
-            <ProductSwiper props={imgDisplay}/>
-            { product.option &&   
-            <div className="productInfoContainer">
-            <h2>
-                {price.finalPrice || price.mainPrice}€
-            </h2>   
-            <h2>
-                {product?.product.name}
-            </h2> 
-            <p>
-                {product?.product.description}
-            </p>
-            <p>
-                {product?.product.detail}
-            </p>
-                {product.option.map((item,index)=>{
-                    {/* console.log(item) */}
-                   return(
-                    <div key={index}>
-                    <div> {item.name} </div>
-                        <select className='productOption' onChange={(e)=>handleOptionChange(e,item.Id_option)}>
-                            <option value="none">Selectionner une option</option>
-                            {item.subOptions.map((subItem,subIndex)=>{
-                                return <option key={subIndex} value={JSON.stringify(subItem)} > {subItem.detail + ' (+ ' + subItem.price + '€)'}</option>
-                            })}
-                        </select>      
-                   </div>
-                   )
-                })}
-                {product.personalization.map((item,index)=>{
-                   return(
-                    <div key={index}>
-                        <div>{item.name}</div>
-                        <div>{item.detail}</div>
-                        <div>Prix de la personalisation : {item.price} € </div>
-                        <textarea className="ProductpersonalizationInput" onChange={(e)=>handlePersonalizationChange(e,item)}></textarea>
-                   </div>
-                   )
-                })}
-            </div>                 
-        }
-        </div>
-        }
-
+            <ToastContainer/>
+            {product?.product && 
+            <div className='productContainer'>
+                <ProductSwiper props={imgDisplay}/>
+                { product.option &&   
+                <div className="productInfoContainer">
+                <h2>
+                    {price.finalPrice || price.mainPrice}€
+                </h2>   
+                <h2>
+                    {product?.product.name}
+                </h2> 
+                <p>
+                    {product?.product.description}
+                </p>
+                <p>
+                    {product?.product.detail}
+                </p>
+                <form onSubmit={handleSubmit}>
+                    {
+                        product?.product.quantity_available > 0 ?
+                        <>
+                            Quantité disponible : {product?.product.quantity_available}
+                            <select className='productOption' name='quandtitySeleted'>
+                                <option value="none">choisir une quantité</option>
+                                {
+                                    Array.from({ length: product?.product.quantity_available + 1 }).map((_, i) => (
+                                        <option key={i} value={i}>{i}</option>
+                                    ))
+                                }
+                            </select>
+                        </> 
+                        : 
+                        <>
+                            Quantité réservable : {product?.product.quantity_reservation}    
+                            <select className='productOption' name='quandtityReservé'>
+                                <option value="none">choisir une quantité</option>
+                                {
+                                    Array.from({ length: product?.product.quantity_reservation + 1 }).map((_, i) => (
+                                        <option key={i} value={i}>{i}</option>
+                                    ))
+                                }
+                            </select>
+                        </>
+                    }
+                    <button type='submit'>Ajouter au panier</button>
+                </form>
+                    {product?.option.map((item,index)=>{
+                        console.log(item)
+                        if(item.optionActive == true){                       
+                            return(
+                                <div key={index}>
+                                <div> {item.name} </div>
+                                    <select className='productOption' onChange={(e)=>handleOptionChange(e,item.Id_option)}>
+                                        <option value="none">Selectionner une option</option>
+                                        {item.subOptions.map((subItem,subIndex)=>{
+                                                if(subItem.quantity_available > 0){
+                                                return (
+                                                    <option key={subIndex} value={JSON.stringify(subItem)} > {subItem.detail + ' (+ ' + subItem.price + '€) displonible'}</option>
+                                                )
+                                                } 
+                                                if(subItem.quantity_reservation > 0){
+                                                    return (
+                                                        <option key={subIndex} value={JSON.stringify(subItem)} > {subItem.detail + ' (+ ' + subItem.price + '€) à réserver'}</option>
+                                                    ) 
+                                                } else {
+                                                    return (
+                                                        <option key={subIndex} disabled> {subItem.detail + ' (+ ' + subItem.price + '€) Non disponible'}</option>
+                                                    ) 
+                                                }
+                                        })}
+                                    </select>      
+                            </div>
+                            )
+                        }
+                    })}
+                    {product.personalization.map((item,index)=>{
+                        if(item.personalizationActive){
+                        return(
+                            <div key={index}>
+                                <div>{item.name}</div>
+                                <div>{item.detail}</div>
+                                <div>Prix de la personalisation : {item.price} € </div>
+                                <textarea className="ProductpersonalizationInput" onChange={(e)=>handlePersonalizationChange(e,item)}></textarea>
+                            </div>
+                            )
+                        }
+                    })}
+                </div>                 
+            }
+            </div>
+            }
         </>
     )
 }

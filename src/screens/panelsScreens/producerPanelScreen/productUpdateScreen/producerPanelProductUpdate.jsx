@@ -125,12 +125,18 @@ export const ProducelPanelProductUpdate = () => {
         }
     }
 
-    const handleOptionChange = (e,Id_option)=>{
+    const handleOptionChange = (e,Id_option,obj)=>{
         const newOption = [...options]
         newOption.forEach((item)=> {
-            console.log(item.Id_option)
+            console.log(e)
             if(item.Id_product_option == Id_option){
-                item.name = e
+                switch(obj){
+                    case 'name' : item.name = e;
+                    break;
+                    case 'available' : item.optionActive = e;
+                    break;
+                }
+            
             }
         })
         setOptions(newOption)
@@ -147,7 +153,9 @@ export const ProducelPanelProductUpdate = () => {
                     break;
                     case 'price' : subItem.price = e;
                     break;
-                    case 'quantity' : subItem.quantity = e;
+                    case 'quantity_available' : subItem.quantity_available = e;
+                    break;
+                    case 'quantity_reservation' : subItem.quantity_reservation = e;
                     break;
                 }
                 }
@@ -223,7 +231,7 @@ export const ProducelPanelProductUpdate = () => {
         const uuidSuboption = uuidv4()
         setOptions([
             ...options,
-            { name: '', Id_option : uuidOption, subOptions : [{ detail: '', price: '', quantity: '', Id_subOption : uuidSuboption}]}
+            { name: '', Id_product_option : uuidOption, optionActive : 0, subOptions : [{ detail: '', price: 0, quantity_available: 0, quantity_reservation: 0, Id_subOption : uuidSuboption}]}
         ])
     }
 
@@ -231,14 +239,16 @@ export const ProducelPanelProductUpdate = () => {
         const uuidPersonalization = uuidv4();
         setPersonalization([
             ...personlization,
-            { name: '', detail : '', Id_personalization : uuidPersonalization}
+            { name: '', detail : '', Id_personalization : uuidPersonalization, personalizationActive : true}
         ])
     }
 
     const handlepersonalizationChange = (e,Id_personalization,obj)=>{
         const newPersonalization = [...personlization]
+
         newPersonalization.forEach((item)=> {
-            console.log(item.Id_personalization)
+            // console.log(item.Id_personalization , ' + + + ', Id_personalization)
+            console.log(obj)
             if(item.Id_personalization == Id_personalization){
                 switch(obj){
                     case 'detail' : item.detail = e;
@@ -246,6 +256,8 @@ export const ProducelPanelProductUpdate = () => {
                     case 'name' : item.name = e;
                     break;
                     case 'price' : item.price = e;
+                    break;
+                    case 'available' : item.personalizationActive = e;
                     break;
                 }
             }
@@ -258,10 +270,10 @@ export const ProducelPanelProductUpdate = () => {
         console.log(option)
         const updatedOption = [...options]
         const uuidSuboption = uuidv4()
-        const newSubOption = { detail: '', price: '', quantity: '', Id_subOption : uuidSuboption}
+        const newSubOption = { detail: '', price: 0, quantity_available: 0, quantity_reservation: 0, Id_subOption : uuidSuboption}
         updatedOption.forEach(opt => {
             console.log(opt)
-            if (opt.Id_option === option.Id_option) {
+            if (opt.Id_product_option === option.Id_product_option) {
                 opt.subOptions = [...opt.subOptions, newSubOption];
             }
         });
@@ -433,7 +445,7 @@ export const ProducelPanelProductUpdate = () => {
                     <div className='productUpdateInputContainerNumber'>
                         <label>*Matière principale utilisé :</label>
                         <select className='panelInput' placeholder='Prix du produit' name='productMaterial' defaultValue={product?.Id_material || "none"} required>
-                        <option value="none">None</option>
+                            <option value="none">None</option>
                             {materials?.map((item)=>{
                                 return <option  key={item.Id_material} value={item.Id_material} > {item.name}</option>
                             })}
@@ -455,6 +467,7 @@ export const ProducelPanelProductUpdate = () => {
             </div>
             <div>
                 {options.map((item,index)=> {
+                    console.log(item)
                     return <OptionComponent 
                                 props={item} 
                                 key={index} 
@@ -464,14 +477,19 @@ export const ProducelPanelProductUpdate = () => {
                                 addSubOption={(option)=>addSubOption(option)} 
                                 delSubOption={(option,subOptionId)=>delsubOption(option,subOptionId)}
                                 handlesubOptionChange={(e,idsubOption,obj)=>{handleSubOptionChange(e,idsubOption,obj)}}
-                                handleOptionChange={(e,Idoption)=>{handleOptionChange(e,Idoption)}}
+                                handleOptionChange={(e,Idoption,obj)=>{handleOptionChange(e,Idoption,obj)}}
                             />
                 })}
             </div>
             <button type="button" onClick={addOption}> Ajouter une option</button>
             <div>
                 {personlization.map((item,index)=>{
-                    return <PersonalizationComponent key={index}  nameObject={"personalization"+ index} props={item} handlepersonalizationChange={(e,idper,obj)=>handlepersonalizationChange(e,idper,obj)} deletePersonalization={(id)=>delPresonalization(id)} />
+                    return <PersonalizationComponent 
+                                key={index}  
+                                nameObject={"personalization"+ index} 
+                                props={item} 
+                                handlepersonalizationChange={(e,idper,obj)=>handlepersonalizationChange(e,idper,obj)} 
+                                deletePersonalization={(id)=>delPresonalization(id)} />
                 })}
             </div>
             <button type="button" onClick={addPersonalization}> Ajouter une personalisation</button>

@@ -1,44 +1,83 @@
 .optionContainer{
     background-color: var(--nuance_color3);
-    border-radius: 25px;
+    border-radius: 10px;
     padding : 20px;
     margin : 20px;
     color : white;
 }
 .optionInput{
-    width : 50%;
     border-radius: 25px;
 }
-
+.subOptionsContainer{
+   
+    border-radius : 10px;
+}
 .subOptioncontainer {
+    border-radius : 10px;
+    background-color: var(--nuance_color2);
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    height : 100px;
+    margin : 10px 0px;
     &>button {
         height : 50px;
     }
 }
 .subOptionInputcontainer {
-    width : 30%;
-
+    width : 200px;
+    font-size : 14px;
     &>input{
-        border-radius: 0;
+        border-radius: 10px;
         margin : 0px 10px;
     }
 }
 
 .subOptionQuantitycontainer{
-    width : 15%;
+    width : 100px;
     margin : 0px 10px;
+    font-size: 11px;
     &>input{
-        border-radius: 0;
+        border-radius: 10px;
     }
 
 }
 .subOptionPricecontainer{
-    width : 15%;
+    width : 100px;  
+    font-size: 11px;
     &>input{
-        border-radius: 0;
+        border-radius: 10px;
     }
-    margin : 0px 10px;
+}
+.optionTopContainer{
+    display : flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.optionInputContainer{
+    display :flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left : 30px;
+    width : 50%;
+    &>label{
+        width : 250px;
+    }
+}
+#optionInputCheckBox{
+    display :flex;
+    justify-content: end;
+    margin-right : 30px;
+    align-items: center;
+    width : 50%;
+    &>input{
+        width : 30px;
+    }
+    &>label{
+        width : 200px;
+    }
+}
+.optionButton{
+    border-radius: 10px;
+    padding : 10px;
 }

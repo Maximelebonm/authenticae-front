@@ -25,7 +25,7 @@ export const ProductSwiper = (props) => {
                 coverflowEffect={{
                     slideShadows : true
                 }}
-                loop={true}
+            
                 effect={'fade'}
                 // navigation={true}
                 pagination={{ clickable: true }}
@@ -56,14 +56,13 @@ export const ProductSwiper = (props) => {
                 watchSlidesProgress={true}
                 modules={[FreeMode, Navigation, Thumbs]}
                 direction={'vertical'}
-                loop={true}
                 className="SwiperNav"
             >
              {
                 pictures?.map((item,index)=>{
                 return <SwiperSlide key={index} className="productSwiperThumb">
                     <img src={Base_URL + item.storage}  className="productSwiperThumb"/>
-                </SwiperSlide>
+                    </SwiperSlide>
                 })
             }
         </Swiper>
