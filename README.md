@@ -1,6 +1,6 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+site internet de type MarketPlace ! Bientôt disponible ! :D
 
 Currently, two official plugins are available:
 
