@@ -19,7 +19,8 @@ export const ProductScreen = () => {
    
     const [reload,setReload] = useState(false)
 
-    // const [selectReload,setSelectReload] = useState({quantityA : 'none',quantityR : 'none', option : 'none', personalisation : ''})
+    const [selectedOptions, setSelectedOptions] = useState({});
+    const [selectReload,setSelectReload] = useState({quantityA : 'none',quantityR : 'none', option : 'none', personalisation : ''})
 
 
     const cookiesAuth = decodeCookieUser(document.cookie)
@@ -39,12 +40,19 @@ export const ProductScreen = () => {
                             optionsNumber.push(item)
                         })
                         selectedProduct.product.Id_product = data.data.product.Id_product
+                        ///////
+                        const initialSelectedOptions = {};
+                        data.data.option.forEach((item) => {
+                            initialSelectedOptions[item.Id_product_option] = 'none';
+                        });
+                        setSelectedOptions(initialSelectedOptions);
+                        ///////
                         setPrice({mainPrice : data.data.product.price, option : data.data.option})
                     }
                 })
             }
         }
-        // setSelectReload({quantityA : 'none',quantityR : 'none', option : 'none', personalisation : ''})
+        setSelectReload({quantityA : 'none',quantityR : 'none', personalisation : ''})
         fetch()
     },[reload]);
 
@@ -71,6 +79,12 @@ export const ProductScreen = () => {
     },[selectedProduct]);
 
     const handleOptionChange = (event,idOption) => {
+
+        setSelectedOptions((prevSelectedOptions) => ({
+            ...prevSelectedOptions,
+            [idOption]: event.target.value
+        }));
+
         console.log(idOption)
         console.log(product)
         if(event.target.value == "none"){
@@ -108,6 +122,7 @@ export const ProductScreen = () => {
 
     const handlePersonalizationChange = (e,Inputpersonalization)=>{
         const pvalue = e.target.value
+        selectReload.personalisation = pvalue
         if(pvalue === ""){
             const updatedPersonalization = selectedProduct.personalization.filter((item) => {return item.Id_personalization !== Inputpersonalization.Id_personalization});
             console.log(updatedPersonalization)
@@ -140,12 +155,14 @@ export const ProductScreen = () => {
         }
     }
 
-    const handlequantityChange = (e) => {
+    const handlequantityChange = (e,obj) => {
         try {
             const value = e.target.value
             const NewSelectedProduc = {...selectedProduct}
             NewSelectedProduc.product.quantity = value
             setSelectedProduct(NewSelectedProduc)
+            if(obj === 'A') selectReload.quantityA = value
+            if(obj === 'R') selectReload.quantityR = value
         
         } catch (error) {
            console.log(error)
@@ -211,7 +228,7 @@ export const ProductScreen = () => {
                         product?.product.quantity_available > 0 ?
                         <>
                             Quantité disponible : {product?.product.quantity_available}
-                            <select className='productOption' name='quandtitySeleted' onChange={(e)=>handlequantityChange(e, 'A')}  >
+                            <select className='productOption' name='quandtitySeleted' onChange={(e)=>handlequantityChange(e, 'A')} value={selectReload.quantityA} >
                                 <option value='None'>choisir une quantité</option>
                                 {
                                     Array.from({ length: product?.product.quantity_available}).map((_, i) => (
@@ -223,7 +240,7 @@ export const ProductScreen = () => {
                         : 
                         <>
                             Quantité réservable : {product?.product.quantity_reservation}    
-                            <select className='productOption' name='quantityReservation' onChange={(e)=>handlequantityChange(e, 'R')} >
+                            <select className='productOption' name='quantityReservation' onChange={(e)=>handlequantityChange(e, 'R')} value={selectReload.quantityR}>
                                 <option value="none">choisir une quantité</option>
                                 {
                                     Array.from({ length: product?.product.quantity_reservation + 1 }).map((_, i) => (
@@ -240,7 +257,7 @@ export const ProductScreen = () => {
                             return(
                                 <div key={index}>
                                 <div> {item.name} </div>
-                                    <select className='productOption' name='optionSelected'  onChange={(e)=>handleOptionChange(e,item.Id_product_option)}>
+                                    <select className='productOption' name='optionSelected'  value={selectedOptions[item.Id_product_option] || 'none'} onChange={(e)=>handleOptionChange(e,item.Id_product_option)}>
                                         <option value="none">Selectionner une option</option>
                                         {item.subOptions.map((subItem,subIndex)=>{
                                                 if(subItem.quantity_available > 0){
@@ -270,7 +287,7 @@ export const ProductScreen = () => {
                                 <div>{item.name}</div>
                                 <div>{item.detail}</div>
                                 <div>Prix de la personalisation : {item.price} € </div>
-                                <textarea className="ProductpersonalizationInput" onChange={(e)=>handlePersonalizationChange(e,item)}></textarea>
+                                <textarea className="ProductpersonalizationInput" onChange={(e)=>handlePersonalizationChange(e,item)} value={selectReload.personalisation}></textarea>
                             </div>
                             )
                         }
