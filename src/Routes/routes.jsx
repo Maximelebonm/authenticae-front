@@ -7,8 +7,6 @@ import { ProducerPanelScreen } from '../screens/panelsScreens/producerPanelScree
 import { ProducerListScreen } from '../screens/ProducerListScreen/ProducerListScreen';
 import { ProducerShopScreen } from '../screens/profilesScreen/producteurShopScreen/ProducerShopScreen';
 import { ProfilScreen } from '../screens/profilesScreen/profilScreen/profilScreen';
-import { useEffect, useState } from 'react';
-import { decodeCookies } from '../helpers/decodeToken';
 import { LoginScreen } from '../screens/authScreens/loginScreen/loginScreen';
 import { LogoutScreen } from '../screens/authScreens/logoutScreen/logoutScreen';
 import { RegisterScreen } from '../screens/authScreens/registerScreen/registerScreen';
@@ -18,9 +16,9 @@ import { ProducerPanelProductScreen } from '../screens/panelsScreens/producerPan
 import { ProducelPanelProductUpdate } from '../screens/panelsScreens/producerPanelScreen/productUpdateScreen/producerPanelProductUpdate.jsx';
 import { ProductScreen } from '../screens/productScreen/productScreen';
 import { ValidationScreen } from '../screens/authScreens/valdationScreen/validationScreen';
+import { CartScreen } from '../screens/cartScreen/cartScreen.jsx';
 
 export const RoutesContainer = () =>{
-
     return (
         <Routes>
             <Route path='/validation/:token' element={<ValidationScreen/>} />
@@ -34,6 +32,11 @@ export const RoutesContainer = () =>{
             <Route path='/profil' element={
                 <PrivateRoutes role={['client']}>
                     <ProfilScreen/>
+                </PrivateRoutes>
+            }/>
+                 <Route path='/cart' element={
+                <PrivateRoutes role={['client']}>
+                    <CartScreen/>
                 </PrivateRoutes>
             }/>
               <Route path='/paneladmin' element={
@@ -70,10 +73,7 @@ export const RoutesContainer = () =>{
                 <PrivateRoutes role={['producer']}>
                     <ProducelPanelProductUpdate/>
                 </PrivateRoutes>
-            }/>   
-
-
-            
+            }/>           
         </Routes>
     )
 }

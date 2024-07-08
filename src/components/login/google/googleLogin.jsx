@@ -1,5 +1,5 @@
 import './googleLogin.css'
-
+import { FcGoogle } from "react-icons/fc";
 export const GoogleLogin=()=>{
 
     const googleAuth = () =>{
@@ -13,6 +13,6 @@ export const GoogleLogin=()=>{
     }
 
     return (
-        <button onClick={googleAuth}> se connecter / s'enregistrer avec Google</button>
+        <button type='button' onClick={googleAuth}> <FcGoogle /></button>
     )
 }

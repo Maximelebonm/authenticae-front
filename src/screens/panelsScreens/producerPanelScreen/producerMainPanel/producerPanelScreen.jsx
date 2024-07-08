@@ -7,6 +7,7 @@ import { createShop, getShop, updateShop,updateAvatarShop } from "../../../../ap
 import { ProductCard } from "../../../../components/cards/productCard/productCard";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { InputFloatLabel } from "../../../../components/uiElements/inputFloatLabel/inputFloatLabel";
 
 export const ProducerPanelScreen = () =>{
     const cookie =  decodeCookies(document.cookie)
@@ -65,9 +66,7 @@ export const ProducerPanelScreen = () =>{
                                 }
                             })
                         }
-
-                }
-                
+                }             
                 fetch()
             } catch (err) {
             console.log(err)
@@ -95,8 +94,7 @@ export const ProducerPanelScreen = () =>{
                             setChange(!change)
                             setImgUrlCover()
                             notifySuccessPicture()
-                        }
-    
+                        }  
                     }
                     else {
                         const log = await createShop(id,shopName,shopDesc,avatar,couvFile)
@@ -136,6 +134,19 @@ export const ProducerPanelScreen = () =>{
             }
     }
 
+    const handleChange = (e,objName) =>{
+        const newValue = e.target.value
+        const newShop = {...shop}
+        switch(objName){
+            case 'shop' : newShop.name = newValue;
+            break;
+            case 'desc' : newShop.description = newValue;
+            break;
+        }
+        
+        setShop(newValue)
+    }
+
     const notifySuccessUpload = () => toast.success("votre shop a été mis à jour avec succès");
     const notifySuccessPicture = () => toast.success("image télécharger avec succès")
 
@@ -165,15 +176,17 @@ return(
             </div>
         </form>
         <form onSubmit={handleSubmit} className='producerPanelform'>
-            <input type='text' placeholder='nom du shop' defaultValue={shop?.name}  name='shopName' minLength={1} maxLength={30} required/>
-            <input type='text' placeholder={'Description du shop'} name='shopDescriptiopn' defaultValue={shop?.description} minLength={1} maxLength={255} required/>
+            <InputFloatLabel type='text' placeholder='nom du shop' inputValue={shop?.name} onchange={(e)=>handleChange(e,'shop')} labelName='nom du shop' inputName='shopName' minLength={1} maxLength={30} required='yes' />
+            <InputFloatLabel type='text' placeholder='Description du shop' inputName='shopDescriptiopn' onchange={(e)=>handleChange(e,'desc')} labelName='description' inputValue={shop?.description} minLength={1} maxLength={255} required='yes' />
+            {/* <input type='text' placeholder='nom du shop' defaultValue={shop?.name}  name='shopName' minLength={1} maxLength={30} required/> */}
+            {/* <input type='text' placeholder={'Description du shop'} name='shopDescriptiopn' defaultValue={shop?.description} minLength={1} maxLength={255} required/> */}
             <button type='submit'> valider </button>
         </form>
         </div>
     : 
     <form onSubmit={shopSubmit} className='producerPanelform'>
-        <input type='text' placeholder='nom du shop' name='shopName' minLength={1} maxLength={30} required/>
-        <input type='text' placeholder='Description du shop' name='shopDescriptiopn' minLength={1} maxLength={255} required/>
+        <InputFloatLabel type='text' placeholder='nom du shop' labelName='nom du shop' inputName='shopName' minLength={1} maxLength={30} required='yes' />
+        <InputFloatLabel  type='text' placeholder='Description du shop' inputName='shopDescriptiopn' labelName='description' minLength={1} maxLength={255} required='yes' />
         <button type='submit'> creer mon shop </button>
     </form>
     }

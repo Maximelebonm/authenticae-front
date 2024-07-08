@@ -5,6 +5,7 @@ import { Eye } from 'lucide-react';
 import './loginScreen.css'
 import { Mail } from "lucide-react";
 import { useState } from 'react';
+import { InputFloatLabel } from "../../../components/uiElements/inputFloatLabel/inputFloatLabel";
 
 export const LoginScreen = () =>{
 
@@ -33,7 +34,7 @@ export const LoginScreen = () =>{
         }
     }
 
-    const [type,setType] = useState();
+    const [type,setType] = useState('password');
     
     const handleChange =(e)=>{
         const {name, value} = e.target
@@ -41,23 +42,23 @@ export const LoginScreen = () =>{
 
     return (
         <div id='loginScreenContainer'>
-        <div id='loginScreenSecondContainer'>
-            <Link to='/register'> aller à la page Enregistrement </Link>
-                OU
-            <GoogleLogin/>
-        </div>
-        <form onChange={handleChange}  onSubmit={handleSubmit} id='loginScreenForm'>
-            <h1>Connection</h1>
-            <div className='loginScreenItemContainer'>
-                <input placeholder='Email' type='email' name='loginScreenEmail' id='loginScreenEmail' required minLength={6} maxLength={50} pattern='^\S+$'/>
-                <span><Mail /></span>
-            </div>
-            <div className='loginScreenItemContainer'>
-                <input placeholder='Mot de passe' type={type} name='loginScreenPassword' id='loginScreenPassword'  required minLength={12} maxLength={30} pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$'/>
-                <span id="password-toggle" onClick={() => setType(type === 'password' ? 'text' : 'password')}><Eye /></span>
-            </div>
-            <button type='submit'> Se connecter</button>
-        </form>
+            <form onChange={handleChange}  onSubmit={handleSubmit} id='loginScreenForm'>
+                <h1>Connexion</h1>
+                <InputFloatLabel placeholder='Ex : nom@gmail.com' type='email' labelName='E-mail' inputName='loginScreenEmail' required='yes' minLength={6} maxLength={50} pattern='^\S+$'/>
+                <div className='loginScreenItemContainer'>
+                    <InputFloatLabel className='InputBorderLeftOff' placeholder='Ex : Abcde123!' type={type} labelName='Mot de passe' inputName='loginScreenPassword' required='yes' minLength={12} maxLength={30} pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$'/>
+                    <span id="password-toggle" onClick={() => setType(type === 'password' ? 'text' : 'password')}><Eye /></span>
+                </div>
+                <div id='loginScreenButtonContainer'>
+                    <button type='submit'> Se connecter</button>
+                    <Link to='/register'> 
+                        <button type='button' id='loginScreenSecondContainer'>
+                            S'enregistrer 
+                        </button>
+                    </Link>
+                </div>
+                <GoogleLogin/>
+            </form>
         </div>
     )
 }

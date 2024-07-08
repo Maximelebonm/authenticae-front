@@ -1,0 +1,32 @@
+.cartContainer{
+    border-radius: 15px;
+    background-color : var(--nuance_color5);
+    padding : 10px;
+}
+
+.cartProductContainer{
+    background-color : var(--nuance_color3);
+    border-radius: 15px;
+    margin-bottom : 10px;
+    padding : 10px;
+}
+.cartProductTitle{
+    display : flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    margin-bottom : 10px;
+}
+.cartProductImage{
+    width : 100px;
+    border-radius : 15px;
+}
+.cartProductDetail{
+    border : 1px solid var(--nuance_color2);
+    border-radius : 15px;
+    padding : 10px;
+    text-align: start;
+}
+.cartProductDetailTitle{
+    text-align: center;
+}

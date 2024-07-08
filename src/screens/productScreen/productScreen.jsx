@@ -5,15 +5,24 @@ import { useState } from "react";
 import './productScreen.css'
 import { ProductSwiper } from "../../components/uiElements/productSwiper/productSwiper";
 import { ToastContainer, toast } from 'react-toastify';
+import { addCartApi } from "../../api/backEnd/buyProcess/cart.backend";
+import { decodeCookieUser } from "../../helpers/decodeToken";
+
 
 export const ProductScreen = () => {
     const {id} = useParams()
     const [product,setProduct]= useState();
     const [imgDisplay, setImgDisplay] = useState();
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK
+    // const Base_URL = import.meta.env.VITE_BASE_URL_BACK
     const [price,setPrice] = useState({mainPrice : 0, quantity_available : 0,quantity_reservation : 0, options : [], personalization : []})
-    const [selectedProduct, setSelectedProduct] = useState({product : '', options : [], personalization : []})
+    const [selectedProduct, setSelectedProduct] = useState({product : {}, options : [], personalization : []})
+   
+    const [reload,setReload] = useState(false)
 
+    // const [selectReload,setSelectReload] = useState({quantityA : 'none',quantityR : 'none', option : 'none', personalisation : ''})
+
+
+    const cookiesAuth = decodeCookieUser(document.cookie)
     useEffect(()=> {
         const fetch = async()=>{
             const response = await getProduct(id)
@@ -23,23 +32,22 @@ export const ProductScreen = () => {
                 .then(data=>{
                     if(data.message == 'product geted'){
                         console.log(data.data)
-                            setImgDisplay(data.data.images)
-                            // setOptions(data.data.option);
-                            // setPersonalization(data.data.personalization);
+                        setImgDisplay(data.data.images)
                         setProduct(data.data);
-                        console.log(data.data.product)
                         const optionsNumber = []
                         data.data.option.forEach((item)=>{
                             optionsNumber.push(item)
                         })
-                        selectedProduct.product = data.data.product
+                        selectedProduct.product.Id_product = data.data.product.Id_product
                         setPrice({mainPrice : data.data.product.price, option : data.data.option})
                     }
                 })
             }
         }
+        // setSelectReload({quantityA : 'none',quantityR : 'none', option : 'none', personalisation : ''})
         fetch()
-    },[]);
+    },[reload]);
+
 
     useEffect(()=> {
         let newPrice = product?.product.price
@@ -56,12 +64,16 @@ export const ProductScreen = () => {
                 newPrice += item.price
             })
         }
+        if(selectedProduct.product.quantity>1){
+            newPrice *= selectedProduct.product.quantity
+        }
         setPrice({finalPrice : newPrice})
     },[selectedProduct]);
 
     const handleOptionChange = (event,idOption) => {
+        console.log(idOption)
+        console.log(product)
         if(event.target.value == "none"){
-            console.log(idOption)
             const updatedOptions = selectedProduct.options.filter((item) => {return item.option !== idOption});
             console.log(updatedOptions)
             setSelectedProduct((prevProduct) => ({
@@ -97,7 +109,6 @@ export const ProductScreen = () => {
     const handlePersonalizationChange = (e,Inputpersonalization)=>{
         const pvalue = e.target.value
         if(pvalue === ""){
-            console.log(Inputpersonalization.Id_personalization)
             const updatedPersonalization = selectedProduct.personalization.filter((item) => {return item.Id_personalization !== Inputpersonalization.Id_personalization});
             console.log(updatedPersonalization)
             setSelectedProduct((prevProduct) => ({
@@ -124,51 +135,55 @@ export const ProductScreen = () => {
                     ...prevProduct,
                     personalization : updatedPersonalization
                 }))
+       
             }
         }
     }
 
-    const selectedChange = () => {
-
+    const handlequantityChange = (e) => {
+        try {
+            const value = e.target.value
+            const NewSelectedProduc = {...selectedProduct}
+            NewSelectedProduc.product.quantity = value
+            setSelectedProduct(NewSelectedProduc)
+        
+        } catch (error) {
+           console.log(error)
+        }
     }
 
     const handleSubmit = (e)=>{
         try {
             e.preventDefault()
-            const form = e.target
-            const elements = e.target.elements
-            const formData = new FormData(form);
-
-            const quantitySelected = formData.get("quandtitySeleted");  
-            const quantityReserved = formData.get("quandtityReservé");
-
-            console.log(quantitySelected)
-            if(quantityReserved >0 && quantitySelected>0) {
-                toast.error('vous ne pouvez pas reserver et selectionner un article en même temps', {autoclose : 2000})
-            } else {
-                const fetch = async ()=> {                   
-                    const response = await updateCart(product.product.Id_product,quantitySelected,quantityReserved,price)
+            if(cookiesAuth.Id_user){
+                const fetch = async ()=> {
+                    const response = await addCartApi(selectedProduct,price.finalPrice)
                     if(response){
-                        console.log(response)
                         response.json()
-                        .then((data)=>{
-                        console.log(data)
-                            if(data.message === 'product updated'){
-                                
-                                
+                        .then((data)=> {
+                            console.log(data)
+                            if(data.message == "ajouté au panier" || data.message == "cart créé" || data.message == 'cart updated'){
+                                toast.success('Produit ajouté au panier', {autoclose : 2000})
+                                setReload(!reload)
+                            }
+                            if(data.message === "SequelizeUniqueConstraintError"){
+                                toast.error('Une erreur est survenu veuillez vous déconnecter et vous reconnecter', {autoclose : 2000})
                             }
                         })
                     }
+                    // else{
+                    //     toast.error('Une erreur est survenu veuillez vous déconnecter et vous reconnecter', {autoclose : 2000})
+                    // }
                 }
-                fetch() 
+                fetch()
+            } else {
+                toast.error('Vous devez creer un compte pour creer un panier', {autoclose : 2000})
             }
-            
-            
         } catch (error) {
-            
+            console.log('error')
+            console.log(error)
         }
     }
-
     console.log(selectedProduct)
 
     return (
@@ -180,7 +195,7 @@ export const ProductScreen = () => {
                 { product.option &&   
                 <div className="productInfoContainer">
                 <h2>
-                    {price.finalPrice || price.mainPrice}€
+                   prix total : {price.finalPrice || price.mainPrice}€
                 </h2>   
                 <h2>
                     {product?.product.name}
@@ -196,11 +211,11 @@ export const ProductScreen = () => {
                         product?.product.quantity_available > 0 ?
                         <>
                             Quantité disponible : {product?.product.quantity_available}
-                            <select className='productOption' name='quandtitySeleted'>
-                                <option value="none">choisir une quantité</option>
+                            <select className='productOption' name='quandtitySeleted' onChange={(e)=>handlequantityChange(e, 'A')}  >
+                                <option value='None'>choisir une quantité</option>
                                 {
-                                    Array.from({ length: product?.product.quantity_available + 1 }).map((_, i) => (
-                                        <option key={i} value={i}>{i}</option>
+                                    Array.from({ length: product?.product.quantity_available}).map((_, i) => (
+                                        <option key={i+1} value={i+1}>{i+1}</option>
                                     ))
                                 }
                             </select>
@@ -208,7 +223,7 @@ export const ProductScreen = () => {
                         : 
                         <>
                             Quantité réservable : {product?.product.quantity_reservation}    
-                            <select className='productOption' name='quandtityReservé'>
+                            <select className='productOption' name='quantityReservation' onChange={(e)=>handlequantityChange(e, 'R')} >
                                 <option value="none">choisir une quantité</option>
                                 {
                                     Array.from({ length: product?.product.quantity_reservation + 1 }).map((_, i) => (
@@ -218,15 +233,14 @@ export const ProductScreen = () => {
                             </select>
                         </>
                     }
-                    <button type='submit'>Ajouter au panier</button>
-                </form>
+            
                     {product?.option.map((item,index)=>{
-                        console.log(item)
+                        {/* console.log(item) */}
                         if(item.optionActive == true){                       
                             return(
                                 <div key={index}>
                                 <div> {item.name} </div>
-                                    <select className='productOption' onChange={(e)=>handleOptionChange(e,item.Id_option)}>
+                                    <select className='productOption' name='optionSelected'  onChange={(e)=>handleOptionChange(e,item.Id_product_option)}>
                                         <option value="none">Selectionner une option</option>
                                         {item.subOptions.map((subItem,subIndex)=>{
                                                 if(subItem.quantity_available > 0){
@@ -261,6 +275,8 @@ export const ProductScreen = () => {
                             )
                         }
                     })}
+                    <button type='submit'>Ajouter au panier</button>
+                </form>
                 </div>                 
             }
             </div>

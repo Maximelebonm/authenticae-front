@@ -4,10 +4,12 @@ import { GoogleLogin } from "../../../components/login/google/googleLogin";
 import { Mail,Phone,User, Lock } from "lucide-react";
 import { useState } from "react";
 import { ValidationUser} from "../../../api/backEnd/user.backend";
+import { InputFloatLabel } from "../../../components/uiElements/inputFloatLabel/inputFloatLabel";
 
 export const RegisterScreen = ()=> {
 
-    const [type,setType] = useState();
+    const [type,setType] = useState('password');
+    const [type2,setType2] = useState('password')
 
     const handleSubmit =async (e)=>{
         e.preventDefault()
@@ -43,55 +45,58 @@ export const RegisterScreen = ()=> {
         const {name, value} = e.target
         
     }
+  
 
     return (
         <div id='registerScreenContainer'>
-       <div id='registerScreenSecondContainer'>
-            <Link to='/login'> Revenir à la page login </Link>
-                OU
-            <GoogleLogin/>
-        </div>
         <form onChange={handleChange}  onSubmit={handleSubmit} id='registerScreenForm'>
             <div className="registerScreenContainer">
             <div id='registerNameAndSurname'>
                 <div className='registerScreenItemContainer'>
-                    <input type='text' placeholder="Prénom" name='registerScreenName' id='registerScreenName' required minLength={1} maxLength={50} pattern='^(?!.*\s)(?!.*[\d])(?!.*[^a-zA-ZÀ-ÿ-]).+$'/>
-                    <span><User /></span>
+                    <InputFloatLabel  className='InputBorderLeftOff' placeholder="Jean" type='text' labelName='Prénom' inputName='registerScreenName' required='yes' minLength={1} maxLength={50} pattern='^(?!.*\s)(?!.*[\d])(?!.*[^a-zA-ZÀ-ÿ-]).+$'/>
+                    <span id='registerScreenSpan'><User /></span>
                 </div>
                 <div className='registerScreenItemContainer'>
-                    <input type='text' placeholder="Nom de famille" name='registerScreenSurname' id='registerScreenSurname' required minLength={1} maxLength={50} pattern='^(?!.*\s)(?!.*[\d])(?!.*[^a-zA-ZÀ-ÿ-]).+$'/>
-                    <span><User /></span>
+                    <InputFloatLabel  className='InputBorderLeftOff' placeholder="Dupont" type='text' labelName='Nom' inputName='registerScreenSurname' required='yes' minLength={1} maxLength={50} pattern='^(?!.*\s)(?!.*[\d])(?!.*[^a-zA-ZÀ-ÿ-]).+$'/>
+                    <span id='registerScreenSpan'><User /></span>
                 </div>
             </div>
             <div>
-                <label htmlFor='registerScreenBirthDate'>Date de naissance</label>
-                <input type='date' name='registerScreenBirthDate' id='registerScreenBirthDate' required minLength={1} maxLength={50}/>
+                <InputFloatLabel placeholder="Dupont" type='date' labelName='Date de Naissance' inputName='registerScreenBirthDate' required='yes' min='2008-01-01'/>
             </div>
             <div className='registerScreenItemContainer'>
-                <input type='email' placeholder='email' name='registerScreenEmail' id='registerScreenEmail' required minLength={6} maxLength={50}/>
-                <span><Mail /></span>
+                <InputFloatLabel  className='InputBorderLeftOff' placeholder="Ex : jeanDupont@gmail.com" type='text' labelName='E-mail' inputName='registerScreenEmail' required='yes'minLength={6} maxLength={50}/>
+                <span id='registerScreenSpan'><Mail /></span>
             </div>
             <div className='registerScreenItemContainer'>
-                <input type='text' placeholder='Pseudonyme' name='registerScreenIdentifiant' id='registerScreenIdentifiant' required minLength={6} maxLength={50}/>
-                <span><User /></span>
+                <InputFloatLabel  className='InputBorderLeftOff' placeholder="Ex : anonymous" type='text' labelName='Identifiant' inputName='registerScreenIdentifiant' required='yes' minLength={6} maxLength={50}/>
+                <span id='registerScreenSpan'><User /></span>
             </div>
             <div className='registerScreenItemContainer'>
-                <input type='text' placeholder='numéro de téléphone' name='registerScreenPhone' id='registerScreenPhone' required minLength={10} maxLength={10}/>
-                <span><Phone /></span>
+                <InputFloatLabel  className='InputBorderLeftOff' placeholder="Ex : 032728293031" type='text' labelName='N° de téléphone' inputName='registerScreenPhone' required='yes' minLength={10} maxLength={10}/>
+                <span id='registerScreenSpan'><Phone /></span>
             </div>
             <div>
-                <div className='registerScreenItemContainer'>
-                    <input type="password" placeholder='mot de passe' name='registerScreenPassword' id='registerScreenPassword'  maxLength={30} minLength={12}  pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$' required/>
-                    <span  onClick={() => setType(type === 'password' ? 'text' : 'password')}><Lock /></span>
-                </div>
                 doit contenir une majuscule un chiffre et un caractère spécial
-            </div>
                 <div className='registerScreenItemContainer'>
-                    <input type="password" placeholder='confirmer mot de passe' name='registerScreenPassword2' id='registerScreenPassword2'  maxLength={30}  pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$' minLength={12} required/>
-                    <span onClick={() => setType(type === 'password' ? 'text' : 'password')}><Lock /></span>
+                    <InputFloatLabel  className='InputBorderLeftOff' placeholder="Ex : Azerty123!" type={type} labelName='Mot de passe' inputName='registerScreenPassword' required='yes' maxLength={30} minLength={12}  pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$'/>
+                    <span id='registerScreenSpan' onClick={() => setType(type === 'password' ? 'text' : 'password')}><Lock /></span>
                 </div>
             </div>
-            <button type='submit'> S'enregistrer</button>
+                <div className='registerScreenItemContainer'>
+                    <InputFloatLabel  className='InputBorderLeftOff' placeholder="Ex : Azerty123!" type={type2} labelName='Confirmer mot de passe' inputName='registerScreenPassword2' required='yes' maxLength={30} minLength={12}  pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$'/>
+                    <span id='registerScreenSpan' onClick={() => setType2(type2 === 'password' ? 'text' : 'password')}><Lock /></span>
+                </div>
+            </div>
+            <div className='registerScreenItemContainer'>
+                <button type='submit'> S'enregistrer</button>
+                <Link to='/login'> 
+                            <button type='button' id='loginScreenSecondContainer'>
+                                Se connecter
+                            </button>
+                        </Link>
+            </div>
+                <GoogleLogin/>
         </form>
      
       

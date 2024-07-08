@@ -7,25 +7,41 @@ import Logo from '../../assets/logos/logo_authenticae_blanc.png';
 import { decodeCookies } from '../../helpers/decodeToken';
 import { ToggleSwitch } from '../uiElements/toggleSwitch/toggleSwitch';
 import { Store } from 'lucide-react';
+import { getUserById, logoutApi } from '../../api/backEnd/user.backend';
 
 export const Header =()=>{
     const [isActive, setIsActive] = useState(false);
 
-    const logo = '../../assets/logos/src/assets/logos/logo_authenticae_blanc.png'
+    // const logo = '../../assets/logos/src/assets/logos/logo_authenticae_blanc.png'
     
     const toggleActive = () => {
         setIsActive(!isActive);
     }
+
     const [roleCookie,setRoleCookie]=useState()
     const [cookie, setCookie] = useState()
     useEffect(()=>{
         if(document.cookie){
-            const auth = ()=>{
-                const cookie = decodeCookies(document.cookie)           
-                console.log(cookie)
-                const cookieTab = cookie.role.map((item)=> item.name)
-                setRoleCookie(cookieTab)
-                setCookie(cookie)
+            const auth = async()=>{
+                const cookies = document.cookie.split(';')
+                let authCookie = null
+                for (let cookie of cookies) {
+                    if (cookie.startsWith('auth=')) {
+                        // Extraire la valeur du cookie après le signe '='
+                        authCookie = cookie.substring('auth='.length);
+                        break;
+                    }
+                }
+                const cookie = decodeCookies(authCookie)           
+                const getUser = await getUserById(cookie.Id_user)
+                console.log(getUser)
+                if(getUser === 'erreur : HTTPError: Request failed with status code 404 Not Found'){
+                    await logoutApi(cookie)
+                } else {
+                    const cookieTab = cookie.role.map((item)=> item.name)
+                    setRoleCookie(cookieTab)
+                    setCookie(cookie)
+                }
             }
             auth()
         }

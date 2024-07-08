@@ -6,7 +6,7 @@ import { useEffect,useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ProductCard } from '../../../components/cards/productCard/productCard';
 
-export const ProducerShopScreen = (props) => {
+export const ProducerShopScreen = () => {
     const {id} = useParams()
     console.log(id)
     const cookie =  decodeCookies(document.cookie)
@@ -36,7 +36,7 @@ export const ProducerShopScreen = (props) => {
 
         }
         fetch()
-    },[])
+    },[cookie.Id_user])
     return (
         <>
         {shop ? <div>

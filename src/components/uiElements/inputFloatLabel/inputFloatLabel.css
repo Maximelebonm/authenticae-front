@@ -1,0 +1,42 @@
+.InputFloatLabelContainer{
+    text-align: start;
+    position : relative;
+    box-sizing: border-box;
+    width :100%;
+    &>input {
+        margin-top: 20px;
+        height : 50px;
+        width : 100%;
+        font-size: 14px;
+        &::placeholder{
+            opacity : 0;
+        }
+    }
+    &>label{
+        position : absolute;
+        color : var(--nuance_color2);
+        top : 32px;
+        font-size: 14px;
+        left : 10px;
+        font-weight: 700;
+        pointer-events:none;
+        transition-duration : 200ms;
+    }
+}
+
+.InputFloatLabelContainer{
+    &>input:focus ~ label, input:not(:placeholder-shown) ~ label{
+        opacity : 1;
+        font-size: 12px;
+        top : 0;  
+        padding : 0px;
+        transition-duration : 200ms;
+    }
+    &>input:focus{
+        &::placeholder{
+            opacity : 0.5;
+            transition-duration : 200ms;
+        }
+    }
+
+}

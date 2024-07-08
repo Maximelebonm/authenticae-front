@@ -1,8 +1,5 @@
 import './homeProductCard.css'
 import logo from '../../../assets/logos/logo_authenticae_blanc.png';
-import { Heart } from 'lucide-react';
-import { useState } from 'react';
-import { useEffect } from 'react';
 export const HomeProductCards = ({props,picture}) => {
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK
 

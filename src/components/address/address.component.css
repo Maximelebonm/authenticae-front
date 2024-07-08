@@ -1,0 +1,34 @@
+.adressComponentContainer{
+    width : 100%;
+    align-self: center;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding : 20px;
+    box-sizing: border-box;
+    &>div {
+        width : 75%;
+    }
+}
+
+.adressComponentSubContainer{
+    display : flex;
+    width : 100%;
+    
+    & .adresscountry{
+        margin-right : 10px;
+        width : 100%;
+    }
+    & .adressNumber {
+        width : 80px;
+        margin-right : 10px;
+    }
+    & .adressStreet{
+        width :100%;
+    }
+    & .adressCode {
+        width : 100%;
+    }
+}
