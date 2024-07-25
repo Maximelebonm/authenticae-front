@@ -4,7 +4,7 @@ import { Trash2,Archive,ChevronLeft,ChevronRight  } from 'lucide-react';
 export const OptionComponent = (props) => {
     const {nameObject} = props
     const {name, Id_product_option,optionActive} = props.props
-    console.log(optionActive)
+    // console.log(optionActive)
     const subOption = props.props.subOptions
 
     const addSubOptionform = ()=> {
@@ -63,7 +63,8 @@ export const OptionComponent = (props) => {
                                 onChange={(e) => handleSubOptionChange(e.target.value,item.Id_subOption,'price')}
                             />
                         </div>
-                        <div className="subOptionQuantitycontainer">
+                        
+                        {/* <div className="subOptionQuantitycontainer">
                             <label>Quantité Disponible</label>
                             <input
                                 required
@@ -72,17 +73,18 @@ export const OptionComponent = (props) => {
                                 value={item?.quantity_available}
                                 onChange={(e) => handleSubOptionChange(e.target.value,item.Id_subOption,'quantity_available')}
                             />
-                        </div>
-                        <div className="subOptionQuantitycontainer">
+                        </div> */}
+                        {/* <div className="subOptionQuantitycontainer">
                             <label>Quantité Reservable</label>
                             <input
                                 required
+                                disabled
                                 name={`${nameObject}[subOption${index}][quantity]`}
                                 type='number'
                                 value={item?.quantity_reservation}
                                 onChange={(e) => handleSubOptionChange(e.target.value,item.Id_subOption,'quantity_reservation')}
                             />
-                        </div>
+                        </div> */}
                         <button className='optionButton' type="button" onClick={() => delSubOption(item.Id_subOption)}> <Trash2/> </button>
                         </div>
                     </div>

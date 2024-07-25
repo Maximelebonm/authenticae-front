@@ -1,0 +1,13 @@
+.cartValidationAddressContainer {
+    border : 1px solid var(--nuance_color2);
+    border-radius: 15px;
+    margin-top : 10px;
+    & :hover {
+        cursor: pointer;
+    }
+}
+
+.cartValidationAddressContainer div.selected {
+    border: 2px solid green; 
+    border-radius: 15px;
+}

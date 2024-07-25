@@ -7,15 +7,14 @@ import { useState } from 'react'
 export const ProducerListScreen = () => {
     const [shop,setShop] = useState()
     useEffect(()=>{
-        const fetchShop = async() =>{
+        (async() =>{
             const response = await getAllShop()
-            const shop = response.json()
+            response.json()
             .then(data =>{
                 console.log(data)
                 setShop(data.data)
             })
-        }
-        fetchShop()
+        })();
     },[])
 console.log(shop)
     return (

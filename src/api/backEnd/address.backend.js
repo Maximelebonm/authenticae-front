@@ -21,3 +21,15 @@ export const addAddressApi = async (formObject,id) => {
         return "erreur : " + err;
     }
 }
+
+export const deleteAdressApi = async(Id_address)=>{
+    try {
+        const response = await ky.put(`${InitRequest()}/address/delete/${Id_address}`,{
+            credentials : 'include'
+        })
+        console.log(response)
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}

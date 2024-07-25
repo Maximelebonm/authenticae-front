@@ -3,9 +3,7 @@ import { createProduct } from "../../../../api/backEnd/producer/product.backend"
 import { getShop } from "../../../../api/backEnd/producer/shop.backend";
 import { decodeCookies } from "../../../../helpers/decodeToken";
 
-
 export const ProducerPanelProductScreen =()=> {
-    const [product,setProduct] = useState();
     const [shop, setShop] = useState()
     const cookie =  decodeCookies(document.cookie)
     console.log(cookie)
@@ -44,7 +42,7 @@ export const ProducerPanelProductScreen =()=> {
             const fetch = async()=>{
                 const response = await createProduct(Id_user,Id_shop,productName,productDescription)
                 if(response){
-                    const articleCreate = response.json()
+                    response.json()
                     .then((data)=>{
                         if(data.message === 'product created'){
                             window.location.href = `${import.meta.env.VITE_BASE_URL_FRONT}/myshop/product/${data.data.Id_product}`

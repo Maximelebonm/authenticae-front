@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import './cartScreen.css'
-import { decodeCookies } from "../../helpers/decodeToken";
-import { getUserById } from "../../api/backEnd/user.backend";
-import { getCartApi,deleteCartApi } from "../../api/backEnd/buyProcess/cart.backend";
+import { decodeCookies } from "../../../helpers/decodeToken";
+import { getUserById } from "../../../api/backEnd/user.backend";
+import { getCartApi,deleteCartApi } from "../../../api/backEnd/buyProcess/cart.backend";
 import { Trash2  } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import { useOrder } from '../orderContext';
 
 export const CartScreen = ()=> {
     const [cart,setCart] = useState();
     const [products,setProducts] = useState();
     const [reload,setReload] = useState(false)
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK;
+    const navigate = useNavigate()
+    const { orderDetails, setOrderDetails } = useOrder();
+    console.log(orderDetails)
+
 
     useEffect(()=>{
-        const cookies = document.cookie.split(';')
+        const cookies = document.cookie.split('; ')
                 let authCookie = null
                 console.log(cookies)
                 for (let cookie of cookies) {
@@ -27,18 +33,29 @@ export const CartScreen = ()=> {
                     const resp = await getUserById(cookie.Id_user)
                     resp.json()
                     .then(async(data)=>{
-                        setCart(data.carts[0])
-                        const respProd = await getCartApi(data.carts[0].Id_cart)
-                        respProd.json()
-                        .then((data)=> {
-                            console.log(data)
-                            setProducts(data.data)
-                        })
+                        console.log(data)
+                        if(data.carts.length === 0){
+                            document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                        }
+                        else {
+                            setCart(data.carts[0])
+                            const respProd = await getCartApi(data.carts[0].Id_cart)
+                            respProd.json()
+                            .then((data)=> {
+                                console.log(data)
+                                setProducts(data.data)
+                                setOrderDetails({...orderDetails, cart : data.data})
+                            })
+                        }
                     })
                 }
                 fetch()
                 setCart(cookie)  
     },[reload])
+
+    const handleOrder = ()=> {
+        navigate('/cartvalidation')
+    }
 
     const deleteProduct = (product)=> {
         const idcartProduct = {id : product.Id_cart_product, price : product.price};
@@ -109,7 +126,7 @@ export const CartScreen = ()=> {
                     prix total : {cart?.price} €
                 </h2>
             </div>
-            <button> Passer la commande </button>
+            <button onClick={handleOrder}> Passer la commande </button>
         </div>
     )
 }

@@ -1,9 +1,8 @@
-import { useState } from 'react'
 import './App.css'
-import { HomeScreen } from './screens/homeScreen/homeScreen'
 import { Header } from './components/header/header'
 import { RoutesContainer } from './routes/routes'
 import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './screens/authContext';
 
 
 function App() {
@@ -12,10 +11,12 @@ function App() {
   return (
     <>
     <BrowserRouter>
+     <AuthProvider>
         <Header/>
         <main id='mainContainer'>
           <RoutesContainer/>
         </main>
+     </AuthProvider>
     </BrowserRouter>
 
     </>

@@ -15,7 +15,7 @@ export const decodeCookies = (cookie) =>{
 }
 
 export const decodeCookieUser = ()=> {
-    const cookiesSplit = document.cookie.split(';')
+    const cookiesSplit = document.cookie.split('; ')
     console.log(cookiesSplit)
                 let authCookie = null
                 for (let cookie of cookiesSplit) {
@@ -33,7 +33,7 @@ export const decodeCookieUser = ()=> {
 }
 
 export const decodeCookieCart = ()=> {
-    const cookiesSplit = document.cookie.split(';')
+    const cookiesSplit = document.cookie.split('; ')
                 let cartCookie = null
                 for (let cookie of cookiesSplit) {
                     if (cookie.startsWith('cart=')) {

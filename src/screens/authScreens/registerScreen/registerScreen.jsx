@@ -5,6 +5,7 @@ import { Mail,Phone,User, Lock } from "lucide-react";
 import { useState } from "react";
 import { ValidationUser} from "../../../api/backEnd/user.backend";
 import { InputFloatLabel } from "../../../components/uiElements/inputFloatLabel/inputFloatLabel";
+import { toast, ToastContainer } from "react-toastify";
 
 export const RegisterScreen = ()=> {
 
@@ -30,9 +31,20 @@ export const RegisterScreen = ()=> {
                 console.log('pass')
                 const fetch = async ()=>{
                    const log = await ValidationUser(firstname,lastname,birthdate,email,phone,password1,identifiant)
-                   if(log){
-                    window.location.href = '/login'
-                   }
+                   log.json()
+                   .then((data)=>{
+                        if(data.message == 'email exist'){
+                            toast.error("l'email existe déjà veuillez changer d'email", {autoClose : 3000})
+                        }
+                        else if(data.message == 'email envoyé'){
+                            toast.success("veuillez valider votre email", {autoClose : 5000})
+                            window.location.href = '/login'
+                        } else {
+                            toast.error('une erreur est survenue, veuillez reessayer', {autoClose : 3000})
+                        }
+                   })
+              
+             
                 }
                 fetch()
             }
@@ -49,6 +61,7 @@ export const RegisterScreen = ()=> {
 
     return (
         <div id='registerScreenContainer'>
+        <ToastContainer/>
         <form onChange={handleChange}  onSubmit={handleSubmit} id='registerScreenForm'>
             <div className="registerScreenContainer">
             <div id='registerNameAndSurname'>
@@ -62,7 +75,7 @@ export const RegisterScreen = ()=> {
                 </div>
             </div>
             <div>
-                <InputFloatLabel placeholder="Dupont" type='date' labelName='Date de Naissance' inputName='registerScreenBirthDate' required='yes' min='2008-01-01'/>
+                <InputFloatLabel placeholder="Dupont" type='date' labelName='Date de Naissance' inputName='registerScreenBirthDate' required='yes' max='2008-01-01'/>
             </div>
             <div className='registerScreenItemContainer'>
                 <InputFloatLabel  className='InputBorderLeftOff' placeholder="Ex : jeanDupont@gmail.com" type='text' labelName='E-mail' inputName='registerScreenEmail' required='yes'minLength={6} maxLength={50}/>

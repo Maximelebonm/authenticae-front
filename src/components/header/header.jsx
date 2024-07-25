@@ -2,16 +2,16 @@ import './header.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart,User } from 'lucide-react';
 import Logo from '../../assets/logos/logo_authenticae_blanc.png';
 import { decodeCookies } from '../../helpers/decodeToken';
 import { ToggleSwitch } from '../uiElements/toggleSwitch/toggleSwitch';
-import { Store } from 'lucide-react';
+import { Store,ClipboardList,ShoppingCart,User } from 'lucide-react';
 import { getUserById, logoutApi } from '../../api/backEnd/user.backend';
+import { useAuthContext } from '../../screens/authContext';
 
 export const Header =()=>{
     const [isActive, setIsActive] = useState(false);
-
+    const { userDetails, setUserDetails } = useAuthContext();
     // const logo = '../../assets/logos/src/assets/logos/logo_authenticae_blanc.png'
     
     const toggleActive = () => {
@@ -20,34 +20,41 @@ export const Header =()=>{
 
     const [roleCookie,setRoleCookie]=useState()
     const [cookie, setCookie] = useState()
+
     useEffect(()=>{
         if(document.cookie){
             const auth = async()=>{
-                const cookies = document.cookie.split(';')
+                const cookies = document.cookie.split('; ')
+                console.log(cookies)   
                 let authCookie = null
                 for (let cookie of cookies) {
                     if (cookie.startsWith('auth=')) {
                         // Extraire la valeur du cookie après le signe '='
                         authCookie = cookie.substring('auth='.length);
+                        console.log(authCookie)          
                         break;
                     }
                 }
-                const cookie = decodeCookies(authCookie)           
+                const cookie = decodeCookies(authCookie) 
                 const getUser = await getUserById(cookie.Id_user)
-                console.log(getUser)
-                if(getUser === 'erreur : HTTPError: Request failed with status code 404 Not Found'){
-                    await logoutApi(cookie)
-                } else {
-                    const cookieTab = cookie.role.map((item)=> item.name)
-                    setRoleCookie(cookieTab)
-                    setCookie(cookie)
-                }
+                getUser.json()
+                .then(async(data)=> {
+                    console.log(data)
+                    if(data === 'erreur : HTTPError: Request failed with status code 404 Not Found'){
+                        await logoutApi()
+                    } else {
+                        const cookieTab = data.roles.map((item)=> item.name)
+                        setRoleCookie(cookieTab)
+                        setCookie(cookie)
+                        setUserDetails({user : data})
+                    }
+                })
             }
             auth()
         }
     },[])
     
-    console.log(cookie?.identifiant)
+    console.log(cookie)
     useEffect(()=>{
         const nav = document.querySelectorAll('#headerNav .headerItem');
         nav.forEach(item => {
@@ -114,10 +121,17 @@ export const Header =()=>{
                                 </div>                        
                             </>
                         }
-                        {roleCookie?.includes('producer') &&
+                        {roleCookie?.includes('producer') && 
+                        <>
                         <Link  to={cookie?.identifiant === null ? "/profil" : "/myshop"}>
                                     <li className='headerItem'> <Store />Shop</li>
-                        </Link>}
+                        </Link>
+                        <Link  to={cookie?.identifiant === null ? "/profil" : "/order"}>
+                                    <li className='headerItem'> <ClipboardList />Commandes</li>
+                        </Link>
+
+                        </>
+                        }
                         </div> 
                 </div>
                         <Link  to={roleCookie ? "/cart" : '/login'}>

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react"
 import { decodeCookies } from "../helpers/decodeToken"
-import { HomeScreen } from "../screens/homeScreen/homeScreen"
-import { LoginScreen } from "../screens/authScreens/loginScreen/loginScreen"
 
 export const PrivateRoutes = ({children,role}) => {
     const [roleCookie,setRoleCookie]=useState()

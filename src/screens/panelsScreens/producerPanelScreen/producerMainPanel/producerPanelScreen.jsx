@@ -8,6 +8,7 @@ import { ProductCard } from "../../../../components/cards/productCard/productCar
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { InputFloatLabel } from "../../../../components/uiElements/inputFloatLabel/inputFloatLabel";
+import StripeOnboarding from "../../../../components/stripe/stripeOnBoarding";
 
 export const ProducerPanelScreen = () =>{
     const cookie =  decodeCookies(document.cookie)
@@ -49,7 +50,6 @@ export const ProducerPanelScreen = () =>{
         e.preventDefault()
         try {
             const form = e.target
-            const elements = e.target.elements
             const formData = new FormData(form);
             const shopName = formData.get("shopName");
             const ShopDescription = formData.get("shopDescriptiopn");
@@ -77,27 +77,26 @@ export const ProducerPanelScreen = () =>{
         e.preventDefault()
         try {
             const form = e.target
-            const elements = e.target.elements
             const formData = new FormData(form);
             const name = formData.get("avatar");
                 const fetch = async ()=> {                   
                     if(shop){
                         if(name){
                             const route = 'updateAvatar'
-                            const upload = await updateAvatarShop(id,formData,route);
+                            await updateAvatarShop(id,formData,route);
                             setChange(!change)
                             setImgUrlAvatar()
                             notifySuccessPicture()
                         }else{
                             const route = 'updateCover'
-                            const upload = await updateAvatarShop(id,formData,route);
+                            await updateAvatarShop(id,formData,route);
                             setChange(!change)
                             setImgUrlCover()
                             notifySuccessPicture()
                         }  
                     }
                     else {
-                        const log = await createShop(id,shopName,shopDesc,avatar,couvFile)
+                        await createShop(id,shopName,shopDesc,avatar,couvFile)
                     }
                 }
                 if(imgUrlAvatar || imgUrlCover){
@@ -116,19 +115,14 @@ export const ProducerPanelScreen = () =>{
             const formData = new FormData(form);
             const shopName = formData.get("shopName");
             const description = formData.get("shopDescriptiopn");
-      
-                const fetch = async ()=> {                       
-                    const response = await createShop(id,shopName,description)
-                    if(response){
-                        const shopCreate = response.json()
-                        .then((data)=>{
-                            if(data.message === 'shop created'){
-                                setShop(data.data)
-                            }
-                        })
-                    }
+                         
+            const response = await createShop(id,shopName,description)
+            response.json()
+            .then((data)=>{
+                if(data.message === 'shop created'){
+                    setShop(data.data)
                 }
-                fetch()
+            })     
             } catch (err) {
                 alert(err)
             }
@@ -157,22 +151,23 @@ return(
         <div>
         <form encType="multipart/form-data" onSubmit={avatarSubmit} className="ProducerPanelDropZoneForm">
         <div>
-            Changer l'avatar de votre boutique
+            Changer l&apos;avatar de votre boutique
         </div>
         <div className="ProducerPanelDropZoneContainer">
         <img src={shop?.profil_picture &&  Base_URL+shop.profil_picture}/>
             <UploadDropZone setFile={setAvatarFile} loadUrlImg={setImgUrlAvatar} imageSet={imgUrlAvatar} name='avatar'/>
-            <button type='submit'> Envoyer l'image</button>
+            <button type='submit'> Envoyer l&apos;image</button>
         </div>
         </form>
         <div>
             Changer la photo de couverture de votre boutique
         </div>
+        { !shop.user.Stripe_ID && <StripeOnboarding id={shop.Id_user} />}
         <form encType="multipart/form-data" onSubmit={avatarSubmit}>
             <div className="ProducerPanelDropZoneContainer">
                 <img src={shop?.cover_picture && Base_URL+shop.cover_picture}/>
                 <UploadDropZone setFile={setCouvFile} loadUrlImg={setImgUrlCover} imageSet={imgUrlCover} name='cover'/>
-                <button type='submit'> Envoyer l'image </button>
+                <button type='submit'> Envoyer l&apos;image </button>
             </div>
         </form>
         <form onSubmit={handleSubmit} className='producerPanelform'>

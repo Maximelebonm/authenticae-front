@@ -23,7 +23,7 @@ export const ProducelPanelProductUpdate = () => {
     const [fileProduct, setFileProduct] = useState();
     const [updatePage, setUpdatePage] = useState(false)
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK;
-    const Base_URL_FRONT = import.meta.env.VITE_BASE_URL_FRONT;
+    const [onCommand,setOnCommand] = useState()
     const [materials,setMaterials] = useState();
     const [options, setOptions] = useState([])
     const [personlization,setPersonalization] = useState([])
@@ -33,7 +33,6 @@ export const ProducelPanelProductUpdate = () => {
     useEffect(()=> {
         const fetchProduct = async()=>{
             const response = await getProduct(id)
-            const materials = await getAllmaterials()
             console.log(response)
             if(response){
                 response.json()
@@ -44,6 +43,7 @@ export const ProducelPanelProductUpdate = () => {
                             setProduct(data.data.product);
                             setOptions(data.data.option);
                             setPersonalization(data.data.personalization);
+                            setOnCommand(data.data.product.on_command)
                         }
                 })
             }
@@ -105,24 +105,33 @@ export const ProducelPanelProductUpdate = () => {
     const handleChange = (e) =>{
         console.log(e)
         const input = e.target;
-        const myRegex = /^[a-zA-Z0-9-\sàáâäãåçèéêëìíîïñòóôöõùúûüýÿÀÁÂÄÃÅÇÈÉÊËÌÍÎÏÑÒÓÔÖÕÙÚÛÜÝŸ,."'\-!?]+$/
-        const Error = input.nextElementSibling;
-        // console.log(input.type)
-        if(input.type === "text"){
-            if(input.value === ""){
-                Error.innerHTML = "ecrire un nom de produit"
-            }
-            else if(myRegex.test(input.value)=== false){
-                console.log(input.value)
-                Error.innerHTML = "le nom doit comporter des lettre et tirer uniquement"
-            }
-            else{
-                Error.innerHTML =""
-            }
-        }
-        else if(input.type ==="number"){
+   
+            const myRegex = /^[a-zA-Z0-9-\sàáâäãåçèéêëìíîïñòóôöõùúûüýÿÀÁÂÄÃÅÇÈÉÊËÌÍÎÏÑÒÓÔÖÕÙÚÛÜÝŸ,."'\-!?]+$/
+            const Error = input.nextElementSibling;
+            // console.log(input.type)
+            if(input.type === "checkbox"){
+                console.log("pass")
+                const newProduct = product
+                newProduct.on_command = e.target.checked
 
-        }
+                console.log(newProduct)
+                setProduct(newProduct)
+            }
+            if(input.type === "text"){
+                if(input.value === ""){
+                    Error.innerHTML = "ecrire un nom de produit"
+                }
+                else if(myRegex.test(input.value)=== false){
+                    console.log(input.value)
+                    Error.innerHTML = "le nom doit comporter des lettre et tirer uniquement"
+                }
+                else{
+                    Error.innerHTML =""
+                }
+            }
+            // else if(input.type ==="number"){
+    
+            // }
     }
 
     const handleOptionChange = (e,Id_option,obj)=>{
@@ -184,13 +193,14 @@ export const ProducelPanelProductUpdate = () => {
             const productQuantityAvailable = formData.get("productQuantityAvailable");
             const productQuantityReservation = formData.get("productQuantityReservation");
             const producmaterial = formData.get("productMaterial");
+            const producOnCommand = onCommand;
+            const productWorkingDays = formData.get("productWorkingDays")
+            console.log(producOnCommand)
             const formOptionObject = options
             const formPersonalizationObject = personlization
-            console.log(producmaterial)
             if(producmaterial != 'none'){
-                
                 const fetch = async ()=> {                   
-                    const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject)
+                    const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject,producOnCommand,productWorkingDays)
                     if(response){
                         console.log(response)
                         response.json()
@@ -364,7 +374,6 @@ export const ProducelPanelProductUpdate = () => {
     }
 
     const upPicture = async(Id_product_image, order)=>{
-   
         const upedPicture = await upPictureApi(Id_product_image,order,product.Id_product)
         if(upedPicture){
             upedPicture.json()
@@ -384,7 +393,7 @@ export const ProducelPanelProductUpdate = () => {
     const notifySuccessUpload = () => toast.success("Produit mis à jour avec succès",{autoClose : 2000});
     const notifySuccessPicture = () => toast.success("image télécharger avec succès",{autoClose : 2000})
     
-    console.log(imgDisplay)
+    console.log(onCommand)
     
     return (
         <>
@@ -442,6 +451,10 @@ export const ProducelPanelProductUpdate = () => {
                     </div>
                 </div>
                 <div id='productUpdateNumberContainer'>
+                    <div  id="optionInputCheckBox" >
+                        <label> produit sur commande : </label>
+                        <input type='checkbox' name={`onCommand`} checked={onCommand} onChange={()=> setOnCommand(!onCommand)}/>
+                    </div>
                     <div className='productUpdateInputContainerNumber'>
                         <label>*Matière principale utilisé :</label>
                         <select className='panelInput' placeholder='Prix du produit' name='productMaterial' defaultValue={product?.Id_material || "none"} required>
@@ -457,17 +470,21 @@ export const ProducelPanelProductUpdate = () => {
                     </div>
                     <div className='productUpdateInputContainerNumber'>
                         <label>*quantité disponible : </label>
-                        <input className='panelInput' type='number' placeholder='Quantité disponible' name='productQuantityAvailable' defaultValue={product?.quantity_available} min={0} max={100} required/> 
+                        <input className='panelInput' type='number' placeholder='Quantité disponible' name='productQuantityAvailable' defaultValue={product?.quantity_available} min={0} max={50} required/> 
                     </div>
                     <div className='productUpdateInputContainerNumber'>
+                        <label>*Jour de travail : </label>
+                        <input className='panelInput' type='number' placeholder='Jour de travail' name='productWorkingDays' defaultValue={product?.working_days} min={0} max={90} required/> 
+                    </div>
+                    {/* <div className='productUpdateInputContainerNumber'>
                         <label>*quantité réservable : (5 maximum) </label>
                         <input className='panelInput' type='number' placeholder='Quantité reservable' name='productQuantityReservation' defaultValue={product?.quantity_reservation} min={0} max={5} required/> 
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div>
                 {options.map((item,index)=> {
-                    console.log(item)
+                    {/* console.log(item) */}
                     return <OptionComponent 
                                 props={item} 
                                 key={index} 
@@ -496,7 +513,7 @@ export const ProducelPanelProductUpdate = () => {
            
             <button className='panelInput' type='submit'> valider </button>
         </form>
-            <button className='panelInput' onClick={deleteP}> suprimer l'article </button>
+            <button className='panelInput' onClick={deleteP}> suprimer l&apos;article </button>
         </div>
         </>
         }

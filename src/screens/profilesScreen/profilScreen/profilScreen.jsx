@@ -6,16 +6,18 @@ import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { AddressComponent } from "../../../components/address/address.component";
 import { InputFloatLabel } from "../../../components/uiElements/inputFloatLabel/inputFloatLabel";
-import { addAddressApi } from "../../../api/backEnd/address.backend";
+import { addAddressApi, deleteAdressApi } from "../../../api/backEnd/address.backend";
+import { toast, ToastContainer } from "react-toastify";
 
 export const ProfilScreen = ()=>{
     const [token,setToken] = useState()
     const [pseudo,setPseudo] = useState(false)
     const [user,setUser] = useState()
     const [address, setAddress] = useState([])
+    const [reload, setReload] = useState(true)
 
     useEffect(()=>{
-        const cookies = document.cookie.split(';')
+        const cookies = document.cookie.split('; ')
                 let authCookie = null
                 for (let cookie of cookies) {
                     if (cookie.startsWith('auth=')) {
@@ -43,7 +45,7 @@ export const ProfilScreen = ()=>{
             fetch()
        
         }
-    },[pseudo])
+    },[pseudo,reload])
 
     const pseudoSubmit = async (e)=>{
         e.preventDefault()
@@ -72,7 +74,7 @@ export const ProfilScreen = ()=>{
 
     const addAdress = () => {
         const Id_address = uuidv4()
-        setAddress([...address, { Id_address : Id_address, country : '', cityCode : '',city : '', additional : '',street : '', number :''}]) 
+        setAddress([ { Id_address : Id_address, country : '', cityCode : '',city : '', additional : '',street : '', number :''}, ...address]) 
     }
 
     const handleSubmitAdress = (e) => {
@@ -96,7 +98,8 @@ export const ProfilScreen = ()=>{
                     response.json()
                     .then((data)=>{
                             if(data.message === 'address created'){
-                                setAddress(data.data)
+                                toast.success('adresse mis à jour !', {autoclose : 2000})
+                                setReload(!reload)
                             }
                         })
                     }
@@ -177,9 +180,22 @@ export const ProfilScreen = ()=>{
         })
         setAddress(newAdress)
     }
+
+    const deleteAdress = (e,Id_adress)=> {
+        (async()=>{
+            const resp = await deleteAdressApi(Id_adress)
+            resp.json()
+            .then((data)=>{
+                if(data.message == "row deleted")
+                    toast.success('adress supprimé', {autoclose : 2000});
+                    setReload(!reload)
+            })
+        })()
+    }
 console.log(user)
     return (
         <div className="profileScreenContainer">
+        <ToastContainer/>
                 {
                 token?.identifiant ? 
                 <>
@@ -200,7 +216,7 @@ console.log(user)
                 </Link>
                 <button type="button" onClick={addAdress} >ajouter une address</button>
                     {address.map((item,index)=>{
-                        return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e)=>handleSubmitAdress(e)} />
+                        return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e)=>handleSubmitAdress(e)} deleteAddress={(e,Id_address)=>deleteAdress(e,Id_address)}/>
                     })}          
                 </>
                 : 

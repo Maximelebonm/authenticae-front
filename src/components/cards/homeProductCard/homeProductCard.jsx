@@ -2,7 +2,7 @@ import './homeProductCard.css'
 import logo from '../../../assets/logos/logo_authenticae_blanc.png';
 export const HomeProductCards = ({props,picture}) => {
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK
-
+    console.log(picture)
     const {name,price} = props
 
     return (

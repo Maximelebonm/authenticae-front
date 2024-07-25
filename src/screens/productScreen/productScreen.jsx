@@ -84,9 +84,6 @@ export const ProductScreen = () => {
             ...prevSelectedOptions,
             [idOption]: event.target.value
         }));
-
-        console.log(idOption)
-        console.log(product)
         if(event.target.value == "none"){
             const updatedOptions = selectedProduct.options.filter((item) => {return item.option !== idOption});
             console.log(updatedOptions)
@@ -201,7 +198,6 @@ export const ProductScreen = () => {
             console.log(error)
         }
     }
-    console.log(selectedProduct)
 
     return (
         <>
@@ -260,20 +256,21 @@ export const ProductScreen = () => {
                                     <select className='productOption' name='optionSelected'  value={selectedOptions[item.Id_product_option] || 'none'} onChange={(e)=>handleOptionChange(e,item.Id_product_option)}>
                                         <option value="none">Selectionner une option</option>
                                         {item.subOptions.map((subItem,subIndex)=>{
-                                                if(subItem.quantity_available > 0){
+                                                if(subItem){
                                                 return (
-                                                    <option key={subIndex} value={JSON.stringify(subItem)} > {subItem.detail + ' (+ ' + subItem.price + '€) displonible'}</option>
+                                                    <option key={subIndex} value={JSON.stringify(subItem)} > {subItem.detail + ' (+ ' + subItem.price + '€)'}</option>
                                                 )
                                                 } 
-                                                if(subItem.quantity_reservation > 0){
+                                                {/* if(subItem.quantity_reservation > 0){
                                                     return (
                                                         <option key={subIndex} value={JSON.stringify(subItem)} > {subItem.detail + ' (+ ' + subItem.price + '€) à réserver'}</option>
                                                     ) 
-                                                } else {
+                                                }
+                                                 else {
                                                     return (
                                                         <option key={subIndex} disabled> {subItem.detail + ' (+ ' + subItem.price + '€) Non disponible'}</option>
                                                     ) 
-                                                }
+                                                } */}
                                         })}
                                     </select>      
                             </div>

@@ -7,7 +7,7 @@
   
   --font_color : black;
   --title_color : black;
-  --body_color: #DBC7AC;
+  --body_color: #ffffff;
   --link_color : black;
   --hover_color : white;
   --white_only : white;
@@ -16,7 +16,7 @@
   --primary_color : #DBC7AC;
   --nuance_color3 : #86735B;
   --nuance_color4 : #b39e82;
-  --nuance_color5 : #b39e82;
+  --nuance_color5 : #dfccb3;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

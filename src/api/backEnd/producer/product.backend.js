@@ -43,16 +43,18 @@ export const getAllProduct = async () => {
     }
 }
 
-export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject) => {
-    console.log('update')
+export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject,producOnCommand,productWorkingDays) => {
+    console.log(producOnCommand)
     try {
         const response = await ky.put(`${InitRequest()}/product/update/${id}`,{
             json : {
                 name : productName,
                 description : productDescription,
                 specification : productSpecification,
+                on_command : producOnCommand,
                 Id_material : producmaterial,
                 price : productPrice,
+                productWorkingDays : productWorkingDays,
                 quantity_available : productQuantityAvailable,
                 quantity_reservation : productQuantityReservation,
                 options : formOptionObject,

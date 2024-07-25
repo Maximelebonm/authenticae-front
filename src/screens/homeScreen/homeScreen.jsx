@@ -28,8 +28,7 @@ return (
         </section>
         <section id="homeScreenProducts">
             {product?.map((item,index)=>{
-                   const mainPicture = item.productImages.find((item)=> item.order == 0)
-                   console.log(mainPicture)
+                   const mainPicture = item.productImages[0]
                 return(
                     <Link to={`/product/${item.Id_product}`}  key={index}>
                         <HomeProductCards props={item} picture={mainPicture} />

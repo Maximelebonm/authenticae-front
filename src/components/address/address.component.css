@@ -8,6 +8,8 @@
     align-items: center;
     padding : 20px;
     box-sizing: border-box;
+    margin-top : 10px;
+    background-color: var(--nuance_color3);
     &>div {
         width : 75%;
     }

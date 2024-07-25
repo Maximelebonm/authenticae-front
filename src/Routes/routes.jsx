@@ -16,10 +16,16 @@ import { ProducerPanelProductScreen } from '../screens/panelsScreens/producerPan
 import { ProducelPanelProductUpdate } from '../screens/panelsScreens/producerPanelScreen/productUpdateScreen/producerPanelProductUpdate.jsx';
 import { ProductScreen } from '../screens/productScreen/productScreen';
 import { ValidationScreen } from '../screens/authScreens/valdationScreen/validationScreen';
-import { CartScreen } from '../screens/cartScreen/cartScreen.jsx';
+import { CartScreen } from '../screens/orderScreensAndcontext/cartScreen/cartScreen.jsx';
+import { PayementScreen } from '../screens/orderScreensAndcontext/payementScreen/payementscreen.jsx';
+import { OrderProvider } from '../screens/orderScreensAndcontext/orderContext.jsx';
+import { CartValidationScreen } from '../screens/orderScreensAndcontext/CartValidationScreen/cartValidationscreen.jsx';
+import { OrderScreen } from '../screens/panelsScreens/producerPanelScreen/commandsScreen/OrderScreen.jsx';
+import { SuccessOrderScreen } from '../screens/orderScreensAndcontext/successOrderscreen/successOrderScreen.jsx';
 
 export const RoutesContainer = () =>{
     return (
+        <>
         <Routes>
             <Route path='/validation/:token' element={<ValidationScreen/>} />
             <Route path={URL_FRONT.PRODUCER_PANEL} element={ 
@@ -28,17 +34,7 @@ export const RoutesContainer = () =>{
                 </PrivateRoutes>}/>
             <Route path='/' element={<HomeScreen/>}/>
             <Route path='/producer' element={<ProducerListScreen/>}/>
-           
-            <Route path='/profil' element={
-                <PrivateRoutes role={['client']}>
-                    <ProfilScreen/>
-                </PrivateRoutes>
-            }/>
-                 <Route path='/cart' element={
-                <PrivateRoutes role={['client']}>
-                    <CartScreen/>
-                </PrivateRoutes>
-            }/>
+            <Route path='/profil' element={<PrivateRoutes role={['client']}><ProfilScreen/></PrivateRoutes>}/>
               <Route path='/paneladmin' element={
                 <PrivateRoutes role={['administrator']}>
                     <AdminPanelScreen/>
@@ -64,9 +60,15 @@ export const RoutesContainer = () =>{
             <Route path='/shop/:id' element={
                     <ProducerShopScreen/>
             }/>   
+
                 <Route path='/myshop/product/createProduct' element={
                 <PrivateRoutes role={['producer']}>
                     <ProducerPanelProductScreen/>
+                </PrivateRoutes>
+            }/>   
+                        <Route path='/order' element={
+                <PrivateRoutes role={['producer']}>
+                    <OrderScreen/>
                 </PrivateRoutes>
             }/>   
             <Route path='/myshop/product/:id' element={
@@ -75,5 +77,14 @@ export const RoutesContainer = () =>{
                 </PrivateRoutes>
             }/>           
         </Routes>
+        <OrderProvider>
+            <Routes>  
+                <Route path='/cart' element={<PrivateRoutes role={['client']}><CartScreen/></PrivateRoutes>}/>
+                <Route path='/cartvalidation' element={<PrivateRoutes role={['client']}><CartValidationScreen/></PrivateRoutes>}/>  
+                <Route path='/paiement' element={<PrivateRoutes role={['client']}><PayementScreen/></PrivateRoutes>}/>  
+                <Route path='/paiement/success' element={<PrivateRoutes role={['client']}><SuccessOrderScreen/></PrivateRoutes>}/>
+            </Routes>
+        </OrderProvider>
+        </>
     )
 }

@@ -6,11 +6,9 @@
     height: 300px;
     color: rgb(0, 0, 0);
     overflow : hidden;
-    background-color: white;
+    background-color: var(--nuance_color5);
     box-sizing: border-box;
-    
     padding : 10px;
-    
     &:hover {
         cursor : pointer;
         box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.1);

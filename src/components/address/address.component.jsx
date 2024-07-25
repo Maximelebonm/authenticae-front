@@ -1,12 +1,8 @@
 import './address.component.css';
-import { Heart } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { Trash2 } from 'lucide-react';
 import { InputFloatLabel } from '../uiElements/inputFloatLabel/inputFloatLabel';
 
-
-export const AddressComponent = ({props, onChange, submitAdress}) => {
+export const AddressComponent = ({props, onChange, submitAdress, deleteAddress}) => {
     const {Id_address, country,city, additional,cityCode, street , number} = props;
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK
     
@@ -32,8 +28,11 @@ export const AddressComponent = ({props, onChange, submitAdress}) => {
                     </div>
                 </div>
                 <InputFloatLabel onchange={(e)=>onChange(e,'additionnal',Id_address)} placeholder='Ex : Batiment porte 34' type='text' labelName='Informations complétmentaire' inputName={'additional'} inputValue={additional} minLength={0} maxLength={255}/>
+                <div>
+                <button type='button' onClick={(e)=>deleteAddress(e,Id_address)}><Trash2/></button>
+                <button type='submit'>Valider l&apos;adresse</button> 
+                </div>
             </div>
-            <button type='submit'>Valider l'adresse</button>
             </form>
     )
 }

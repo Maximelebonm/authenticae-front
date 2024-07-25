@@ -14,7 +14,6 @@ export const getUserById = async (id) => {
     console.log(id)
     try {
         const user = await ky.get(`${InitRequest()}/users/profile/${id}`,{credentials : 'include'})
-        console.log(user)
         return user
     } catch (err){
         console.log('erreur')
@@ -92,13 +91,9 @@ export const registerUser = async (firstname,lastname,birthdate,email,phone,pass
         return "erreur : " + err;
     }
 }
-export const logoutApi = async (cookie) => {
-    console.log(cookie)
+export const logoutApi = async () => {
     try {
         const response = await ky.post(`${InitRequest()}/users/logout`,{
-            json: {
-
-            },
             credentials : 'include'
         
         }).json();
