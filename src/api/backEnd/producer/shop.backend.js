@@ -26,6 +26,17 @@ export const getShop = async (id) => {
         return "erreur : " + err;
     }
 }
+
+export const getShopByIdAPI = async (id) => {
+    try {
+        const shop = await ky.get(`${InitRequest()}/shop/find/${id}`,
+        {credentials : 'include'})
+        return shop
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
 export const getAllShop = async () => {
     try {
         const shopList = await ky.get(`${InitRequest()}/shop`,

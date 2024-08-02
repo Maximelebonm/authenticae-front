@@ -2,10 +2,14 @@ import { useEffect } from 'react'
 import { ProducteurCard } from '../../components/cards/producteurCard/producteurCard'
 import './ProducerListScreen.css'
 import { getAllShop} from '../../api/backEnd/producer/shop.backend'
-import { useState } from 'react'
+import { useState } from 'react';
+import { InputFloatLabel } from '../../components/uiElements/inputFloatLabel/inputFloatLabel';
+import { Search } from 'lucide-react';
 
 export const ProducerListScreen = () => {
-    const [shop,setShop] = useState()
+    const [shop,setShop] = useState();
+    const [searchShop,setsearchShop] = useState();
+    const [refresh,setRefresh] = useState();
     useEffect(()=>{
         (async() =>{
             const response = await getAllShop()
@@ -13,20 +17,27 @@ export const ProducerListScreen = () => {
             .then(data =>{
                 console.log(data)
                 setShop(data.data)
+                setsearchShop(data.data)
             })
         })();
-    },[])
-console.log(shop)
+    },[refresh])
+
+    const handleChange =(e)=> {
+        if(e.target.value === ''){
+            setRefresh(!refresh)
+        }
+        const new_list = shop.filter((item)=> item.name.includes(e.target.value))
+        setsearchShop(new_list)
+    }
+
     return (
         <div id='producteursScreenContainer'>
         <section>
-            <h1>
-                Ici une barre de recherche
-            </h1>
+        <InputFloatLabel type='text' onchange={handleChange} placeholder="Exemple : dou'crochet" labelName={<div id='homeSeachInput'><Search size={16}/>Recherche</div>}/>
         </section>
             <section id="producteursScreenProducts">
             {
-            shop?.map((item,index)=>{
+                searchShop?.map((item,index)=>{
                 return (
                     <ProducteurCard props={item} key={index} />
                 )

@@ -25,3 +25,8 @@ section#homeScreenProducts{
 #homeScreenProducts{
     width : 100%;   
 }
+
+#homeSeachInput{
+    display : flex;
+    align-items: center;
+}

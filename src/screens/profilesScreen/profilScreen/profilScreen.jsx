@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { AddressComponent } from "../../../components/address/address.component";
 import { InputFloatLabel } from "../../../components/uiElements/inputFloatLabel/inputFloatLabel";
-import { addAddressApi, deleteAdressApi } from "../../../api/backEnd/address.backend";
+import { addAddressApi, deleteAdressApi, updateAddressApi } from "../../../api/backEnd/address.backend";
 import { toast, ToastContainer } from "react-toastify";
 
 export const ProfilScreen = ()=>{
@@ -77,7 +77,7 @@ export const ProfilScreen = ()=>{
         setAddress([ { Id_address : Id_address, country : '', cityCode : '',city : '', additional : '',street : '', number :''}, ...address]) 
     }
 
-    const handleSubmitAdress = (e) => {
+    const handleSubmitAdress = (e,Id_address) => {
         e.preventDefault()
         try {
             const form = e.target
@@ -90,21 +90,34 @@ export const ProfilScreen = ()=>{
             const formAdditional = formData.get("additional");
             const id = token.Id_user
             const formObject = {formCountry,formCitycode,formCity,formNumber,formStreet,formAdditional}
+
             const fetch = async ()=> {  
-                console.log(formObject)                     
-                const response = await addAddressApi(formObject,id)
-                if(response){
-                    console.log(response)
-                    response.json()
-                    .then((data)=>{
-                            if(data.message === 'address created'){
-                                toast.success('adresse mis à jour !', {autoclose : 2000})
-                                setReload(!reload)
-                            }
-                        })
-                    }
+                console.log(formObject)
+                let addressExist = false
+                user.addresses.forEach((item)=>{
+                    if(item.Id_address === Id_address){
+                        addressExist = true
+                    }                
+                })
+                let response
+                if(addressExist){
+                    response = await updateAddressApi(formObject,Id_address)
+                } else {
+                    response = await addAddressApi(formObject,id)
                 }
-                fetch()
+                response.json()
+                .then((data)=>{
+                    if(['address created','address updated'].includes(data.message)){
+                        toast.success('adresse mis à jour !', {autoclose : 2000})
+                        setReload(!reload)           
+                    } else {
+                        toast.error('Une erreur est survenu', {autoclose : 2000})
+                    }
+                })
+            };
+
+            fetch()
+
             } catch (err) {
                 alert(err)
             }
@@ -196,42 +209,23 @@ console.log(user)
     return (
         <div className="profileScreenContainer">
         <ToastContainer/>
-                {
-                token?.identifiant ? 
-                <>
-                Votre identifiant est : {token.identifiant} (non modifiable)
                 <form onSubmit={handleSubmitProfile}>
+                    votre adress Email : {user?.email}
                     <InputFloatLabel placeholder="Ex : John" onchange={(e)=>handleChangeProfile(e,'firstname')} type='text' labelName='prénom' inputName='firstname' inputValue={user?.firstname ?? ''} required='yes' maxLength={30} minLength={1}/>
                     <InputFloatLabel placeholder="ex : Dupont" onchange={(e)=>handleChangeProfile(e,'lastname')} type='text' labelName='Nom' inputName='lastname' inputValue={user?.lastname ?? ''} required='yes' minLength={1} maxLength={50}/>
-                    <InputFloatLabel placeholder="" type='date' onchange={(e)=>handleChangeProfile(e,'birthdate')} labelName='Date de Naissance' inputName='birthdate' inputValue={user?.birthdate ?? ''} required='yes' min='2008-01-01'/>
+                    <InputFloatLabel placeholder="" type='date' onchange={(e)=>handleChangeProfile(e,'birthdate')} labelName='Date de Naissance' inputName='birthdate' inputValue={user?.birthdate ?? ''} required='yes' max='2008-01-01'/>
                     <InputFloatLabel placeholder="Ex : 0606060606" onchange={(e)=>handleChangeProfile(e,'phone')} type='number' labelName='N° de téléphone' inputName='phone' inputValue={user?.phone ?? ''} required='yes' maxLength={30} minLength={12} />
                     <button>Valider profil</button>
                 </form>
                 <div>
-                    votre adress Email : {user?.email}
-                    <button>Modifier</button>
                 </div>
                 <Link to="/cart">
                     <div>votre panier</div>
                 </Link>
                 <button type="button" onClick={addAdress} >ajouter une address</button>
                     {address.map((item,index)=>{
-                        return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e)=>handleSubmitAdress(e)} deleteAddress={(e,Id_address)=>deleteAdress(e,Id_address)}/>
-                    })}          
-                </>
-                : 
-                <div>
-                Veuillez choisir un pseudonyme afin de finaliser votre compte. <br/>
-                ATTENTION Celui ci n&apos;est pas modifiable !
-                    <div>
-                        <form onSubmit={pseudoSubmit}>
-                            <input type='text' placeholder="Votre pseudo"  name='pseudo' required minLength={3} maxLength={50}/>
-                                <User/>
-                            <button type='submit'>Valider</button>
-                        </form>
-                    </div>
-                </div>
-                }
+                        return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e,Id_address)=>handleSubmitAdress(e,Id_address)} deleteAddress={(e,Id_address)=>deleteAdress(e,Id_address)}/>
+                    })}
         </div>
     )               
 }

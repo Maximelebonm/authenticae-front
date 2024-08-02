@@ -15,7 +15,6 @@ export const addAddressApi = async (formObject,id) => {
             },
             credentials : 'include'
         })
-        console.log(response)
         return response
     } catch (err){
         return "erreur : " + err;
@@ -27,7 +26,26 @@ export const deleteAdressApi = async(Id_address)=>{
         const response = await ky.put(`${InitRequest()}/address/delete/${Id_address}`,{
             credentials : 'include'
         })
-        console.log(response)
+        return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const updateAddressApi = async (formObject,id) => {
+    try {
+        const response = await ky.put(`${InitRequest()}/address/update/${id}`,{
+            json : {
+                country : formObject.formCountry,
+                city : formObject.formCity,
+                cityCode : formObject.formCitycode,
+                number : formObject.formNumber,
+                street : formObject.formStreet,
+                additional :formObject.formAdditional,
+                Id_address : id
+            },
+            credentials : 'include',
+        })
         return response
     } catch (err){
         return "erreur : " + err;

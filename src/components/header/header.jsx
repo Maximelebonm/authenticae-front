@@ -123,10 +123,10 @@ export const Header =()=>{
                         }
                         {roleCookie?.includes('producer') && 
                         <>
-                        <Link  to={cookie?.identifiant === null ? "/profil" : "/myshop"}>
+                        <Link  to={"/myshop"}>
                                     <li className='headerItem'> <Store />Shop</li>
                         </Link>
-                        <Link  to={cookie?.identifiant === null ? "/profil" : "/order"}>
+                        <Link  to={"/order"}>
                                     <li className='headerItem'> <ClipboardList />Commandes</li>
                         </Link>
 
@@ -136,6 +136,9 @@ export const Header =()=>{
                 </div>
                         <Link  to={roleCookie ? "/cart" : '/login'}>
                             <li className='headerItem'><ShoppingCart /> Panier</li>
+                        </Link>
+                        <Link  to={roleCookie ? "/commands" : '/login'}>
+                                    <li className='headerItem'> <ClipboardList />Commandes</li>
                         </Link>
             </ul>
         <div id='icons' onClick={toggleActive}>

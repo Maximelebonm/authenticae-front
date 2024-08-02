@@ -341,7 +341,7 @@ export const ProducelPanelProductUpdate = () => {
     }
 
     const deletePicture = async (id,name) => {
-        const response = await deletePictureApi(id,name,cookie.identifiant,product.Id_product)
+        const response = await deletePictureApi(id,name,cookie.identifiant,product.Id_product,cookie.Id_user)
         if(response){
             console.log(response)
             response.json()

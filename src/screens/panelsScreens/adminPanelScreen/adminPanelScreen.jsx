@@ -7,13 +7,17 @@ import { addProducerRole, deleteProducerRole } from "../../../api/backEnd/admin.
 export const AdminPanelScreen =()=>{
     const [users,setUsers]=useState()
     const [ChangeRole, setChangeRole]= useState(false)
+    const [userSearch,setUserSearch] = useState()
+    const [refresh,setRefresh] = useState(true)
+
     useEffect(()=>{
         const fetchUsers = async ()=>{
             try{
                 const resonse = await getAllUser()
-                const users = resonse.json()
+                resonse.json()
                 .then(data=>{
                     setUsers(data)
+                    setUserSearch(data)
                 })
             }
             catch (err){
@@ -21,7 +25,7 @@ export const AdminPanelScreen =()=>{
             }
         }
         fetchUsers()
-    },[ChangeRole])
+    },[ChangeRole,refresh])
     console.log(users)
 
     
@@ -40,10 +44,19 @@ export const AdminPanelScreen =()=>{
         setChangeRole(!ChangeRole)
     }
 
+    const handleChange =(e)=> {
+        if(e.target.value === ''){
+            setRefresh(!refresh)
+        }
+        const new_users = users.filter((item)=> item.email.includes(e.target.value))
+        setUserSearch(new_users)
+    }
+
     return (
     <div id='adminPanelScreenContainer'>
+        <input onChange={(e)=>handleChange(e)}/>
         {
-            users?.map((item,index)=>{
+            userSearch?.map((item,index)=>{
                 const hasProducerRole = item.roles.some(role => role.name === "producer");
                 console.log(hasProducerRole)
                 return (

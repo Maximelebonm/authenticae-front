@@ -22,7 +22,7 @@
     object-fit: cover;
 }
 .homeProductTextHover{
-    opacity : 0;
+    opacity : 1; /* Si passe a 0 enleve les textes*/
     transition: 0.25s ease;   
 }
 .homeProductName{

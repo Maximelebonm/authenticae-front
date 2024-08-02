@@ -1,6 +1,6 @@
 import './ProducerShopScreen.css'
 import { useParams } from 'react-router-dom';
-import { getShop } from '../../../api/backEnd/producer/shop.backend';
+import { getShop, getShopByIdAPI } from '../../../api/backEnd/producer/shop.backend';
 import { decodeCookies } from '../../../helpers/decodeToken';
 import { useEffect,useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -19,7 +19,7 @@ export const ProducerShopScreen = () => {
     useEffect(()=>{
         const fetch = async ()=>{
             try {
-                const response = await getShop(cookie.Id_user)
+                const response = await getShopByIdAPI(id)
                 if(response){
                     response.json()
                     .then(data=>{

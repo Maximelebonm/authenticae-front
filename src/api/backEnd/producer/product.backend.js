@@ -184,7 +184,7 @@ export const upPictureApi = async(Id_product_image,order,Id_product)=> {
     }
 }
 
-export const deletePictureApi = async (id,name,pseudo,Id_product) => {
+export const deletePictureApi = async (id,name,pseudo,Id_product,Id_user) => {
     console.log('api')
     try {
         const response = await ky.delete(`${InitRequest()}/product/deletePicture/${id}`,{
@@ -192,6 +192,7 @@ export const deletePictureApi = async (id,name,pseudo,Id_product) => {
                 name : name,
                 pseudo : pseudo,
                 Id_product : Id_product,
+                Id_user : Id_user,
             },
             credentials : 'include',
         })

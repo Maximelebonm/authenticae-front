@@ -23,12 +23,18 @@ export const AdminUserPanelScreen = ()=> {
     return (
     <div>
         <form>
+            {user?.Id_user}
             <input type='text' defaultValue={user?.firstname}/>
             <input type='text' defaultValue={user?.lastname}></input>
             <input type='text' defaultValue={user?.email}></input>
-            {user?.roles.map((index,item)=>{
-
+            <div>
+                roles : 
+            {user?.roles.map((item,index)=>{
+                return (
+                    <div key={index}> {item.name} </div>
+                )
             })}
+            </div>
             <button onSubmit={handleSubmit}>Valider</button>
         </form>
     </div>
