@@ -1,6 +1,7 @@
 .productContainer{
     display : flex;
     padding-top: 10px;
+    color : var(--font_color);
 }
 
 .productScreenImage{
@@ -11,6 +12,7 @@
     width : 40%;
     text-align: start;
     padding-top: 10px;
+    color : var(--font_color);
 }
 .productOption{
     font-size: larger;

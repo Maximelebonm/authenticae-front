@@ -1,6 +1,7 @@
 import { CardElement,useStripe,useElements } from "@stripe/react-stripe-js";
 import { paymentStripeApi } from "../../api/backEnd/buyProcess/stripe.backend";
 import { useNavigate } from "react-router-dom";
+import './checkOutForm.css'
 
 export const CheckOutForm = ({props}) => {
     const stripe = useStripe();
@@ -52,10 +53,12 @@ export const CheckOutForm = ({props}) => {
     }
 
     return(
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='checkOutForm'>
+            <div className="checkOutformRecap">Montant à payer : {cart.price} €</div>
             <CardElement
                 options={{
-                    hidePostalCode : true
+                    hidePostalCode : false,
+                    disableLink : true,
                 }}
             />
             <button type='submit'>Payer</button>

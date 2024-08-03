@@ -4,7 +4,7 @@ import ky from "ky";
 export const getOrderApi = async (id)=> {
     try {
         console.log("order pass" , id)
-        const response = await ky.get(`${InitRequest()}/payment/producer/${id}`,{
+        const response = await ky.get(`${InitRequest()}/order/producer/${id}`,{
             credentials : 'include'
         })
         console.log(response)
@@ -17,7 +17,7 @@ export const getOrderApi = async (id)=> {
 export const inProductionApi = (id,email)=>{
     try {
         console.log("pass")
-        const req = ky.post(`${InitRequest()}/payment/producer/accepted/${id}`,{
+        const req = ky.post(`${InitRequest()}/order/producer/accepted/${id}`,{
             json : {
                 email : email,
             },
@@ -31,7 +31,7 @@ export const inProductionApi = (id,email)=>{
 
 export const cancelProductionApi = (id,email)=>{
     try {
-        const req = ky.post(`${InitRequest()}/payment/producer/cancelAccepted/${id}`,{
+        const req = ky.post(`${InitRequest()}/order/producer/cancelAccepted/${id}`,{
             json : {
                 email : email,
             },
@@ -46,7 +46,7 @@ export const cancelProductionApi = (id,email)=>{
 export const sendProductApi = (id,email)=>{
     try {
         console.log("pass")
-        const req = ky.post(`${InitRequest()}/payment/producer/send/${id}`,{
+        const req = ky.post(`${InitRequest()}/order/producer/send/${id}`,{
             json : {
                 email : email,
             },
@@ -61,13 +61,24 @@ export const sendProductApi = (id,email)=>{
 export const cancelSendProductApi = (id,email)=>{
     try {
         console.log("pass")
-        const req = ky.post(`${InitRequest()}/payment/producer/cancelsend/${id}`,{
+        const req = ky.post(`${InitRequest()}/order/producer/cancelsend/${id}`,{
             json : {
                 email : email,
             },
             credentials : 'include'
         })
         return req
+    } catch (error) {
+        return error
+    }
+}
+
+export const getUserCommandsApi = async(id)=> {
+    try {
+        const resp = await ky.get(`${InitRequest()}/order/usercommands/${id}`,{
+            credentials : 'include'
+        })
+        return resp.json()
     } catch (error) {
         return error
     }

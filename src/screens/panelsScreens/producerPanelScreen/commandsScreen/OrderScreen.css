@@ -1,4 +1,23 @@
+.orderProductContainer{
+    margin : 10px;
+    padding : 10px;
+    background-color: var(--nuance_color5);
+    border-radius: 15px;
+}
+
+.orderProductSection{
+  display : flex;
+  justify-content: space-between;
+}
+
+.orderProductItem{
+    display : flex;
+    flex-direction: column;
+    justify-content: center;
+}
+  
 #orderImage {
     width : 100px;
     height : 100px;
+    border-radius : 15px;
 }

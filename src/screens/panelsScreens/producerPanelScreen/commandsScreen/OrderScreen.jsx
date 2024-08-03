@@ -121,42 +121,56 @@ export const OrderScreen =()=> {
            itemOrder.orderproducts.map((item,index)=>{
             console.log(item)
             return (
-                <div key={index}>
-                {<img src={item?.product?.productImages?.[0]?.storage ? base_URL + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
-                <div>
-                    {item.product.name}
-                </div>
-                <div>
-                   quantité : {item.quantity}
-                </div>
-                <div>
-                   prix payé : {item.price}
-                </div>
-                {
-                    item.orderproductoptions.map((itemOrderProductOption,index)=>{
-                    return (
-                        <div key={index}>
-                            <div>{itemOrderProductOption.productoption.name} : {itemOrderProductOption.subOption.detail}
+                <div key={index} className='orderProductContainer'>
+                    <div className='orderProductSection'>
+                        <div className='orderProductItem'>
+                            <div>
+                                {item.product.name}
+                            </div>   
+                            {<img src={item?.product?.productImages?.[0]?.storage ? base_URL + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
+                        </div>
+                        <div className='orderProductItem'>
+                            <div>
+                                quantité : {item.quantity}
+                            </div>
+                            <div>
+                                prix payé : {item.price}
                             </div>
                         </div>
-                        )
-                    })
-                }
-                {
-                    item.orderproductpersonalizations.map((itemOrderPersonalization,index)=>{
-                        return (
-                            <div key={index}>
-                                {itemOrderPersonalization.consumer_text}
-                            </div>
-                        )
-                    })
-                }
+                        <div className='orderProductItem'>
+                        options :
+                        {
+                            item.orderproductoptions.map((itemOrderProductOption,index)=>{
+                            return (
+                                <div key={index}>
+                                    <div>{itemOrderProductOption.productoption.name} : {itemOrderProductOption.subOption.detail}
+                                    </div>
+                                </div>
+                                )
+                            })
+                        }
 
-                <div>
-                {item.order_state == 'wait' ? <button onClick={()=>{handleProduction(item.Id_order_product,itemOrder.user.email)}}>Pris en charge</button> : <button onClick={()=> {cancelProduction(item.Id_order_product,itemOrder.user.email)}}>annuler prise en charge</button>}
-                {errorMail && <button>Error</button>}
-                {(item.order_state == 'wait' || item.order_state == 'production') ? <button onClick={()=>{handleProductSend(item.Id_order_product,itemOrder.user.email)}} >Envoyé</button> : <button onClick={()=>{cancelProductSend(item.Id_order_product,itemOrder.user.email)}} > annulé envoie</button>}
-                </div>
+                        </div>
+                        <div className='orderProductItem'>
+                            personalisation : 
+                        {
+                            item.orderproductpersonalizations.map((itemOrderPersonalization,index)=>{
+                                return (
+                                    <div key={index}>
+                                        {itemOrderPersonalization.consumer_text}
+                                    </div>
+                                )
+                            })
+                        }
+                        </div>
+                    </div>
+                    <div className='orderProductButtons'>
+                        <div>
+                        {item.order_state == 'wait' ? <button onClick={()=>{handleProduction(item.Id_order_product,itemOrder.user.email)}}>Pris en charge</button> : <button onClick={()=> {cancelProduction(item.Id_order_product,itemOrder.user.email)}}>annuler prise en charge</button>}
+                        {errorMail && <button>Error</button>}
+                        {(item.order_state == 'wait' || item.order_state == 'production') ? <button onClick={()=>{handleProductSend(item.Id_order_product,itemOrder.user.email)}} >Envoyé</button> : <button onClick={()=>{cancelProductSend(item.Id_order_product,itemOrder.user.email)}} > annulé envoie</button>}
+                        </div>
+                    </div>
                 </div>
             )
         })

@@ -3,7 +3,7 @@ import ky from "ky";
 //req.body.cart.price
 export const paymentStripeApi = (id,price,cart, user, address_delivery,address_billing)=> {
     try {
-        const stripeReq = ky.post(`${InitRequest()}/payment/stripe/charge`,{
+        const stripeReq = ky.post(`${InitRequest()}/order/stripe/charge`,{
             json : {
                 amount : price,
                 id : id,

@@ -22,6 +22,7 @@ import { OrderProvider } from '../screens/orderScreensAndcontext/orderContext.js
 import { CartValidationScreen } from '../screens/orderScreensAndcontext/CartValidationScreen/cartValidationscreen.jsx';
 import { OrderScreen } from '../screens/panelsScreens/producerPanelScreen/commandsScreen/OrderScreen.jsx';
 import { SuccessOrderScreen } from '../screens/orderScreensAndcontext/successOrderscreen/successOrderScreen.jsx';
+import { CommandsScreen } from '../screens/profilesScreen/comandsScreen/commandsScreen.jsx';
 
 export const RoutesContainer = () =>{
     return (
@@ -35,6 +36,7 @@ export const RoutesContainer = () =>{
             <Route path='/' element={<HomeScreen/>}/>
             <Route path='/producer' element={<ProducerListScreen/>}/>
             <Route path='/profil' element={<PrivateRoutes role={['client']}><ProfilScreen/></PrivateRoutes>}/>
+            <Route path='/myorder' element={<PrivateRoutes role={['client']}><CommandsScreen/></PrivateRoutes>}/>
               <Route path='/paneladmin' element={
                 <PrivateRoutes role={['administrator']}>
                     <AdminPanelScreen/>

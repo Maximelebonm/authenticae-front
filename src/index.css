@@ -26,13 +26,13 @@
 [data-theme='dark'] {
   --white_only : white;
   --body_background : rgb(40, 44, 52);
-  --body_color: #4d4d4d;
-  --nuance_color1 : #222222;
-  --nuance_color2 : #333333;
+  --body_color: #161616;
+  --nuance_color1 : #d1d1d1;
+  --nuance_color2 : #a3a3a3;
   --primary_color : #4d4d4d;
-  --nuance_color3 : #535353;
-  --nuance_color4 : #6b6b6b;
-  --nuance_color5 : #949494;
+  --nuance_color3 : #707070;
+  --nuance_color4 : #4b4b4b;
+  --nuance_color5 : #252525;
   --font_color : rgb(255, 255, 255);
   --link_color : rgb(255, 255, 255);
   --title_color : rgb(255, 255, 255);
@@ -48,7 +48,7 @@ body {
   background-color: var(--body_color);
 }
 p{
-  color : black;
+  color : var(--font_color);
 }
 
 h1 {
@@ -72,7 +72,7 @@ ul {
 button {
   border-radius: 25px;
   border-style: none;
-  padding : 15px 20px;
+  padding : 10px 20px;
   margin: 10px;
   font-weight: 500;
   font-size: 20px;

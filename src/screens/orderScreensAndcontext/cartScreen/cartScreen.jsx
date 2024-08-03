@@ -76,11 +76,13 @@ export const CartScreen = ()=> {
             fetchApi()
     }
 
-    console.log(products?.cartProduct)
+    console.log(products)
 
     return (
         <div className='cartScreenContainer'>
         <ToastContainer/>
+        {products == null ? <div> Pas de produit dans le panier</div>
+        : 
         <div className='cartContainer'>
             <div className='cartProductsContainer'>
                 {products?.cartProduct.map((productItem,productIndex)=> {
@@ -125,8 +127,9 @@ export const CartScreen = ()=> {
                 <h2>
                     prix total : {cart?.price} €
                 </h2>
-            </div>
             <button onClick={handleOrder}> Passer la commande </button>
+            </div>
+        }
         </div>
     )
 }

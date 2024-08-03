@@ -137,7 +137,7 @@ export const Header =()=>{
                         <Link  to={roleCookie ? "/cart" : '/login'}>
                             <li className='headerItem'><ShoppingCart /> Panier</li>
                         </Link>
-                        <Link  to={roleCookie ? "/commands" : '/login'}>
+                        <Link  to={roleCookie ? "/myorder" : '/login'}>
                                     <li className='headerItem'> <ClipboardList />Commandes</li>
                         </Link>
             </ul>
