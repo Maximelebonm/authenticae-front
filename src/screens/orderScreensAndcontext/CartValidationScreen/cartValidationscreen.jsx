@@ -5,6 +5,7 @@ import { useOrder } from '../orderContext';
 import { useNavigate } from "react-router-dom";
 import { getUserById } from "../../../api/backEnd/user.backend";
 import { decodeCookies } from "../../../helpers/decodeToken";
+import { toast, ToastContainer } from "react-toastify";
 
 export const CartValidationScreen = () => {
     const { orderDetails, setOrderDetails } = useOrder();
@@ -52,6 +53,17 @@ export const CartValidationScreen = () => {
 
     }, [navigate]);
 
+    const handlePaiment = ()=> {
+        const isObjectNotEmpty = (obj) => {
+            return obj && Object.keys(obj).length > 0;
+        }
+        if (isObjectNotEmpty(orderDetails.address_billing) && isObjectNotEmpty(orderDetails.address_delivery)) {
+            navigate('/paiement');
+        } else {
+            toast.error("Sélectionnez une adresse de livraison et de facturation", { autoClose: 3000 });
+        }
+    }
+
     const handleSelect = (e,item,obj) => {
         e.target
         if(obj === 'livraison'){
@@ -67,6 +79,7 @@ export const CartValidationScreen = () => {
 
     return (
         <div className="cartValidationContainer">
+        <ToastContainer/>
             Veuillez valider / choisir vos adresses
             <div>
             adresse de facturation
@@ -114,7 +127,7 @@ export const CartValidationScreen = () => {
                 )
             })}
         </div>
-            <button onClick={()=> {navigate('/paiement')}} >Passez au paiement</button>
+            <button onClick={()=> {handlePaiment()}} >Passez au paiement</button>
             <button onClick={()=> navigate('/profil')} >Modifier les addresses</button>
         </div>
     )

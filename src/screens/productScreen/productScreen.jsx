@@ -219,6 +219,9 @@ export const ProductScreen = () => {
                 <p>
                     {product?.product.detail}
                 </p>
+            
+                    {product?.product.working_days > 0 &&     <p> Jours de travails (indicatif) : {product?.product.working_days} jours </p>}
+         
                 <form onSubmit={handleSubmit}>
                     {
                         product?.product.quantity_available > 0 ?

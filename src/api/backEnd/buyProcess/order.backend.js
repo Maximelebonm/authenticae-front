@@ -83,3 +83,15 @@ export const getUserCommandsApi = async(id)=> {
         return error
     }
 }
+
+export const cancelProductInProgressApi = (id)=>{
+    try {
+        console.log("pass")
+        const req = ky.post(`${InitRequest()}/order/producer/working_progress/${id}`,{
+            credentials : 'include'
+        })
+        return req.json()
+    } catch (error) {
+        return error
+    }
+}

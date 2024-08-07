@@ -208,7 +208,7 @@ export const ProfilScreen = ()=>{
 console.log(user)
     return (
         <div className="profileScreenContainer">
-        <ToastContainer/>
+                <ToastContainer/>
                 <form onSubmit={handleSubmitProfile}>
                     votre adress Email : {user?.email}
                     <InputFloatLabel placeholder="Ex : John" onchange={(e)=>handleChangeProfile(e,'firstname')} type='text' labelName='prénom' inputName='firstname' inputValue={user?.firstname ?? ''} required='yes' maxLength={30} minLength={1}/>
@@ -217,11 +217,6 @@ console.log(user)
                     <InputFloatLabel placeholder="Ex : 0606060606" onchange={(e)=>handleChangeProfile(e,'phone')} type='number' labelName='N° de téléphone' inputName='phone' inputValue={user?.phone ?? ''} required='yes' maxLength={30} minLength={12} />
                     <button>Valider profil</button>
                 </form>
-                <div>
-                </div>
-                <Link to="/cart">
-                    <div>votre panier</div>
-                </Link>
                 <button type="button" onClick={addAdress} >ajouter une address</button>
                     {address.map((item,index)=>{
                         return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e,Id_address)=>handleSubmitAdress(e,Id_address)} deleteAddress={(e,Id_address)=>deleteAdress(e,Id_address)}/>
