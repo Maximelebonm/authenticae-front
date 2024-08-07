@@ -26,4 +26,6 @@ dist-ssr
 ### dotenv ###
 .env.development
 .env.production
-.env
+.env*
+
+.VSCodeCounter

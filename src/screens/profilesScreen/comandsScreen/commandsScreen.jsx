@@ -186,7 +186,7 @@ export const CommandsScreen = ()=> {
                                     </Modal>
                                 </div>
                             )
-                        })}
+                        })} 
                         
                         <Modal onClose={()=>setShowModal(!showModal)} show={showModal} onConfirm={()=>handleCancel(orderItem.Id_order,orderItem.payment_id,orderItem.price,orderItem.refund,orderItem.orderproducts)}>
                             êtes vous sur de vouloir annuler cette commande
