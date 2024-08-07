@@ -97,6 +97,9 @@ export const CommandsScreen = ()=> {
         const handleCancelProducer = (id)=> {
             const fetch = async()=>{
                 const resp = await cancelProductInProgressApi(id)
+                if(resp.message == "produit en cours d'annulation"){
+                    toast.success("votre produit est en cours d'annulation, vous serez contacter par mail lorsque cela sera le cas")
+                }
             }
             fetch()
         }
