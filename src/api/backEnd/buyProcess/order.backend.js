@@ -84,10 +84,28 @@ export const getUserCommandsApi = async(id)=> {
     }
 }
 
-export const cancelProductInProgressApi = (id)=>{
+export const cancelProductInProgressApi = async (id)=>{
     try {
         console.log("pass")
-        const req = ky.post(`${InitRequest()}/order/producer/working_progress/${id}`,{
+        const req = await ky.post(`${InitRequest()}/order/producer/working_progress/${id}`,{
+            credentials : 'include'
+        })
+        return req.json()
+    } catch (error) {
+        return error
+    }
+}
+
+export const cancelProductWithPurcentApi = async(idOrderProduct,percent,idPayement,refundAmount,productPrice,Id_order)=>{
+    try {
+        const req = await ky.post(`${InitRequest()}/order/cancelpercent/${idOrderProduct}`,{
+            json : {
+                percent : percent,
+                idpayement : idPayement,
+                refundAmount : refundAmount,
+                productPrice : productPrice,
+                Id_order : Id_order,
+            },
             credentials : 'include'
         })
         return req.json()

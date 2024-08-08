@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react"
-import { cancelProductionApi, cancelSendProductApi, getOrderApi, inProductionApi, sendProductApi } from "../../../../api/backEnd/buyProcess/order.backend";
+import { cancelProductionApi, cancelProductWithPurcentApi, cancelSendProductApi, getOrderApi, inProductionApi, sendProductApi } from "../../../../api/backEnd/buyProcess/order.backend";
 import { useAuthContext } from "../../../authContext";
 import './OrderScreen.css'
 import Logo from '../../../../assets/logos/logo_authenticae_blanc.png';
@@ -113,6 +113,24 @@ export const OrderScreen =()=> {
     }
     console.log(order)
 
+    const handleSubmit = (e,idOrderProduct,idPayement,refund,productPrice,Id_order)=> {
+        e.preventDefault()
+        const form = e.target
+        const formData = new FormData(form);
+        const percent = formData.get("percent");
+
+        const fetch = async()=>{
+            const resp = await cancelProductWithPurcentApi(idOrderProduct,percent,idPayement,refund,productPrice,Id_order)
+            if(resp.message == "remboursement effectué"){
+                toast.success('le produit à bien été remboursé')
+            }
+            else {
+                toast.error('une erreur est survenue')
+            }
+        }
+        fetch()
+    }
+
     return (
     <div>
     <ToastContainer/>
@@ -163,6 +181,14 @@ export const OrderScreen =()=> {
                             })
                         }
                         </div>
+                        <form onSubmit={(e)=>handleSubmit(e,item.Id_order_product,itemOrder.payment_id,itemOrder.refund,item.price,itemOrder.Id_order)}>
+                        {item.order_state === "waitingCancel" && <div>
+                         <input type='number'  name='percent' placeholder="0"/>
+                            <button type='submit' >V</button>
+                        </div>
+                         }
+
+                        </form>
                     </div>
                     <div className='orderProductButtons'>
                         <div>
