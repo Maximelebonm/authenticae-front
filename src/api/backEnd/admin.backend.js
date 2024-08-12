@@ -30,3 +30,14 @@ export const deleteProducerRole = async (id) => {
         return "erreur : " + err;
     }
 }
+
+export const deleteShopApi = async (id) => {
+    try {
+        const response = await ky.put(`${InitRequest()}/admin/shop/delete/${id}`,{
+            credentials : 'include'
+        })
+        return response.json()
+    } catch (err){
+        return "erreur : " + err;
+    }
+}

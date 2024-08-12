@@ -25,7 +25,7 @@ export const ProducerShopScreen = () => {
                     .then(data=>{
                         console.log(data)
                         if(data.message== 'shop exist'){
-                            setShop(data.data.shop)
+                            setShop(data.data)
                             setProduct(data.data.products)
                         }
                     })
@@ -37,6 +37,7 @@ export const ProducerShopScreen = () => {
         }
         fetch()
     },[cookie.Id_user])
+    
     return (
         <>
         {shop ? <div>
@@ -55,10 +56,9 @@ export const ProducerShopScreen = () => {
             <section id="profileArticle">
             <div id='ProducerPanelProductsContainer'>
             {product?.map((item,index)=>{
-                const mainPicture = item.productImages.find((item)=> item.order == 0)
                 return (
                     <Link to={`/product/${item.Id_product}`} key={index}>
-                        <ProductCard props={item} key={index} picture={mainPicture} />   
+                        <ProductCard props={item} picture={item.productImages[0]} />   
                     </Link>
                 )
             })}

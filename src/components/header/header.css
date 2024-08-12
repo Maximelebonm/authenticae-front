@@ -97,15 +97,14 @@
     display: block;
 }
 
-  
-
 #icons{
     cursor : pointer;
     display: none;
     font-size: 25px;
 }
 
-@media (max-width : 640px){
+@media (max-width : 840px){
+    
     #icons {
         text-align: center;
         width : 40px;
@@ -113,12 +112,7 @@
         display : flex;
         align-items: center;
         justify-content: center;
-        &:hover {
-            box-sizing: border-box;
-            border :var(--nuance_color1) 2px solid;
-            border-radius : 50%;
-            
-        }
+        color : white;
     }
     #icons:before{
         content : '\2630';
@@ -128,7 +122,8 @@
         content : '\2715';
         transition: 0.25s ease;
     }
-    ul#headerNav{
+
+    #headerNav,#HeaderRight, #dropdown,  #dropdown-content{
         opacity : 0;
         z-index: -1;
         padding : 0px 0px;
@@ -140,8 +135,8 @@
         text-align: center;
         width : 100%;
         background-color: var(--nuance_color2);
-       
     }
+
     .active #headerNav{
         z-index: 0;
         opacity : 1;
@@ -150,6 +145,34 @@
         left : 0%;
     }
 
+    .active #HeaderRight{
+        z-index: 0;
+        opacity : 1;
+        transition: top 0.25s ease;
+        top : 166px;
+        left : 0%;
+    }
+    .active #dropdown{
+        z-index: 0;
+        opacity : 1;
+        transition: top 0.25s ease;
+        top : 298px;
+        left : 0%;
+        display: flex;
+      
+    }
+
+    .active #dropdown-content{
+        z-index: 0;
+        opacity : 1;
+        transition: top 0.25s ease;
+        top : 286px;
+        left : 0%;
+        display: flex;
+    }
+
+
+    
     .headerItem {
         border-left: 0px;
         padding : 3px 0px;

@@ -5,6 +5,7 @@ import { CheckOutForm } from "./checkoutForm";
 export const StripeComponent = ({props})=> {
     const Public_Key = import.meta.env.VITE_STRIPE_TEST_PUBLIC
     const stripePromise = loadStripe(Public_Key)
+
     return (
     <Elements stripe={stripePromise} className='checkoutContainer'>
         <CheckOutForm props={props} />

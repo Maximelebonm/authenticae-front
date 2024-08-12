@@ -43,12 +43,15 @@ export const cancelProductionApi = (id,email)=>{
     }
 }
 
-export const sendProductApi = (id,email)=>{
+export const sendProductApi = (id,email,idPayment,stripeId,price)=>{
     try {
         console.log("pass")
         const req = ky.post(`${InitRequest()}/order/producer/send/${id}`,{
             json : {
                 email : email,
+                IdPayement : idPayment,
+                stripe_ID : stripeId,
+                amountProduct : price,
             },
             credentials : 'include'
         })
@@ -96,7 +99,7 @@ export const cancelProductInProgressApi = async (id)=>{
     }
 }
 
-export const cancelProductWithPurcentApi = async(idOrderProduct,percent,idPayement,refundAmount,productPrice,Id_order)=>{
+export const cancelProductWithPurcentApi = async(idOrderProduct,percent,idPayement,refundAmount,productPrice,Id_order,productaccount)=>{
     try {
         const req = await ky.post(`${InitRequest()}/order/cancelpercent/${idOrderProduct}`,{
             json : {
@@ -105,6 +108,7 @@ export const cancelProductWithPurcentApi = async(idOrderProduct,percent,idPayeme
                 refundAmount : refundAmount,
                 productPrice : productPrice,
                 Id_order : Id_order,
+                productaccount : productaccount,
             },
             credentials : 'include'
         })

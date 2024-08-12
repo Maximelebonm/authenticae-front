@@ -1,7 +1,8 @@
-import { CardElement,useStripe,useElements } from "@stripe/react-stripe-js";
+import { CardElement,useStripe,useElements,CardNumberElement,CardExpiryElement,CardCvcElement } from "@stripe/react-stripe-js";
 import { paymentStripeApi } from "../../api/backEnd/buyProcess/stripe.backend";
 import { useNavigate } from "react-router-dom";
 import './checkOutForm.css'
+import Logo from '../../assets/logos/logo_authenticae_noir_cut.png';
 
 export const CheckOutForm = ({props}) => {
     const stripe = useStripe();
@@ -9,6 +10,7 @@ export const CheckOutForm = ({props}) => {
     const navigate = useNavigate()
     const {cart,user,userChoicePaymentMethod,address_billing,address_delivery} = props
     console.log(props)
+
     const handleSubmit = async (e)=> {
         e.preventDefault()
 
@@ -17,7 +19,7 @@ export const CheckOutForm = ({props}) => {
             return;
         }
 
-        const cardElement = elements.getElement(CardElement);
+        const cardElement = elements.getElement(CardNumberElement,CardExpiryElement,CardCvcElement);
         if (!cardElement) {
             console.log("CardElement n'est pas disponible.");
             return;
@@ -53,16 +55,47 @@ export const CheckOutForm = ({props}) => {
     }
 
     return(
+        <div className="checkoutContainer">
+        <img src={Logo} id={'logoCommande'} />
         <form onSubmit={handleSubmit} className='checkOutForm'>
-            <div className="checkOutformRecap">Montant à payer : {cart.price} €</div>
-            <CardElement
+            <div className='checkoutLineContainter'>
+
+            {cart.cartProduct.map((item,index)=>{
+                return (
+                    <div key={index}>
+                        <div className='checkoutLine'>
+                            <div>{item.product.name} x {item.quantity}</div>
+                            <div>{item.price} €</div>  
+                        </div>
+                    </div>
+                )
+            })}
+            <div className="checkOutformRecap"> TOTAL : {cart.price} € TTC</div>
+            </div>
+            <div id="checkoutCardNumber">N° de carte bancaire</div>
+            <CardNumberElement/>
+            <div className="checkoutDateContainer">
+            <div className="checkoutDate">
+                <div>date d&apos;expiration</div>
+                <CardExpiryElement/>
+
+            </div>
+            <div className="checkoutsecurity">
+                <div >Code de sécurité</div>
+                <CardCvcElement/>
+            </div>
+
+            </div>
+            {/* <CardElement
                 options={{
-                    hidePostalCode : false,
+                    hidePostalCode : true,
                     disableLink : true,
                 }}
-            />
-            <button type='submit'>Payer</button>
+            /> */}
+            <button id="checkoutButton" type='submit'>Payer {cart.price} €</button>
         </form>
+
+        </div>
     )
 
 }

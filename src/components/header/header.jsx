@@ -68,7 +68,12 @@ export const Header =()=>{
     },[]);
     
     const activeItem = () => {
-
+        const clickedItem = window.innerWidth;
+ 
+        if(clickedItem <= 780){
+            console.log('pass')
+            toggleActive() 
+        }
     }
 
     return (
@@ -89,20 +94,21 @@ export const Header =()=>{
                 Producteurs
                 </li>
             </Link>
+
         </ul>
             <ul id='HeaderRight'>
                 <div id='dropdown'>
                     <Link  to={roleCookie ? "/profil" : '/login'}>
-                        <li className='headerItem'> <User /> Compte</li>
+                        <li className='headerItem' onClick={activeItem}> <User /> Compte</li>
                     </Link>
-                        <div id='dropdown-content'>
+                    <div id='dropdown-content'>
                         {roleCookie?.includes('client') ?
                             <>
                                 <Link  to={roleCookie ? "/profil" : '/login'}>
-                                    <li className='headerItem'> <User /> Compte</li>
+                                    <li className='headerItem' onClick={activeItem}> <User /> Compte</li>
                                 </Link>
                                 <Link  to={roleCookie ? "/logout" : '/login'}>
-                                    <li className='headerItem'> <User /> Deconnexion </li>
+                                    <li className='headerItem' onClick={activeItem}> <User /> Deconnexion </li>
                                 </Link>
                                 <div>
                                     <li className='headerItem'>
@@ -112,27 +118,26 @@ export const Header =()=>{
                             </> :
                             <>
                             <Link  to={roleCookie ? "/logout" : '/login'}>
-                                    <li className='headerItem'> <User /> Connexion </li>
+                                    <li className='headerItem' onClick={activeItem}> <User /> Connexion </li>
                                 </Link>
                                 <div>
-                                    <li className='headerItem'>
+                                    <li className='headerItem' onClick={activeItem}>
                                         <ToggleSwitch />
                                     </li>
                                 </div>                        
                             </>
                         }
                         {roleCookie?.includes('producer') && 
-                        <>
-                        <Link  to={"/myshop"}>
-                                    <li className='headerItem'> <Store />Shop</li>
-                        </Link>
-                        <Link  to={"/order"}>
-                                    <li className='headerItem'> <ClipboardList />Commandes</li>
-                        </Link>
-
-                        </>
+                            <>
+                                <Link  to={"/myshop"}>
+                                            <li className='headerItem' onClick={activeItem}> <Store />Shop</li>
+                                </Link>
+                                <Link  to={"/order"}>
+                                            <li className='headerItem' onClick={activeItem}> <ClipboardList />Commandes</li>
+                                </Link>
+                            </>
                         }
-                        </div> 
+                    </div> 
                 </div>
                         <Link  to={roleCookie ? "/cart" : '/login'}>
                             <li className='headerItem'><ShoppingCart /> Panier</li>

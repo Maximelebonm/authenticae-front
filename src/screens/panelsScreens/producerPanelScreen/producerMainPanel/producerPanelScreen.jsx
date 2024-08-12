@@ -31,7 +31,7 @@ export const ProducerPanelScreen = () =>{
                     .then(data=>{
                         if(data.message== 'shop exist'){
                             console.log(data.data)
-                            setShop(data.data.shop)
+                            setShop(data.data)
                             setProduct(data.data.products)
             
                         }
@@ -79,6 +79,7 @@ export const ProducerPanelScreen = () =>{
             const form = e.target
             const formData = new FormData(form);
             const name = formData.get("avatar");
+
                 const fetch = async ()=> {                   
                     if(shop){
                         if(name){
@@ -138,9 +139,11 @@ export const ProducerPanelScreen = () =>{
             break;
         }
         
-        setShop(newValue)
+        // console.log(newShop)
+        setShop(newShop)
     }
 
+    console.log(shop)
     const notifySuccessUpload = () => toast.success("votre shop a été mis à jour avec succès");
     const notifySuccessPicture = () => toast.success("image télécharger avec succès")
 
@@ -173,8 +176,6 @@ return(
         <form onSubmit={handleSubmit} className='producerPanelform'>
             <InputFloatLabel type='text' placeholder='nom du shop' inputValue={shop?.name} onchange={(e)=>handleChange(e,'shop')} labelName='nom du shop' inputName='shopName' minLength={1} maxLength={30} required='yes' />
             <InputFloatLabel type='text' placeholder='Description du shop' inputName='shopDescriptiopn' onchange={(e)=>handleChange(e,'desc')} labelName='description' inputValue={shop?.description} minLength={1} maxLength={255} required='yes' />
-            {/* <input type='text' placeholder='nom du shop' defaultValue={shop?.name}  name='shopName' minLength={1} maxLength={30} required/> */}
-            {/* <input type='text' placeholder={'Description du shop'} name='shopDescriptiopn' defaultValue={shop?.description} minLength={1} maxLength={255} required/> */}
             <button type='submit'> valider </button>
         </form>
         </div>

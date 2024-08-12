@@ -1,3 +1,9 @@
+.orderContainer {
+    border : 2px var(--nuance_color4) solid;
+    margin-bottom: 20px;
+    border-radius: 15px;
+}
+
 .orderProductContainer{
     margin : 10px;
     padding : 10px;
@@ -20,4 +26,23 @@
     width : 100px;
     height : 100px;
     border-radius : 15px;
+}
+
+#orderInput {
+    background-color: var(--nuance_color4);
+    color: white;
+}
+
+.infoUserContainer{
+    & div {
+        display : flex;
+        margin-left : 5px;
+    }
+}
+
+.adressInfo{
+    display : flex;
+    & div {
+        margin-left : 5px;
+    }
 }

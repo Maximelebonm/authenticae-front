@@ -73,8 +73,7 @@ export const AdminPanelScreen =()=>{
                             <div>
                             {
                                hasProducerRole ? <button onClick={()=>deleteProducer(item.Id_user)}>delete Prod</button>
-                               : <button onClick={()=>addProducer(item.Id_user)}>Add Prod</button>
-                                                            
+                               : <button onClick={()=>addProducer(item.Id_user)}>Add Prod</button>                                                           
                             }
                             
                         </div>

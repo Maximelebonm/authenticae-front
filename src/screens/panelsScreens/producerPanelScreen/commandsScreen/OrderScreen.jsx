@@ -4,6 +4,7 @@ import { useAuthContext } from "../../../authContext";
 import './OrderScreen.css'
 import Logo from '../../../../assets/logos/logo_authenticae_blanc.png';
 import { toast, ToastContainer } from "react-toastify";
+import { Check } from 'lucide-react';
 
 export const OrderScreen =()=> {
     const { userDetails } = useAuthContext();
@@ -72,10 +73,10 @@ export const OrderScreen =()=> {
         }
     }
 
-    const handleProductSend = async(id,mail)=> {
+    const handleProductSend = async(id,mail,idPayment,stripeId,price)=> {
         try {
             console.log(id, mail)
-            const resp = await sendProductApi(id,mail)
+            const resp = await sendProductApi(id,mail,idPayment,stripeId,price)
             resp.json()
             .then((data)=>{
                 if(data.message === 'produit envoyé'){
@@ -104,7 +105,6 @@ export const OrderScreen =()=> {
                 } else {
                     toast.error('envoi annulé mais mail non envoyé, faire une demande au support', {autoClose : 10000})
                     setReload(!reload)
-                    // setErrorMail(true)
                 }
             })
         } catch (error) {
@@ -113,94 +113,140 @@ export const OrderScreen =()=> {
     }
     console.log(order)
 
-    const handleSubmit = (e,idOrderProduct,idPayement,refund,productPrice,Id_order)=> {
+    const handleSubmit = (e,idOrderProduct,idPayement,refund,productPrice,Id_order,productaccount)=> {
         e.preventDefault()
         const form = e.target
         const formData = new FormData(form);
         const percent = formData.get("percent");
 
         const fetch = async()=>{
-            const resp = await cancelProductWithPurcentApi(idOrderProduct,percent,idPayement,refund,productPrice,Id_order)
+            const resp = await cancelProductWithPurcentApi(idOrderProduct,percent,idPayement,refund,productPrice,Id_order,productaccount)
             if(resp.message == "remboursement effectué"){
                 toast.success('le produit à bien été remboursé')
+                setReload(!reload)
             }
             else {
                 toast.error('une erreur est survenue')
+                setReload(!reload)
             }
         }
         fetch()
     }
 
-    return (
-    <div>
-    <ToastContainer/>
-        {order !== null ? order?.map((itemOrder)=>{
-           return (         
-           itemOrder.orderproducts.map((item,index)=>{
-            console.log(item)
-            return (
-                <div key={index} className='orderProductContainer'>
-                    <div className='orderProductSection'>
-                        <div className='orderProductItem'>
-                            <div>
-                                {item.product.name}
-                            </div>   
-                            {<img src={item?.product?.productImages?.[0]?.storage ? base_URL + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
-                        </div>
-                        <div className='orderProductItem'>
-                            <div>
-                                quantité : {item.quantity}
-                            </div>
-                            <div>
-                                prix payé : {item.price}
-                            </div>
-                        </div>
-                        <div className='orderProductItem'>
-                        options :
-                        {
-                            item.orderproductoptions.map((itemOrderProductOption,index)=>{
-                            return (
-                                <div key={index}>
-                                    <div>{itemOrderProductOption.productoption.name} : {itemOrderProductOption.subOption.detail}
-                                    </div>
-                                </div>
-                                )
-                            })
-                        }
+    const ReturnSendButton = ({state,idOrder,idOrderProduct,userEmail,paymentid,stripe,price})=> {
 
-                        </div>
-                        <div className='orderProductItem'>
-                            personalisation : 
-                        {
-                            item.orderproductpersonalizations.map((itemOrderPersonalization,index)=>{
+        console.log(state,idOrder,idOrderProduct,userEmail,paymentid,stripe,price)
+        if(state === 'production'){
+            return <button onClick={()=>{handleProductSend(idOrderProduct,userEmail,paymentid,stripe,price)}}>Envoyé</button>
+        } else if (state === 'canceled'){
+            return <div>Produit annulé</div>
+        }
+        else if (state === 'send'){
+            return <div>produit envoyé</div>
+        }
+    }
+
+    const ChargeButton = ({state,idOrderProduct,userEmail})=> {
+        if(state === 'wait'){
+            return <button onClick={()=>{handleProduction(idOrderProduct,userEmail)}}>Pris en charge</button>
+        }
+        else if (state === 'production'){
+            return <button onClick={()=> {cancelProduction(idOrderProduct,userEmail)}}>annuler prise en charge</button>
+        } else if (state === 'canceled' || state === 'send'){
+            return null
+        }
+    }
+
+    return (
+    <div >
+    <ToastContainer/>
+        {order !== null ? order?.map((itemOrder,indexOrder)=>{
+           return ( 
+            <div key={indexOrder} className='orderContainer' >
+            <div className='infoUserContainer'> 
+                <div className='mainInfo'>
+                    <div> {itemOrder.user.firstname}</div>     
+                    <div> {itemOrder.user.lastname}</div>
+                </div>
+                <div className='adressInfo'>
+                    <div> {itemOrder.DeliveryAddress.country}</div> 
+                    <div> {itemOrder.DeliveryAddress.cityCode}</div> 
+                    <div> {itemOrder.DeliveryAddress.city}</div>     
+                </div>
+                    <div className='adressInfo'>
+                        <div> {itemOrder.DeliveryAddress.number}</div> 
+                        <div> {itemOrder.DeliveryAddress.street}</div>
+                        <div> {itemOrder.DeliveryAddress.additional}</div>
+                    </div>
+            </div>
+            {itemOrder.orderproducts.map((item,index)=>{
+                return (
+                    <div key={index} className='orderProductContainer'>
+                        <div className='orderProductSection'>
+                            <div className='orderProductItem'>
+                                <div>
+                                    {item.product.name}
+                                </div>   
+                                {<img src={item?.product?.productImages?.[0]?.storage ? base_URL + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
+                            </div>
+                            <div className='orderProductItem'>
+                                <div>
+                                    quantité : {item.quantity}
+                                </div>
+                                <div>
+                                    prix payé : {item.price}
+                                </div>
+                            </div>
+                            <div className='orderProductItem'>
+                            options :
+                            {
+                                item.orderproductoptions.map((itemOrderProductOption,index)=>{
                                 return (
                                     <div key={index}>
-                                        {itemOrderPersonalization.consumer_text}
+                                        <div>{itemOrderProductOption.productoption.name} : {itemOrderProductOption.subOption.detail}
+                                        </div>
                                     </div>
-                                )
-                            })
-                        }
-                        </div>
-                        <form onSubmit={(e)=>handleSubmit(e,item.Id_order_product,itemOrder.payment_id,itemOrder.refund,item.price,itemOrder.Id_order)}>
-                        {item.order_state === "waitingCancel" && <div>
-                         <input type='number'  name='percent' placeholder="0"/>
-                            <button type='submit' >V</button>
-                        </div>
-                         }
+                                    )
+                                })
+                            }
 
-                        </form>
-                    </div>
-                    <div className='orderProductButtons'>
+                            </div>
+                            <div className='orderProductItem'>
+                                personalisation : 
+                            {
+                                item.orderproductpersonalizations.map((itemOrderPersonalization,index)=>{
+                                    return (
+                                        <div key={index}>
+                                            {itemOrderPersonalization.consumer_text}
+                                        </div>
+                                    )
+                                })
+                            }
+                            </div>
+                            <form onSubmit={(e)=>handleSubmit(e,item.Id_order_product,itemOrder.payment_id,itemOrder.refund,item.price,itemOrder.Id_order,itemOrder.orderproducts.length)}>
+                            {item.order_state === "waitingCancel" && <div>
+                            <input type='number' max={80} min={0} name='percent' id='orderInput' placeholder="0"/>
+                                <button type='submit' ><Check/></button>
+                            </div>
+                            }
+
+                            </form>
+                        </div>
+                        <div className='orderProductButtons'>
                         <div>
-                        {item.order_state == 'wait' ? <button onClick={()=>{handleProduction(item.Id_order_product,itemOrder.user.email)}}>Pris en charge</button> : <button onClick={()=> {cancelProduction(item.Id_order_product,itemOrder.user.email)}}>annuler prise en charge</button>}
-                        {errorMail && <button>Error</button>}
-                        {(item.order_state == 'wait' || item.order_state == 'production') ? <button onClick={()=>{handleProductSend(item.Id_order_product,itemOrder.user.email)}} >Envoyé</button> : <button onClick={()=>{cancelProductSend(item.Id_order_product,itemOrder.user.email)}} > annulé envoie</button>}
+                            <ChargeButton state={item.order_state} idOrderProduct={item.Id_order_product} userEmail={itemOrder.user.email}/>
+
+                            {/* {item.order_state == 'wait' ? <button onClick={()=>{handleProduction(item.Id_order_product,itemOrder.user.email)}}>Pris en charge</button> : <button onClick={()=> {cancelProduction(item.Id_order_product,itemOrder.user.email)}}>annuler prise en charge</button>} */}
+                        </div>
+                            <div>
+                            <ReturnSendButton state={item.order_state} idOrder={itemOrder.Id_order} idOrderProduct={item.Id_order_product} userEmail={itemOrder.user.email} paymentid={itemOrder.payment_id} stripe={item.product.user.Stripe_ID} price={item.price} />
+                            </div>
                         </div>
                     </div>
-                </div>
-            )
-        })
-           ) 
+                )
+            })}
+            </div>     
+        ) 
     }) : <div>Pas de commande pour le moment </div>}
     </div>
     )

@@ -52,16 +52,17 @@ export const stripeCancelApi = (id,idP,amount,refund,products)=> {
     }
 }
 
-export const stripeCancelProductApi = (id,idP,amount,idproduct,priceproduct,refund)=> {
+export const stripeCancelProductApi = (idorder,idPaiment,amount,idproduct,priceproduct,refund,productAccount)=> {
     try {
         console.log("pass")
-        const stripeReq = ky.post(`${InitRequest()}/order/stripe/cancel/product/${id}`,{
+        const stripeReq = ky.post(`${InitRequest()}/order/stripe/cancel/product/${idproduct}`,{
             json : {
-                paymentid : idP,
+                paymentid : idPaiment,
                 amountCommand : amount,
-                id_product : idproduct,
+                Id_order : idorder,
                 amountProduct : priceproduct,
-                refund : refund,           
+                refund : refund,
+                productAccount : productAccount,           
             },
             credentials : 'include'
         })

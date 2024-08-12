@@ -1,4 +1,3 @@
-import { decodeCookies } from "../../../helpers/decodeToken";
 import { InitRequest } from "../../initRequest";
 import ky from "ky";
 
