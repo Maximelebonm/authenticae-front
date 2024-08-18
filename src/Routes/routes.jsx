@@ -24,6 +24,9 @@ import { OrderScreen } from '../screens/panelsScreens/producerPanelScreen/comman
 import { SuccessOrderScreen } from '../screens/orderScreensAndcontext/successOrderscreen/successOrderScreen.jsx';
 import { CommandsScreen } from '../screens/profilesScreen/comandsScreen/commandsScreen.jsx';
 import { ReturnOrderScreen } from '../screens/panelsScreens/producerPanelScreen/returnScreen/returnScreen.jsx';
+import { ConditionsScreen } from '../screens/rulesScreens/conditionsScreen/conditionsScreen.jsx';
+import { ConfScreen } from '../screens/rulesScreens/confScreen/confScreen.jsx';
+import { CookieScreen } from '../screens/rulesScreens/cookiesScreen/cookieScreen.jsx';
 
 export const RoutesContainer = () =>{
     return (
@@ -33,7 +36,8 @@ export const RoutesContainer = () =>{
             <Route path={URL_FRONT.PRODUCER_PANEL} element={ 
                 <PrivateRoutes role={['producer']}>
                         <ProducerPanelScreen/>
-                </PrivateRoutes>}/>
+                </PrivateRoutes>
+            }/>
             <Route path='/' element={<HomeScreen/>}/>
             <Route path='/producer' element={<ProducerListScreen/>}/>
             <Route path='/profil' element={<PrivateRoutes role={['client']}><ProfilScreen/></PrivateRoutes>}/>
@@ -51,20 +55,15 @@ export const RoutesContainer = () =>{
               <Route path='/register' element={
                     <RegisterScreen/>
             }/>
-                  <Route path='/product/:id' element={
-                    <ProductScreen/>
-            }/>
-            <Route path='/login' element={
-                    <LoginScreen/>
-            }/>   
-            <Route path='/logout' element={
-                    <LogoutScreen/>
-            }/>
-            <Route path='/shop/:id' element={
-                    <ProducerShopScreen/>
-            }/>   
+            <Route path='/cookies' element={<CookieScreen/>}/>
+            <Route path='/conditions' element={ <ConditionsScreen/>}/>
+            <Route path='/confidentialite' element={<ConfScreen/>}/>
+            <Route path='/product/:id' element={<ProductScreen/>}/>
+            <Route path='/login' element={<LoginScreen/>}/>   
+            <Route path='/logout' element={<LogoutScreen/>}/>
+            <Route path='/shop/:id' element={<ProducerShopScreen/>}/>   
 
-                <Route path='/myshop/product/createProduct' element={
+            <Route path='/myshop/product/createProduct' element={
                 <PrivateRoutes role={['producer']}>
                     <ProducerPanelProductScreen/>
                 </PrivateRoutes>

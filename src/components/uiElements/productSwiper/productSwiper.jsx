@@ -1,20 +1,17 @@
 import './productSwiper.css';
-import { Swiper, SwiperSlide,useSwiper  } from 'swiper/react';
-import { Navigation, Pagination, FreeMode,Thumbs,EffectFade } from 'swiper/modules';
-import { useState,useRef } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, FreeMode,Thumbs,EffectFade } from 'swiper/modules';
+import { useState } from 'react';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/free-mode';
 import 'swiper/css/thumbs';
+import { InitRequest } from '../../../api/initRequest';
 
 export const ProductSwiper = (props) => {
-    const swiper = useSwiper();
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK
     const pictures = props.props
-    // console.log(pictures)
-
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
     return (
@@ -42,7 +39,7 @@ export const ProductSwiper = (props) => {
                 pictures?.map((item,index)=>{
                     return (
                         <SwiperSlide key={index} >
-                            <img src={Base_URL + item.storage} className="productSwiperMain"/>
+                            <img src={InitRequest() + '/' + item.storage} className="productSwiperMain"/>
                         </SwiperSlide>
                     )
                 })
@@ -61,7 +58,7 @@ export const ProductSwiper = (props) => {
              {
                 pictures?.map((item,index)=>{
                 return <SwiperSlide key={index} className="productSwiperThumb">
-                    <img src={Base_URL + item.storage}  className="productSwiperThumb"/>
+                    <img src={InitRequest() + '/' + item.storage}  className="productSwiperThumb"/>
                     </SwiperSlide>
                 })
             }

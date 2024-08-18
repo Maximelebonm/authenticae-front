@@ -5,9 +5,8 @@ import { getAllProduct } from '../../api/backEnd/producer/product.backend';
 import { HomeProductCards } from './../../components/cards/homeProductCard/homeProductCard';
 import { InputFloatLabel } from '../../components/uiElements/inputFloatLabel/inputFloatLabel';
 import { Search } from 'lucide-react';
-export const HomeScreen = () => {
 
-    
+export const HomeScreen = () => {   
     const [product,setProduct] = useState();
     const [productSearch, setProductSearch] = useState();
     const [refresh,setRefresh] = useState();
@@ -17,7 +16,7 @@ export const HomeScreen = () => {
             response.json()
             .then(data =>{
                 if(data.message == 'products geted')
-                    setProduct(data.data)
+                setProduct(data.data)
                 setProductSearch(data.data)
             })
         }
@@ -40,7 +39,6 @@ return (
         </section>
         <section id="homeScreenProducts">
             {productSearch?.map((item,index)=>{
-                console.log(productSearch)
                    const mainPicture = item.productImages[0]
                 return(
                     <Link to={`/product/${item.Id_product}`}  key={index}>

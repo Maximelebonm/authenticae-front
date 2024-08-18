@@ -7,6 +7,7 @@ import { useAuthContext } from '../../authContext';
 import { cancelProductInProgressApi, getUserCommandsApi } from '../../../api/backEnd/buyProcess/order.backend';
 import { stripeCancelApi, stripeCancelProductApi } from '../../../api/backEnd/buyProcess/stripe.backend';
 import Modal from '../../../components/modals/modal';
+import { InitRequest } from '../../../api/initRequest';
 
 export const CommandsScreen = ()=> {
     const Base_URL = import.meta.env.VITE_BASE_URL_BACK;
@@ -18,36 +19,22 @@ export const CommandsScreen = ()=> {
     const [reload,setReload] = useState(false);
     let cliked = 0
 
-    const toggleModal = (obj) => {
-        if(obj === 'commande'){
-            setShowModal(!showModal)
-        }
-        if(obj === 'partial'){
-            setShowModalPartiel(!showModalPartiel)
-        }
-        else {
-            setShowModalProduct(!showModalProduct)
-        }
-      };
-
     useEffect(()=>{
         const fetchCommands = async () => {
             if (userDetails && userDetails.user && userDetails.user.Id_user) {
                 try {
                     const userId = userDetails.user.Id_user;
-                    console.log(userId);
+  
                     await getUserCommandsApi(userId)
                     .then((data)=>{
                         if (data.message === 'commandsgeted') {
-                            console.log(data)
+
                             setMyOrder(data.data);
                         }
                     })
                 } catch (error) {
                     console.error('Error fetching commands:', error);
                 }
-            } else {
-                console.log('User details are not defined yet');
             }
         };
 
@@ -67,7 +54,6 @@ export const CommandsScreen = ()=> {
     
         return `${day} ${month} ${year}`;
     };
-    console.log(myorder)
 
     const handleCancel = (idOrder,idPayment,amount,refund,product,user,order_state)=> {
         if(cliked === 0){
@@ -144,7 +130,6 @@ export const CommandsScreen = ()=> {
         }
 
         const OrderCancelorFinsih = ({state,id})=> {
-            console.log(id)
             if(state == 'Pay'){
                 return <button onClick={()=>setShowModal(id)}>Annuler la commande</button>
             }
@@ -181,12 +166,11 @@ export const CommandsScreen = ()=> {
                     </div>
                         <div className='containerProductAndOption'>
                         {orderItem.orderproducts.map((productitem,productindex)=>{
-                            console.log(productitem.Id_order_product)
                             return (
                                 <div key={productindex} className='commandProductContainer'>
                                     <div className='commandProduct'>
                                         <h2>{productitem.product.name}</h2>
-                                        <img src={Base_URL + productitem.product.productImages[0].storage} />
+                                        <img src={InitRequest() + '/' + productitem.product.productImages[0].storage} />
                                     </div>
                                     <div className='commandProduct'>
                                         <strong> options : </strong>

@@ -1,8 +1,7 @@
 import './homeProductCard.css'
 import logo from '../../../assets/logos/logo_authenticae_blanc.png';
+import { InitRequest } from '../../../api/initRequest';
 export const HomeProductCards = ({props,picture}) => {
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK
-    console.log(picture)
     const {name,price} = props
   
     return (
@@ -20,7 +19,7 @@ export const HomeProductCards = ({props,picture}) => {
 
         </div>
             <div className={picture?.storage ?'homeProductPicturesContainer' : 'homeProductPicturesContainerd'}>
-                <img className={picture?.storage ?'homeProductPictures' : 'homeProductPicturesd'} src={ picture?.storage ? Base_URL+ picture.storage : logo}/>
+                <img className={picture?.storage ?'homeProductPictures' : 'homeProductPicturesd'} src={ picture?.storage ? InitRequest() +  '/' + picture.storage : logo}/>
             </div>
         </div>
     )

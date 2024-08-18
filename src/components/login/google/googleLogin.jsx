@@ -3,10 +3,14 @@ import { FcGoogle } from "react-icons/fc";
 export const GoogleLogin=()=>{
 
     const googleAuth = () =>{
-        const env = import.meta.env.VITE_MODE
-        if(env === 'development'){
+        if(process.env.NODE_ENV === 'development'){
             window.location.href = (
-                `${import.meta.env.VITE_BASE_URL_BACK}users/google`
+                `${import.meta.env.VITE_URL_BACK_DEV}/users/google`
+                
+            )
+        }else if(process.env.NODE_ENV === 'prodution'){
+            window.location.href = (
+                `${import.meta.env.VITE_URL_BACK_PROD}/users/google`
                 
             )
         }

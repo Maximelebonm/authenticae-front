@@ -9,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { InputFloatLabel } from "../../../../components/uiElements/inputFloatLabel/inputFloatLabel";
 import StripeOnboarding from "../../../../components/stripe/stripeOnBoarding";
+import { InitRequest } from "../../../../api/initRequest";
 
 export const ProducerPanelScreen = () =>{
     const cookie =  decodeCookies(document.cookie)
@@ -134,8 +135,6 @@ export const ProducerPanelScreen = () =>{
             case 'desc' : newShop.description = newValue;
             break;
         }
-        
-        // console.log(newShop)
         setShop(newShop)
     }
 
@@ -153,7 +152,7 @@ return(
             Changer l&apos;avatar de votre boutique
         </div>
         <div className="ProducerPanelDropZoneContainer">
-        <img src={shop?.profil_picture &&  Base_URL+shop.profil_picture}/>
+        <img src={shop?.profil_picture &&  InitRequest() +'/'+shop.profil_picture}/>
             <UploadDropZone setFile={setAvatarFile} loadUrlImg={setImgUrlAvatar} imageSet={imgUrlAvatar} name='avatar'/>
             <button type='submit'> Envoyer l&apos;image</button>
         </div>
@@ -164,7 +163,7 @@ return(
         { !shop.user.Stripe_ID && <StripeOnboarding id={shop.Id_user} />}
         <form encType="multipart/form-data" onSubmit={avatarSubmit}>
             <div className="ProducerPanelDropZoneContainer">
-                <img src={shop?.cover_picture && Base_URL+shop.cover_picture}/>
+                <img src={shop?.cover_picture && InitRequest() +'/'+shop.cover_picture}/>
                 <UploadDropZone setFile={setCouvFile} loadUrlImg={setImgUrlCover} imageSet={imgUrlCover} name='cover'/>
                 <button type='submit'> Envoyer l&apos;image </button>
             </div>

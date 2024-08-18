@@ -21,9 +21,6 @@ export const CheckOutForm = ({props}) => {
         e.preventDefault()
         if(clicked == 0){
             clicked = 1
-                  console.log('pay')
-                  // setDisabledButton(!disabledButton)
-          
                   if (!stripe || !elements) {
                       console.log("Stripe.js n'a pas encore été chargé.");
                       return;

@@ -5,7 +5,6 @@ export const decodeCookies = (cookie) =>{
     try {
         const TokenDecode = jwtDecode(cookie)
         if(TokenDecode){
-            console.log(TokenDecode)
             return TokenDecode
             }
             else return 'error'
@@ -42,7 +41,6 @@ export const decodeCookieCart = ()=> {
                         break;
                     }
                 }
-                console.log(cartCookie)
                 decodeCookies(cartCookie)      
 }
 

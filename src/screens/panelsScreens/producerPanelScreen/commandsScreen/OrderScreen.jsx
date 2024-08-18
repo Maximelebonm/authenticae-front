@@ -5,6 +5,7 @@ import './OrderScreen.css'
 import Logo from '../../../../assets/logos/logo_authenticae_blanc.png';
 import { toast, ToastContainer } from "react-toastify";
 import { Check } from 'lucide-react';
+import { InitRequest } from "../../../../api/initRequest";
 
 export const OrderScreen =()=> {
     const { userDetails } = useAuthContext();
@@ -190,7 +191,7 @@ export const OrderScreen =()=> {
                                 <div>
                                     {item.product.name}
                                 </div>   
-                                {<img src={item?.product?.productImages?.[0]?.storage ? base_URL + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
+                                {<img src={item?.product?.productImages?.[0]?.storage ? InitRequest() + '/' + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
                             </div>
                             <div className='orderProductItem'>
                                 <div>

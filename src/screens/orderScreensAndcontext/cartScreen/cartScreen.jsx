@@ -7,21 +7,18 @@ import { Trash2  } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { useOrder } from '../orderContext';
+import { InitRequest } from "../../../api/initRequest";
 
 export const CartScreen = ()=> {
     const [cart,setCart] = useState();
     const [products,setProducts] = useState();
     const [reload,setReload] = useState(false)
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK;
     const navigate = useNavigate()
     const { orderDetails, setOrderDetails } = useOrder();
-    console.log(orderDetails)
-
 
     useEffect(()=>{
         const cookies = document.cookie.split('; ')
                 let authCookie = null
-                console.log(cookies)
                 for (let cookie of cookies) {
                     if (cookie.startsWith('auth=')) {
                         authCookie = cookie.substring('auth='.length);
@@ -33,7 +30,6 @@ export const CartScreen = ()=> {
                     const resp = await getUserById(cookie.Id_user)
                     resp.json()
                     .then(async(data)=>{
-                        console.log(data)
                         if(data.carts.length === 0){
                             document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                         }
@@ -42,7 +38,6 @@ export const CartScreen = ()=> {
                             const respProd = await getCartApi(data.carts[0].Id_cart)
                             respProd.json()
                             .then((data)=> {
-                                console.log(data)
                                 setProducts(data.data)
                                 setOrderDetails({...orderDetails, cart : data.data})
                             })
@@ -67,7 +62,6 @@ export const CartScreen = ()=> {
             resp.json()
             .then((data)=>{
                 if(data.message === 'product deleted'){
-                    console.log(data.message)
                     toast.success('Produit supprimé du panier',{autoClose : 2000})
                     setReload(!reload)
                 }
@@ -75,8 +69,6 @@ export const CartScreen = ()=> {
             }
             fetchApi()
     }
-
-    console.log(products)
 
     return (
         <div className='cartScreenContainer'>
@@ -89,7 +81,7 @@ export const CartScreen = ()=> {
                     return (
                         <div key={productIndex} className='cartProductContainer'>
                         <div className='cartProductTitle'>
-                        <img src={Base_URL + productItem.product?.productImages[0].storage} className='cartProductImage'/>
+                        <img src={InitRequest() + '/' + productItem.product?.productImages[0].storage} className='cartProductImage'/>
                         <h2>{productItem.product?.name}</h2>
                         <h2> prix total produit {productItem.price}€ </h2>
                         </div>

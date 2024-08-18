@@ -1,0 +1,28 @@
+#footerContainer {
+    height : 150px;
+    bottom : 0;
+
+    background-color: var(--nuance_color5);
+    width : auto;
+    padding: 20px;
+    /* margin-left: -10px;
+    margin-right: -10px;  */
+    /* margin-bottom: -10px; */
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content:space-around; 
+}
+#footerInfo{
+    display: flex;
+    flex-direction: column;
+    & a:hover {
+            color : white
+
+    }
+}
+
+#footerContact{
+    display: flex;
+    flex-direction: column;
+}

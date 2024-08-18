@@ -2,7 +2,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  padding : 0;
   color: black;
   
   --font_color : black;
@@ -43,7 +43,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  
+  padding : 0;
   height : 100%;
   background-color: var(--body_color);
 }

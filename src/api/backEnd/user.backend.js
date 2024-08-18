@@ -11,12 +11,10 @@ export const getAllUser = async () => {
 }
 
 export const getUserById = async (id) => {
-    console.log(id)
     try {
         const user = await ky.get(`${InitRequest()}/users/profile/${id}`,{credentials : 'include'})
         return user
     } catch (err){
-        console.log('erreur')
         return "erreur : " + err;
     }
 }
@@ -96,20 +94,17 @@ export const logoutApi = async () => {
             credentials : 'include'
         
         }).json();
-        console.log(response)
         if (response.message) {
             return response;
         } else {
             return "La déconnexion a échoué";
         }
         } catch (err) {
-        console.error("Erreur lors de la déconnexion :", err);
         return "Erreur : " + err.message;
     }
 }
 
 export const updateUserApi = async (formObject,id)=> {
-    console.log('api', formObject,id)
     try {
     const response = await ky.put(`${InitRequest()}/users/update/${id}`,{
         json : {
@@ -120,7 +115,6 @@ export const updateUserApi = async (formObject,id)=> {
         },
         credentials : 'include'
     })
-    console.log(response)
     return response
     } catch (err){
         return "erreur : " + err;

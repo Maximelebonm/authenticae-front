@@ -1,0 +1,18 @@
+#confContainer{
+    text-align: start;
+    width : 75%;
+    margin : auto;
+    & h1 {
+        text-align : center;
+    }
+    & a {
+        color : blue;
+        text-decoration: underline;
+    }
+    & h3 {
+        margin-top : 30px;
+    }
+    & h5{
+        margin-top : 20px;
+    }
+}

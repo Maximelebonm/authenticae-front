@@ -15,7 +15,6 @@ export const ProducerListScreen = () => {
             const response = await getAllShop()
             response.json()
             .then(data =>{
-                console.log(data)
                 setShop(data.data)
                 setsearchShop(data.data)
             })

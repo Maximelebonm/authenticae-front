@@ -2,9 +2,6 @@ import { InitRequest } from "../../initRequest";
 import ky from "ky";
 
 export const addCartApi = async(formObject,finalPrice)=>{
-    console.log('pass')
-    console.log(finalPrice)
-    console.log(formObject)
     try {
         const cartCreate = ky.post(`${InitRequest()}/cart/cartcontrol`,{
             json: {
@@ -21,17 +18,14 @@ export const addCartApi = async(formObject,finalPrice)=>{
         })
         return cartCreate
     } catch (error) {
-        console.log(error)
         return error
     }
 }
 
 export const getCartApi = async(id)=>{
-    console.log(id)
     try {
         return await ky.get(`${InitRequest()}/cart/${id}`,{credentials : 'include'})
     } catch (err){
-        console.log('erreur')
         return "erreur : " + err;
     }
 }
@@ -52,7 +46,6 @@ export const deleteCartApi = async(idcartProduct,idPersonalization,idsOptions)=>
             credentials : 'include'
         })
     } catch (error) {
-        console.log(error)
         return error
     }
 }

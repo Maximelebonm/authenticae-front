@@ -12,7 +12,6 @@ import { useAuthContext } from '../../screens/authContext';
 export const Header =()=>{
     const [isActive, setIsActive] = useState(false);
     const { userDetails, setUserDetails } = useAuthContext();
-    // const logo = '../../assets/logos/src/assets/logos/logo_authenticae_blanc.png'
     
     const toggleActive = () => {
         setIsActive(!isActive);
@@ -25,13 +24,11 @@ export const Header =()=>{
         if(document.cookie){
             const auth = async()=>{
                 const cookies = document.cookie.split('; ')
-                console.log(cookies)   
                 let authCookie = null
                 for (let cookie of cookies) {
                     if (cookie.startsWith('auth=')) {
                         // Extraire la valeur du cookie après le signe '='
-                        authCookie = cookie.substring('auth='.length);
-                        console.log(authCookie)          
+                        authCookie = cookie.substring('auth='.length);        
                         break;
                     }
                 }
@@ -39,7 +36,6 @@ export const Header =()=>{
                 const getUser = await getUserById(cookie.Id_user)
                 getUser.json()
                 .then(async(data)=> {
-                    console.log(data)
                     if(data === 'erreur : HTTPError: Request failed with status code 404 Not Found'){
                         await logoutApi()
                     } else {
@@ -54,7 +50,6 @@ export const Header =()=>{
         }
     },[])
     
-    console.log(cookie)
     useEffect(()=>{
         const nav = document.querySelectorAll('#headerNav .headerItem');
         nav.forEach(item => {
@@ -71,7 +66,6 @@ export const Header =()=>{
         const clickedItem = window.innerWidth;
  
         if(clickedItem <= 780){
-            console.log('pass')
             toggleActive() 
         }
     }
@@ -140,10 +134,10 @@ export const Header =()=>{
                     </div> 
                 </div>
                         <Link  to={roleCookie ? "/cart" : '/login'}>
-                            <li className='headerItem'><ShoppingCart /> Panier</li>
+                            <li className='headerItem' onClick={activeItem}><ShoppingCart /> Panier</li>
                         </Link>
                         <Link  to={roleCookie ? "/myorder" : '/login'}>
-                                    <li className='headerItem'> <ClipboardList />Commandes</li>
+                                    <li className='headerItem' onClick={activeItem}> <ClipboardList />Commandes</li>
                         </Link>
             </ul>
         <div id='icons' onClick={toggleActive}>

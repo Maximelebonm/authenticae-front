@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { PersonalizationComponent } from "./personalizationComponent/personalizationComponent";
 import { Trash2,Archive,ChevronLeft,ChevronRight  } from 'lucide-react';
 import { decodeCookies } from "../../../../helpers/decodeToken";
+import { InitRequest } from "../../../../api/initRequest";
 
 export const ProducelPanelProductUpdate = () => {
     const {id} = useParams()
@@ -33,12 +34,12 @@ export const ProducelPanelProductUpdate = () => {
     useEffect(()=> {
         const fetchProduct = async()=>{
             const response = await getProduct(id)
-            console.log(response)
+
             if(response){
                 response.json()
                 .then(data=>{
                     if(data.message == 'product geted'){
-                        console.log(data.data)
+
                             setImgDisplay(data.data.images)
                             setProduct(data.data.product);
                             setOptions(data.data.option);
@@ -68,8 +69,6 @@ export const ProducelPanelProductUpdate = () => {
         const form = e.target
         const formData = new FormData(form);
         const name = formData.get("pictures");
-        console.log(fileProduct)
-        console.log(name)
         if(name.size > 0){
             const check = await CheckUpdatePictureApi(product.Id_product,fileProduct.length)
             if(check){
@@ -393,8 +392,6 @@ export const ProducelPanelProductUpdate = () => {
     const notifySuccessUpload = () => toast.success("Produit mis à jour avec succès",{autoClose : 2000});
     const notifySuccessPicture = () => toast.success("image télécharger avec succès",{autoClose : 2000})
     
-    console.log(onCommand)
-    
     return (
         <>
         <Link to='/myshop'>
@@ -415,7 +412,7 @@ export const ProducelPanelProductUpdate = () => {
                     <div className='producerPanelDisplayItemContainer' key={index}>
                     {index > 0 && <button className="producerPanelArrowButton" type="button"  onClick={()=>upPicture(item.Id_product_image,item.order)}><ChevronLeft className='displayArrowIconLeft'/></button>}
                     <div className='producerPanelDisplayImageContainer'>
-                        <img className="producerPanelDisplayImage" src={Base_URL+item.storage} />
+                        <img className="producerPanelDisplayImage" src={InitRequest()+ '/'+item.storage} />
                         <div className='producerPanelDisplayButtonContainer'>
                             <button className="producerPanelDisplayButton" type="button"  onClick={()=>deletePicture(item.Id_product_image,item.name)}><Trash2 className='displayIcon'/></button>
                             <button className="producerPanelDisplayButton" type="button" onClick={()=>archivePicture(item.Id_product_image)} ><Archive className='displayIcon'/></button>

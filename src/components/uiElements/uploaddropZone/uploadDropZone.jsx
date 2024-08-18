@@ -14,7 +14,6 @@ export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple,maxI
         setIsDraggingOver(false);
         const files = e.dataTransfer.files;
         const file = files[0]
-        const MaxFilesize = 5 * 1024 * 1024
         const imgUrl = URL.createObjectURL(file)
         loadImg(imgUrl)
         setFile(file);
@@ -46,7 +45,6 @@ export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple,maxI
                 const file = files[i]
                 ImgUrltab.push(URL.createObjectURL(file))
             }
-            console.log(ImgUrltab)
             loadUrlImg(ImgUrltab)
             setFile(files)
         } else {
@@ -56,6 +54,7 @@ export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple,maxI
     
     return(
         <div id='dropZoneContainer'>
+        <ToastContainer/>
             <div className="drop-zone" id="drop-zone" name={name}
                 onDragLeave={handleDragLeave} 
                 onDragOver={handleDragOver} 
