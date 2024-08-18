@@ -1,6 +1,6 @@
 import { InitRequest } from "../../initRequest";
 import ky from "ky";
-//req.body.cart.price
+
 export const paymentStripeApi = (id,price,cart, user, address_delivery,address_billing)=> {
     try {
         const stripeReq = ky.post(`${InitRequest()}/order/stripe/charge`,{
@@ -34,7 +34,7 @@ export const stripeOnBoradingApi = (id)=> {
     }
 }
 
-export const stripeCancelApi = (id,idP,amount,refund,products)=> {
+export const stripeCancelApi = (id,idP,amount,refund,products,user,order_state)=> {
     try {
         const stripeReq = ky.post(`${InitRequest()}/order/stripe/cancel/${id}`,{
             json : {
@@ -42,6 +42,8 @@ export const stripeCancelApi = (id,idP,amount,refund,products)=> {
                 amount : amount,
                 refund : refund,
                 products : products,
+                user : user,
+                order_state : order_state
             },
             credentials : 'include'
         })
@@ -52,7 +54,7 @@ export const stripeCancelApi = (id,idP,amount,refund,products)=> {
     }
 }
 
-export const stripeCancelProductApi = (idorder,idPaiment,amount,idproduct,priceproduct,refund,productAccount)=> {
+export const stripeCancelProductApi = (idorder,idPaiment,amount,idproduct,priceproduct,refund,productAccount,user)=> {
     try {
         console.log("pass")
         const stripeReq = ky.post(`${InitRequest()}/order/stripe/cancel/product/${idproduct}`,{
@@ -62,7 +64,8 @@ export const stripeCancelProductApi = (idorder,idPaiment,amount,idproduct,pricep
                 Id_order : idorder,
                 amountProduct : priceproduct,
                 refund : refund,
-                productAccount : productAccount,           
+                productAccount : productAccount,
+                user : user,           
             },
             credentials : 'include'
         })

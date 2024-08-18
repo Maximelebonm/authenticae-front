@@ -23,6 +23,7 @@ import { CartValidationScreen } from '../screens/orderScreensAndcontext/CartVali
 import { OrderScreen } from '../screens/panelsScreens/producerPanelScreen/commandsScreen/OrderScreen.jsx';
 import { SuccessOrderScreen } from '../screens/orderScreensAndcontext/successOrderscreen/successOrderScreen.jsx';
 import { CommandsScreen } from '../screens/profilesScreen/comandsScreen/commandsScreen.jsx';
+import { ReturnOrderScreen } from '../screens/panelsScreens/producerPanelScreen/returnScreen/returnScreen.jsx';
 
 export const RoutesContainer = () =>{
     return (
@@ -77,7 +78,12 @@ export const RoutesContainer = () =>{
                 <PrivateRoutes role={['producer']}>
                     <ProducelPanelProductUpdate/>
                 </PrivateRoutes>
-            }/>           
+            }/>      
+                  <Route path='/return' element={
+                <PrivateRoutes role={['producer']}>
+                    <ReturnOrderScreen/>
+                </PrivateRoutes>
+            }/>          
         </Routes>
         <OrderProvider>
             <Routes>  

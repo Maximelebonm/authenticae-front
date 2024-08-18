@@ -37,7 +37,7 @@ export const ValidationScreen = () => {
                 <button>login</button>
             </Link>
             </> : <>
-                <h1>Un problème est survenu ou votre compte à déjà été créé</h1>
+                <h1>Veuillez patienter... si après quelque minutes ce message reste afficher veuillez contater le support à contact@authenticae.fr</h1>
             </>
             }
         </>

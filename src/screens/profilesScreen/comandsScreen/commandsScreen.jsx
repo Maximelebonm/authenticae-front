@@ -15,6 +15,8 @@ export const CommandsScreen = ()=> {
     const [showModal, setShowModal] = useState(null);
     const [showModalProduct, setShowModalProduct] = useState(null);
     const [showModalPartiel, setShowModalPartiel] = useState(null);
+    const [reload,setReload] = useState(false);
+    let cliked = 0
 
     const toggleModal = (obj) => {
         if(obj === 'commande'){
@@ -50,7 +52,7 @@ export const CommandsScreen = ()=> {
         };
 
         fetchCommands();
-    },[userDetails])
+    },[userDetails,reload])
 
     const formatDate = (dateString) => {
         const months = [
@@ -67,57 +69,93 @@ export const CommandsScreen = ()=> {
     };
     console.log(myorder)
 
-    const handleCancel = (idOrder,idPayment,amount,refund,product)=> {
-        const fetch = async()=>{
-            const resp = await stripeCancelApi(idOrder,idPayment,amount,refund,product)
-                if(resp.message === "commande annulé"){
-                    toast.success("commande annulé", {autoClose : 3000})
-                    setShowModal(!showModal);
-                } else {
-                    toast.error('une erreure est survenue', {autoClose : 3000})
-                    setShowModal(!showModal);
+    const handleCancel = (idOrder,idPayment,amount,refund,product,user,order_state)=> {
+        if(cliked === 0){
+            cliked = 1
+            const fetch = async()=>{
+                const resp = await stripeCancelApi(idOrder,idPayment,amount,refund,product,user,order_state)
+                    if(resp.message === "commande annulé"){
+                        toast.success("commande annulé", {autoClose : 3000})
+                        setShowModal(!showModal);
+                        setReload(!reload)
+                    } 
+                    if(resp.message === 'commande déja annulé'){
+                        toast.error("votre commande à déjà été annulé, si il s&apos;agit d&apos;une erreur, veuillez contacter le support", {autoClose : 3000})
+                        setShowModal(!showModal);
+                        setReload(!reload)
+                    }
+                    else {
+                        toast.error('une erreure est survenue', {autoClose : 3000})
+                        setShowModal(!showModal);
+                        setReload(!reload)
+                    }
                 }
-            }
-            fetch()
+                fetch()
+        } else {
+            toast.error("actualisé la page")
+        }
         }
 
-    const handleCancelProduct = (idOrder,idPayment,amount,idproduct,priceproduct,refund,productAccount)=> {
-        const fetch = async()=>{
-            const resp = await stripeCancelProductApi(idOrder,idPayment,amount,idproduct,priceproduct,refund,productAccount)
-                if(resp.message === "produit annulé"){
-                    toast.success("produit annulé", {autoClose : 3000})
-                    setShowModal(!showModal);
-                } else {
-                    toast.error('une erreure est survenue', {autoClose : 3000})
-                    setShowModal(!showModal);
+    const handleCancelProduct = (idOrder,idPayment,amount,idproduct,priceproduct,refund,productAccount,user)=> {
+        if(cliked == 0){
+            cliked = 1
+            const fetch = async()=>{
+                const resp = await stripeCancelProductApi(idOrder,idPayment,amount,idproduct,priceproduct,refund,productAccount,user)
+                    if(resp.message === "produit annulé"){
+                        toast.success("produit annulé", {autoClose : 3000})
+                        setShowModal(!showModal);
+                        setReload(!reload)
+                    } else {
+                        toast.error('une erreure est survenue', {autoClose : 3000})
+                        setShowModal(!showModal);
+                        setReload(!reload)
+                    }
                 }
+                fetch()
             }
-            fetch()
         }
 
         const handleCancelProducer = (id)=> {
-            console.log(id)
             const fetch = async()=>{
                 const resp = await cancelProductInProgressApi(id)
                 if(resp.message == "produit en cours d'annulation"){
-                    toast.success("votre produit est en cours d'annulation, vous serez contacter par mail lorsque cela sera le cas")
+                    toast.success("votre produit est en cours d'annulation, vous serez contacter par mail lorsque cela sera le cas",{autoClose : 3000})
+                    setReload(!reload)
+                } else {
+                    toast.error("une erreur est survenue veuillez contact le support", {autoClose : 3000})
                 }
             }
             fetch()
         }
 
         const CancelReturn = ({state,id})=> {
-            if(state !== 'canceled' && state == 'wait'){
+            if(state == 'wait'){
                 return <button onClick={()=>{setShowModalProduct(id)}}>Annuler le produit</button>
             }
-            if(state !== 'canceled' && state == 'production'){
+            if(state == 'production'){
                 return <button onClick={()=>{setShowModalPartiel(id)}}>Annuler le produit (remboursement partiel)</button>
+            }
+            if(state == 'send'){
+                return <div>produit envoyé</div>
             }
             else {
                 return <div>produit annulé</div>
             }
         }
-        console.log('modalId :'  + showModalPartiel)
+
+        const OrderCancelorFinsih = ({state,id})=> {
+            console.log(id)
+            if(state == 'Pay'){
+                return <button onClick={()=>setShowModal(id)}>Annuler la commande</button>
+            }
+            if(state == 'finish'){
+                return <div>commande terminé</div>
+            }
+            else if(state == 'canceled'){
+                return <div>commande annulé</div>
+            }
+        }
+        
 
     return (
         <div id='commandsScreenContainer'>
@@ -183,21 +221,33 @@ export const CommandsScreen = ()=> {
                                     <div className='commandProduct'>
                                         <CancelReturn state={productitem.order_state} id={productitem.Id_order_product} />
                                     </div>
-                                    <Modal onClose={()=>setShowModalProduct(null)} show={showModalProduct === productitem.Id_order_product} onConfirm={()=>handleCancelProduct(orderItem.Id_order,orderItem.payment_id,orderItem.price,productitem.Id_order_product,productitem.price,orderItem.refund,orderItem.orderproducts.length)}>
+                                    <Modal onClose={()=>setShowModalProduct(null)} show={showModalProduct === productitem.Id_order_product} onConfirm={()=>{handleCancelProduct(orderItem.Id_order,orderItem.payment_id,orderItem.price,productitem.Id_order_product,productitem.price,orderItem.refund,orderItem.orderproducts.length,orderItem.user)
+                                    setShowModalProduct(null)
+                                    setReload(!reload)
+                                    }}>
                                         êtes vous sur de vouloir annuler ce produit
                                     </Modal>
-                                    <Modal onClose={()=>setShowModalPartiel(null)} show={showModalPartiel === productitem.Id_order_product} onConfirm={()=> handleCancelProducer(productitem.Id_order_product)}>
-                                        Le producteur à commencer à travaller sur votre produit, le remboursement ne pourra être que partiel, êtes vous sur de vouloir continuer ?
+                                    <Modal onClose={()=>setShowModalPartiel(null)} show={showModalPartiel === productitem.Id_order_product} onConfirm={()=> {handleCancelProducer(productitem.Id_order_product)
+                                    setShowModalPartiel(null)
+                                    setReload(!reload)
+                                    }}>
+                                        Le producteur à commencer à travaller sur votre produit, le remboursement se fera partielemnt celons l&apos;avancer du produit (jour ouvré), êtes vous sur de vouloir continuer ?
                                     </Modal>
                                 </div>
                             )
                         })} 
                   
-                        <Modal onClose={()=>setShowModal(null)} show={showModal === orderItem.Id_order} onConfirm={()=>handleCancel(orderItem.Id_order,orderItem.payment_id,orderItem.price,orderItem.refund,orderItem.orderproducts)}>
+                        <Modal onClose={()=>setShowModal(null)} show={showModal === orderItem.Id_order} 
+                        onConfirm={()=>{handleCancel(orderItem.Id_order,orderItem.payment_id,orderItem.price,orderItem.refund,orderItem.orderproducts,orderItem.user,orderItem.order_state)
+                            setShowModal(null)
+                            setReload(!reload)
+                        }}>
                             êtes vous sur de vouloir annuler cette commande
                         </Modal>
                         </div>
-                        {orderItem.order_state !== 'canceled' ? <button onClick={()=>setShowModal(orderItem.Id_product)}>Annuler la commande</button> : <div> Commande annulé </div>}
+                        <OrderCancelorFinsih state={orderItem.order_state} id={orderItem.Id_order} />
+                        {/* {(orderItem.order_state !== 'canceled' || orderItem.order_state !== 'finsih') && orderItem.order_state === 'Pay' ? <button onClick={()=>setShowModal(orderItem.Id_product)}>Annuler la commande</button> : <div> Commande annulé </div>} */}
+                  
                     </div>
                 )
             })

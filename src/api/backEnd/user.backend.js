@@ -72,7 +72,7 @@ export const ValidationUser = async (firstname,lastname,birthdate,email,phone,pa
     }
 }
 
-export const registerUser = async (firstname,lastname,birthdate,email,phone,password,identifiant) => {
+export const registerUser = async (firstname,lastname,birthdate,email,phone,password) => {
     try {
         const user = await ky.post(`${InitRequest()}/users/register`,{
             json: {
@@ -82,7 +82,6 @@ export const registerUser = async (firstname,lastname,birthdate,email,phone,pass
                 phone : phone,
                 email : email,
                 password : password,
-                identifiant : identifiant,
             },
             credentials : 'include'
         })

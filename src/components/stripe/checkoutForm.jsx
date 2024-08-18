@@ -1,6 +1,7 @@
 import { CardElement,useStripe,useElements,CardNumberElement,CardExpiryElement,CardCvcElement } from "@stripe/react-stripe-js";
 import { paymentStripeApi } from "../../api/backEnd/buyProcess/stripe.backend";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import './checkOutForm.css'
 import Logo from '../../assets/logos/logo_authenticae_noir_cut.png';
 
@@ -8,50 +9,62 @@ export const CheckOutForm = ({props}) => {
     const stripe = useStripe();
     const elements = useElements();
     const navigate = useNavigate()
+    let clicked = 0
     const {cart,user,userChoicePaymentMethod,address_billing,address_delivery} = props
+    if(Object.keys(cart).length === 0){
+        console.log('vide')
+        navigate('/cart')
+    }
     console.log(props)
 
     const handleSubmit = async (e)=> {
         e.preventDefault()
+        if(clicked == 0){
+            clicked = 1
+                  console.log('pay')
+                  // setDisabledButton(!disabledButton)
+          
+                  if (!stripe || !elements) {
+                      console.log("Stripe.js n'a pas encore été chargé.");
+                      return;
+                  }
+          
+                  const cardElement = elements.getElement(CardNumberElement,CardExpiryElement,CardCvcElement);
+                  if (!cardElement) {
+                      console.log("CardElement n'est pas disponible.");
+                      return;
+                  }
+                  try {
+                      const { error, paymentMethod } = await stripe.createPaymentMethod({
+                          type: "card",
+                          card: cardElement,
+                      });
+          
+                      if (error) {
+                          console.error("Erreur de génération du token :", error.message);
+                      } else {
+                          console.log("Token généré :", paymentMethod);
+                          try {
+                              const {id} = paymentMethod
+                              const priceInCents = cart.price * 100
+                              const response = await paymentStripeApi(id,priceInCents, cart, user,address_delivery,address_billing)
+                              response.json()
+                              .then((data)=>{
+                                  console.log(data.success)
+                                  if(data.success){
+                                      navigate('/paiement/success')
+                                  }
+                              })
+                          } catch (error) {
+                              console.log(error)
+                          }
+                      }
+                  } catch (err) {
+                      console.error("Erreur inattendue :", err.message);
+                  }
 
-        if (!stripe || !elements) {
-            console.log("Stripe.js n'a pas encore été chargé.");
-            return;
         }
-
-        const cardElement = elements.getElement(CardNumberElement,CardExpiryElement,CardCvcElement);
-        if (!cardElement) {
-            console.log("CardElement n'est pas disponible.");
-            return;
-        }
-        try {
-            const { error, paymentMethod } = await stripe.createPaymentMethod({
-                type: "card",
-                card: cardElement,
-            });
-
-            if (error) {
-                console.error("Erreur de génération du token :", error.message);
-            } else {
-                console.log("Token généré :", paymentMethod);
-                try {
-                    const {id} = paymentMethod
-                    const priceInCents = cart.price * 100
-                    const response = await paymentStripeApi(id,priceInCents, cart, user,address_delivery,address_billing)
-                    response.json()
-                    .then((data)=>{
-                        console.log(data.success)
-                        if(data.success){
-                            navigate('/paiement/success')
-                        }
-                    })
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        } catch (err) {
-            console.error("Erreur inattendue :", err.message);
-        }
+   
     }
 
     return(
@@ -86,12 +99,6 @@ export const CheckOutForm = ({props}) => {
             </div>
 
             </div>
-            {/* <CardElement
-                options={{
-                    hidePostalCode : true,
-                    disableLink : true,
-                }}
-            /> */}
             <button id="checkoutButton" type='submit'>Payer {cart.price} €</button>
         </form>
 

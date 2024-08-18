@@ -155,11 +155,12 @@ export const ProfilScreen = ()=>{
                 console.log(formObject)                     
                 const response = await updateUserApi(formObject,id)
                 if(response){
-                    console.log(response)
                     response.json()
                     .then((data)=>{
-                            if(data.message === 'address created'){
-                                setAddress(data.data)
+                        console.log(data)
+                            if(data.message === 'user updated'){
+                                setUser(data.data)
+                                toast.success('Profil mis à jour', {autoClose : 3000})
                             }
                         })
                     }
@@ -172,7 +173,6 @@ export const ProfilScreen = ()=>{
 
     const handleChangeAddress = (e,obj,id)=> {
         const newValue = e.target.value
-        console.log(address)
         const newAdress = [...address]
         newAdress.map((item)=>{
         if(item.Id_address === id)
@@ -210,14 +210,14 @@ console.log(user)
         <div className="profileScreenContainer">
                 <ToastContainer/>
                 <form onSubmit={handleSubmitProfile}>
-                    votre adress Email : {user?.email}
+                    votre addresse email : {user?.email}
                     <InputFloatLabel placeholder="Ex : John" onchange={(e)=>handleChangeProfile(e,'firstname')} type='text' labelName='prénom' inputName='firstname' inputValue={user?.firstname ?? ''} required='yes' maxLength={30} minLength={1}/>
                     <InputFloatLabel placeholder="ex : Dupont" onchange={(e)=>handleChangeProfile(e,'lastname')} type='text' labelName='Nom' inputName='lastname' inputValue={user?.lastname ?? ''} required='yes' minLength={1} maxLength={50}/>
                     <InputFloatLabel placeholder="" type='date' onchange={(e)=>handleChangeProfile(e,'birthdate')} labelName='Date de Naissance' inputName='birthdate' inputValue={user?.birthdate ?? ''} required='yes' max='2008-01-01'/>
                     <InputFloatLabel placeholder="Ex : 0606060606" onchange={(e)=>handleChangeProfile(e,'phone')} type='number' labelName='N° de téléphone' inputName='phone' inputValue={user?.phone ?? ''} required='yes' maxLength={30} minLength={12} />
                     <button>Valider profil</button>
                 </form>
-                <button type="button" onClick={addAdress} >ajouter une address</button>
+                <button type="button" onClick={addAdress} >ajouter une addresse</button>
                     {address.map((item,index)=>{
                         return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e,Id_address)=>handleSubmitAdress(e,Id_address)} deleteAddress={(e,Id_address)=>deleteAdress(e,Id_address)}/>
                     })}

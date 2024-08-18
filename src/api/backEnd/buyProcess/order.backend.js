@@ -14,12 +14,14 @@ export const getOrderApi = async (id)=> {
     }
 }
 
-export const inProductionApi = (id,email)=>{
+export const inProductionApi = (id,email,firstname,productname)=>{
     try {
         console.log("pass")
         const req = ky.post(`${InitRequest()}/order/producer/accepted/${id}`,{
             json : {
                 email : email,
+                firstname : firstname,
+                productname : productname
             },
             credentials : 'include'
         })
@@ -29,11 +31,13 @@ export const inProductionApi = (id,email)=>{
     }
 }
 
-export const cancelProductionApi = (id,email)=>{
+export const cancelProductionApi = (id,email,firstname,productname)=>{
     try {
         const req = ky.post(`${InitRequest()}/order/producer/cancelAccepted/${id}`,{
             json : {
                 email : email,
+                firstname : firstname,
+                productname : productname,
             },
             credentials : 'include'
         })
@@ -43,15 +47,19 @@ export const cancelProductionApi = (id,email)=>{
     }
 }
 
-export const sendProductApi = (id,email,idPayment,stripeId,price)=>{
+export const sendProductApi = (id,email,idPayment,stripeId,price,userName,productName,productAccount,idOrder)=>{
     try {
-        console.log("pass")
+        console.log(idOrder)
         const req = ky.post(`${InitRequest()}/order/producer/send/${id}`,{
             json : {
                 email : email,
                 IdPayement : idPayment,
                 stripe_ID : stripeId,
                 amountProduct : price,
+                firstname : userName,
+                productname : productName,
+                productAccount : productAccount,
+                Id_order : idOrder
             },
             credentials : 'include'
         })

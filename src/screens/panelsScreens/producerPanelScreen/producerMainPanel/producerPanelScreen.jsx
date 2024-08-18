@@ -96,12 +96,8 @@ export const ProducerPanelScreen = () =>{
                             notifySuccessPicture()
                         }  
                     }
-                    else {
-                        await createShop(id,shopName,shopDesc,avatar,couvFile)
-                    }
                 }
                 if(imgUrlAvatar || imgUrlCover){
-                    console.log('pass img')
                     fetch()
                 }
             } catch (err) {

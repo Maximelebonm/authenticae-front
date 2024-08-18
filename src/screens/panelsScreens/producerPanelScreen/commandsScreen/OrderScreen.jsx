@@ -33,10 +33,10 @@ export const OrderScreen =()=> {
         })()
     },[userDetails,reload])
 
-    const handleProduction = async(id,mail)=>{
+    const handleProduction = async(idOrderProduct,userEmail,userName,productName)=>{
         try {
-            console.log(id, mail)
-            const resp = await inProductionApi(id,mail)
+
+            const resp = await inProductionApi(idOrderProduct,userEmail,userName,productName)
             resp.json()
             .then((data)=>{
                 if(data.message === 'produit pris en charge'){
@@ -53,10 +53,10 @@ export const OrderScreen =()=> {
         }
     }
 
-    const cancelProduction = async(id,mail)=> {
+    const cancelProduction = async(idOrderProduct,userEmail,userName,productName)=> {
         try {
-            console.log(id, mail)
-            const resp = await cancelProductionApi(id,mail)
+    
+            const resp = await cancelProductionApi(idOrderProduct,userEmail,userName,productName)
             resp.json()
             .then((data)=>{
                 if(data.message === 'prise en charge annulé'){
@@ -73,10 +73,10 @@ export const OrderScreen =()=> {
         }
     }
 
-    const handleProductSend = async(id,mail,idPayment,stripeId,price)=> {
+    const handleProductSend = async(id,mail,idPayment,stripeId,price,userName,productName,productAccount,idOrder)=> {
         try {
             console.log(id, mail)
-            const resp = await sendProductApi(id,mail,idPayment,stripeId,price)
+            const resp = await sendProductApi(id,mail,idPayment,stripeId,price,userName,productName,productAccount,idOrder)
             resp.json()
             .then((data)=>{
                 if(data.message === 'produit envoyé'){
@@ -102,7 +102,11 @@ export const OrderScreen =()=> {
                 if(data.message === 'envoie annulé'){
                     toast.success('envoie annulé', {autoClose : 3000})
                     setReload(!reload)
-                } else {
+
+
+                } 
+            
+                else {
                     toast.error('envoi annulé mais mail non envoyé, faire une demande au support', {autoClose : 10000})
                     setReload(!reload)
                 }
@@ -133,11 +137,10 @@ export const OrderScreen =()=> {
         fetch()
     }
 
-    const ReturnSendButton = ({state,idOrder,idOrderProduct,userEmail,paymentid,stripe,price})=> {
-
-        console.log(state,idOrder,idOrderProduct,userEmail,paymentid,stripe,price)
+    const ReturnSendButton = ({state,idOrder,idOrderProduct,userEmail,paymentid,stripe,price,userName,productName,productAccount})=> {
         if(state === 'production'){
-            return <button onClick={()=>{handleProductSend(idOrderProduct,userEmail,paymentid,stripe,price)}}>Envoyé</button>
+            console.log(idOrder)
+            return <button onClick={()=>{handleProductSend(idOrderProduct,userEmail,paymentid,stripe,price,userName,productName,productAccount,idOrder)}}>Envoyé</button>
         } else if (state === 'canceled'){
             return <div>Produit annulé</div>
         }
@@ -146,12 +149,12 @@ export const OrderScreen =()=> {
         }
     }
 
-    const ChargeButton = ({state,idOrderProduct,userEmail})=> {
+    const ChargeButton = ({state,idOrderProduct,userEmail,userName,productName})=> {
         if(state === 'wait'){
-            return <button onClick={()=>{handleProduction(idOrderProduct,userEmail)}}>Pris en charge</button>
+            return <button onClick={()=>{handleProduction(idOrderProduct,userEmail,userName,productName)}}>Pris en charge</button>
         }
         else if (state === 'production'){
-            return <button onClick={()=> {cancelProduction(idOrderProduct,userEmail)}}>annuler prise en charge</button>
+            return <button onClick={()=> {cancelProduction(idOrderProduct,userEmail,userName,productName)}}>annuler prise en charge</button>
         } else if (state === 'canceled' || state === 'send'){
             return null
         }
@@ -234,12 +237,12 @@ export const OrderScreen =()=> {
                         </div>
                         <div className='orderProductButtons'>
                         <div>
-                            <ChargeButton state={item.order_state} idOrderProduct={item.Id_order_product} userEmail={itemOrder.user.email}/>
+                            <ChargeButton state={item.order_state} idOrderProduct={item.Id_order_product} productName={item.product.name} userEmail={itemOrder.user.email} userName={itemOrder.user.firstname} />
 
                             {/* {item.order_state == 'wait' ? <button onClick={()=>{handleProduction(item.Id_order_product,itemOrder.user.email)}}>Pris en charge</button> : <button onClick={()=> {cancelProduction(item.Id_order_product,itemOrder.user.email)}}>annuler prise en charge</button>} */}
                         </div>
                             <div>
-                            <ReturnSendButton state={item.order_state} idOrder={itemOrder.Id_order} idOrderProduct={item.Id_order_product} userEmail={itemOrder.user.email} paymentid={itemOrder.payment_id} stripe={item.product.user.Stripe_ID} price={item.price} />
+                            <ReturnSendButton state={item.order_state} idOrder={itemOrder.Id_order} idOrderProduct={item.Id_order_product} userEmail={itemOrder.user.email} paymentid={itemOrder.payment_id} stripe={item.product.user.Stripe_ID} price={item.price} productName={item.product.name} userName={itemOrder.user.firstname} productAccount={itemOrder.orderproducts.length} />
                             </div>
                         </div>
                     </div>

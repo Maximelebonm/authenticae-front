@@ -40,6 +40,7 @@ return (
         </section>
         <section id="homeScreenProducts">
             {productSearch?.map((item,index)=>{
+                console.log(productSearch)
                    const mainPicture = item.productImages[0]
                 return(
                     <Link to={`/product/${item.Id_product}`}  key={index}>

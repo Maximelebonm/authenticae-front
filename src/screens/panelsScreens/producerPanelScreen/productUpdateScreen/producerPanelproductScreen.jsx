@@ -11,7 +11,7 @@ export const ProducerPanelProductScreen =()=> {
     const Id_shop = shop?.Id_shop
 
    
-
+  
     useEffect(()=>{
         const fetch = async ()=>{
             try {
@@ -20,7 +20,7 @@ export const ProducerPanelProductScreen =()=> {
                     response.json()
                     .then(data=>{
                         if(data.message== 'shop exist'){
-                            setShop(data.data.shop)
+                            setShop(data.data)
                         }
                     })
                 }
@@ -30,7 +30,6 @@ export const ProducerPanelProductScreen =()=> {
         }
         fetch()
     },[])
-
 
     const productSubmit = async (e) =>{
         e.preventDefault()
