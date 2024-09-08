@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './uploadDropZone.css'
 import { useRef } from 'react';
 import { Upload } from 'lucide-react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toastError } from '../../../helpers/toast.helper';
 
 
 export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple,maxImages})=> {
@@ -48,13 +48,12 @@ export const UploadDropZone = ({setFile, name, loadUrlImg,imageSet,multiple,maxI
             loadUrlImg(ImgUrltab)
             setFile(files)
         } else {
-            toast.error(`Maximum ${maxImages} images téléchargeable `,{autoClose : 2000})
+            toastError(`Maximum ${maxImages} images téléchargeable `)
         }
     }
     
     return(
         <div id='dropZoneContainer'>
-        <ToastContainer/>
             <div className="drop-zone" id="drop-zone" name={name}
                 onDragLeave={handleDragLeave} 
                 onDragOver={handleDragOver} 

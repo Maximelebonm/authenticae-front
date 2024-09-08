@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import './conditionsScreen.css'
 
 export const ConditionsScreen = () =>{
@@ -10,7 +9,7 @@ export const ConditionsScreen = () =>{
             <h3>
                 1. Introduction
             </h3>
-            Bienvenue sur Authenticae. En utilisant ce Site, vous acceptez les présentes conditions d&apos;utilisation <Link to='/conditions'>les Conditions</Link>. Veuillez les lire attentivement. Si vous n&apos;acceptez pas ces Conditions, veuillez ne pas utiliser le Site.
+            Bienvenue sur Authenticae. En utilisant ce Site, vous acceptez les présentes conditions d&apos;utilisation. Veuillez les lire attentivement. Si vous n&apos;acceptez pas ces Conditions, veuillez ne pas utiliser le Site.
 
             <h3>
                 2. Acceptation des Conditions
@@ -31,7 +30,6 @@ export const ConditionsScreen = () =>{
 
             </h3>
             Les prix des produits sont indiqués sur notre Site et peuvent être modifiés à tout moment. Vous acceptez de payer tous les frais et taxes applicables associés à votre commande. Nous nous réservons le droit de refuser ou d&apos;annuler toute commande pour des raisons telles que des erreurs de prix ou des problèmes de disponibilité.
-
             <h3>
             6. Expédition et Livraison
             </h3>
@@ -64,9 +62,10 @@ export const ConditionsScreen = () =>{
             Nous nous engageons à protéger vos informations personnelles conformément à notre [Politique de Confidentialité]. En utilisant le Site, vous acceptez la collecte, l&apos;utilisation et la divulgation de vos informations personnelles comme décrit dans notre Politique de Confidentialité.
 
             <h3>
-                12. Loi Applicable
+            12. Loi Applicable
             </h3>
             Ces Conditions sont régies par les lois Françaises. Tout litige découlant de l&apos;utilisation du Site sera soumis à la compétence exclusive des tribunaux français.
+
             <h3>
             13. Contact
             </h3>

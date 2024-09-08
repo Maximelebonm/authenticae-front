@@ -7,10 +7,9 @@ import { useAuthContext } from '../../authContext';
 import { cancelProductInProgressApi, getUserCommandsApi } from '../../../api/backEnd/buyProcess/order.backend';
 import { stripeCancelApi, stripeCancelProductApi } from '../../../api/backEnd/buyProcess/stripe.backend';
 import Modal from '../../../components/modals/modal';
-import { InitRequest } from '../../../api/initRequest';
+import { configStorage } from '../../../helpers/config';
 
 export const CommandsScreen = ()=> {
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK;
     const {userDetails} = useAuthContext();
     const [myorder,setMyOrder] = useState([]);
     const [showModal, setShowModal] = useState(null);
@@ -21,9 +20,9 @@ export const CommandsScreen = ()=> {
 
     useEffect(()=>{
         const fetchCommands = async () => {
-            if (userDetails && userDetails.user && userDetails.user.Id_user) {
+            if (userDetails && userDetails?.Id_user) {
                 try {
-                    const userId = userDetails.user.Id_user;
+                    const userId = userDetails.Id_user;
   
                     await getUserCommandsApi(userId)
                     .then((data)=>{
@@ -116,10 +115,10 @@ export const CommandsScreen = ()=> {
 
         const CancelReturn = ({state,id})=> {
             if(state == 'wait'){
-                return <button onClick={()=>{setShowModalProduct(id)}}>Annuler le produit</button>
+                return <a onClick={()=>{setShowModalProduct(id)}}>Annuler le produit</a>
             }
             if(state == 'production'){
-                return <button onClick={()=>{setShowModalPartiel(id)}}>Annuler le produit (remboursement partiel)</button>
+                return <a onClick={()=>{setShowModalPartiel(id)}}>Annuler le produit (remboursement partiel)</a>
             }
             if(state == 'send'){
                 return <div>produit envoyé</div>
@@ -129,9 +128,10 @@ export const CommandsScreen = ()=> {
             }
         }
 
+        //lien d'annulation de commande
         const OrderCancelorFinsih = ({state,id})=> {
             if(state == 'Pay'){
-                return <button onClick={()=>setShowModal(id)}>Annuler la commande</button>
+                return <a onClick={()=>setShowModal(id)}>Annuler la commande</a>
             }
             if(state == 'finish'){
                 return <div>commande terminé</div>
@@ -146,12 +146,15 @@ export const CommandsScreen = ()=> {
         <div id='commandsScreenContainer'>
         <ToastContainer/>
             {myorder.length != 0 ? myorder.map((orderItem,orderindex)=>{
-                
+                console.log(orderItem)
                 return (
                     <div key={orderindex} className='commandContainer'>
                     <div className='commandHeader'>
                     <div className='commandHeaderItem' >
                         date de la commande : <br/>{formatDate(orderItem.created_date)}
+                    </div>
+                    <div className='commandHeaderItem'>
+                        <a href={configStorage()+ '/' + orderItem.storage_facture} target='_blank'>Facture</a>
                     </div>
                     <div className='commandHeaderItem'>
                         <strong>prix total :  <br/> {orderItem.price}€ </strong>
@@ -170,7 +173,7 @@ export const CommandsScreen = ()=> {
                                 <div key={productindex} className='commandProductContainer'>
                                     <div className='commandProduct'>
                                         <h2>{productitem.product.name}</h2>
-                                        <img src={InitRequest() + '/' + productitem.product.productImages[0].storage} />
+                                        <img src={configStorage() + '/' + productitem.product.productImages[0].storage} />
                                     </div>
                                     <div className='commandProduct'>
                                         <strong> options : </strong>

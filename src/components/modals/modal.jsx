@@ -1,6 +1,7 @@
 import './modal.css'; // Assurez-vous de créer ce fichier pour les styles de la modal
 
 const Modal = ({ show, onClose, children,onConfirm }) => {
+  console.log('passe modal')
   if (!show) {
     return null;
   }

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { CheckUpdatePictureApi, archivePictureApi, deleteOption, deletePersonalizationApi, deletePictureApi, deleteProduct, deleteSubOption, downPictureApi, getProduct, getProductAndOption, upPictureApi, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
+import { CheckUpdatePictureApi, archivePictureApi, deleteOption, deletePersonalizationApi, deletePictureApi, deleteProduct, deleteSubOption, downPictureApi, getProduct, upPictureApi, updatePicturesProduct, updateProduct } from '../../../../api/backEnd/producer/product.backend'
 import { useParams } from 'react-router-dom';
 import { useState } from "react";
 import './productUpdateScreen.css'
@@ -14,7 +14,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { PersonalizationComponent } from "./personalizationComponent/personalizationComponent";
 import { Trash2,Archive,ChevronLeft,ChevronRight  } from 'lucide-react';
 import { decodeCookies } from "../../../../helpers/decodeToken";
-import { InitRequest } from "../../../../api/initRequest";
+import { configStorage } from "../../../../helpers/config";
+import { toastError, toastSuccess } from "../../../../helpers/toast.helper";
 
 export const ProducelPanelProductUpdate = () => {
     const {id} = useParams()
@@ -23,7 +24,6 @@ export const ProducelPanelProductUpdate = () => {
     const [imgDisplay, setImgDisplay] = useState();
     const [fileProduct, setFileProduct] = useState();
     const [updatePage, setUpdatePage] = useState(false)
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK;
     const [onCommand,setOnCommand] = useState()
     const [materials,setMaterials] = useState();
     const [options, setOptions] = useState([])
@@ -34,7 +34,6 @@ export const ProducelPanelProductUpdate = () => {
     useEffect(()=> {
         const fetchProduct = async()=>{
             const response = await getProduct(id)
-
             if(response){
                 response.json()
                 .then(data=>{
@@ -83,11 +82,11 @@ export const ProducelPanelProductUpdate = () => {
                                 if(data.message === "trop d'image")
                                     {
                                         console.log(data)
-                                        toast.error("veuillez archiver ou supprimer des images", {autoClose : 2000})
+                                        toast.error("veuillez archiver ou supprimer des images", {autoClose : 1000})
                                     }
                                     else {
                                         setUpdatePage(!updatePage);
-                                        notifySuccessPicture();
+                                        toast.success('image mis à jour', {autoClose : 1000})
                                     }
                                 })
                             }
@@ -194,31 +193,24 @@ export const ProducelPanelProductUpdate = () => {
             const producmaterial = formData.get("productMaterial");
             const producOnCommand = onCommand;
             const productWorkingDays = formData.get("productWorkingDays")
-            console.log(producOnCommand)
             const formOptionObject = options
             const formPersonalizationObject = personlization
             if(producmaterial != 'none'){
                 const fetch = async ()=> {                   
                     const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject,producOnCommand,productWorkingDays)
-                    if(response){
-                        console.log(response)
-                        response.json()
-                        .then((data)=>{
-                        console.log(data)
-                            if(data.message === 'product updated'){
-                                setUpdatePage(!updatePage);
-                                notifySuccessUpload()
-                            }
-                        })
+                    if(response.message === 'product updated'){
+                        setUpdatePage(!updatePage);
+                        toast.success('produit mis à jour', {autoClose : 1000})
+                        }
                     }
+                    fetch() 
                 }
-                fetch() 
-            }
             else {
                 toast.error('Veuillez selectionner une matière utilisé', {autoClose : 2000})
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            toast.error('Erreur lors de la mise à jour du produit', { autoClose: 1000 });
         }
     }
 
@@ -299,7 +291,7 @@ export const ProducelPanelProductUpdate = () => {
                     item.subOptions = item.subOptions.filter(subOpt => subOpt.Id_subOption !== subOptionId);
                 }
             });
-            toast.success("SubOptionSupprimé avec succès",{autoClose : 2000});
+            toastSuccess("SubOptionSupprimé avec succès");
             setOptions(updatedOption)
         }
     }
@@ -309,7 +301,7 @@ export const ProducelPanelProductUpdate = () => {
         const deletePersReq = await deletePersonalizationApi(id)
         if(deletePersReq){ 
             const updatedPers = personlization.filter(opt => opt.Id_personalization !== id);
-            toast.success("Personalization Supprimé avec succès",{autoClose : 2000});
+            toastSuccess("Personalization Supprimé avec succès");
             setPersonalization(updatedPers)
         } 
     }
@@ -330,9 +322,9 @@ export const ProducelPanelProductUpdate = () => {
             response.json()
             .then((data)=> {
                 if(data.message == 'archived'){
-                    toast.success('Photo archivé vous pouvez en ajouter de nouvelle', {autoClose : 2000})
+                    toastSuccess('Photo archivé vous pouvez en ajouter de nouvelle')
                 } else {
-                    toast.error('une erreur est survenue', {autoClose : 2000})
+                    toastError('une erreur est survenue')
                 }
                 setUpdatePage(!updatePage)
             })
@@ -346,9 +338,9 @@ export const ProducelPanelProductUpdate = () => {
             response.json()
             .then((data)=> {
                 if(data.message == 'image deleted'){
-                    toast.success('Photo supprimé vous pouvez en ajouter de nouvelle', {autoClose : 2000})
+                    toastSuccess('Photo supprimé vous pouvez en ajouter de nouvelle')
                 } else {
-                    toast.error('une erreur est survenue', {autoClose : 2000})
+                    toastError('une erreur est survenue')
                 }
                 setUpdatePage(!updatePage)
             })
@@ -363,9 +355,9 @@ export const ProducelPanelProductUpdate = () => {
             .then((data)=> {
                 console.log(data.message)
                 if(data.message == 'image down'){
-                    toast.success('photo deplacé', {autoClose : 2000})
+                    toastSuccess('photo deplacé')
                 } else {
-                    toast.error('une erreur est survenue', {autoClose : 2000})
+                    toastError('une erreur est survenue')
                 }
                 setUpdatePage(!updatePage)
             })
@@ -379,27 +371,23 @@ export const ProducelPanelProductUpdate = () => {
             .then((data)=> {
                 console.log(data.message)
                 if(data.message == 'image up'){
-                    toast.success('photo deplacé', {autoClose : 2000})
+                    toastSuccess('photo deplacé')
                 } else {
-                    toast.error('une erreur est survenue', {autoClose : 2000})
+                    toastError('une erreur est survenue')
                 }
                 setUpdatePage(!updatePage)
             })
         }
     }
-
-
-    const notifySuccessUpload = () => toast.success("Produit mis à jour avec succès",{autoClose : 2000});
-    const notifySuccessPicture = () => toast.success("image télécharger avec succès",{autoClose : 2000})
     
     return (
         <>
         <Link to='/myshop'>
             <button>Retour</button>
         </Link>
-          <ToastContainer/>
         {product && 
         <>
+          <ToastContainer/>
         <div>
             <form encType="multipart/form-data" onSubmit={productImages} className="ProducerPanelDropZoneForm">
         <div>
@@ -412,7 +400,7 @@ export const ProducelPanelProductUpdate = () => {
                     <div className='producerPanelDisplayItemContainer' key={index}>
                     {index > 0 && <button className="producerPanelArrowButton" type="button"  onClick={()=>upPicture(item.Id_product_image,item.order)}><ChevronLeft className='displayArrowIconLeft'/></button>}
                     <div className='producerPanelDisplayImageContainer'>
-                        <img className="producerPanelDisplayImage" src={InitRequest()+ '/'+item.storage} />
+                        <img className="producerPanelDisplayImage" src={configStorage()+ '/'+item.storage} />
                         <div className='producerPanelDisplayButtonContainer'>
                             <button className="producerPanelDisplayButton" type="button"  onClick={()=>deletePicture(item.Id_product_image,item.name)}><Trash2 className='displayIcon'/></button>
                             <button className="producerPanelDisplayButton" type="button" onClick={()=>archivePicture(item.Id_product_image)} ><Archive className='displayIcon'/></button>

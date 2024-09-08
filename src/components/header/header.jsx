@@ -3,53 +3,21 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logos/logo_authenticae_blanc.png';
-import { decodeCookies } from '../../helpers/decodeToken';
 import { ToggleSwitch } from '../uiElements/toggleSwitch/toggleSwitch';
 import { Store,ClipboardList,ShoppingCart,User } from 'lucide-react';
-import { getUserById, logoutApi } from '../../api/backEnd/user.backend';
 import { useAuthContext } from '../../screens/authContext';
 
 export const Header =()=>{
     const [isActive, setIsActive] = useState(false);
-    const { userDetails, setUserDetails } = useAuthContext();
+    const { userDetails } = useAuthContext();
+    const [mobile, setMobile] = useState();
     
     const toggleActive = () => {
         setIsActive(!isActive);
     }
+    console.log(userDetails)
+    const roleCookie= userDetails?.role?.map((item)=> item.name)
 
-    const [roleCookie,setRoleCookie]=useState()
-    const [cookie, setCookie] = useState()
-
-    useEffect(()=>{
-        if(document.cookie){
-            const auth = async()=>{
-                const cookies = document.cookie.split('; ')
-                let authCookie = null
-                for (let cookie of cookies) {
-                    if (cookie.startsWith('auth=')) {
-                        // Extraire la valeur du cookie après le signe '='
-                        authCookie = cookie.substring('auth='.length);        
-                        break;
-                    }
-                }
-                const cookie = decodeCookies(authCookie) 
-                const getUser = await getUserById(cookie.Id_user)
-                getUser.json()
-                .then(async(data)=> {
-                    if(data === 'erreur : HTTPError: Request failed with status code 404 Not Found'){
-                        await logoutApi()
-                    } else {
-                        const cookieTab = data.roles.map((item)=> item.name)
-                        setRoleCookie(cookieTab)
-                        setCookie(cookie)
-                        setUserDetails({user : data})
-                    }
-                })
-            }
-            auth()
-        }
-    },[])
-    
     useEffect(()=>{
         const nav = document.querySelectorAll('#headerNav .headerItem');
         nav.forEach(item => {
@@ -61,11 +29,33 @@ export const Header =()=>{
             })
         })
     },[]);
-    
+
+    useEffect(()=>{
+        const handleResize = () => {
+            console.log('pass');
+            if (window.innerWidth <= 840) {
+                setMobile(true);
+            } else {
+                setMobile(false); // Optionnel, si vous souhaitez réinitialiser la valeur pour les largeurs supérieures à 780px
+            }
+        };
+
+        // Appeler handleResize une première fois pour vérifier la largeur initiale
+        handleResize();
+
+        // Ajouter l'écouteur d'événement lors du montage
+        window.addEventListener('resize', handleResize);
+
+        // Nettoyer l'écouteur d'événement lors du démontage
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    },[]);
+
     const activeItem = () => {
         const clickedItem = window.innerWidth;
  
-        if(clickedItem <= 780){
+        if(clickedItem <= 840){
             toggleActive() 
         }
     }
@@ -88,21 +78,20 @@ export const Header =()=>{
                 Producteurs
                 </li>
             </Link>
-
         </ul>
             <ul id='HeaderRight'>
-                <div id='dropdown'>
+                {mobile === false ? <div id='dropdown'>
                     <Link  to={roleCookie ? "/profil" : '/login'}>
                         <li className='headerItem' onClick={activeItem}> <User /> Compte</li>
                     </Link>
-                    <div id='dropdown-content'>
+                    <div id={'dropdown-content'}>
                         {roleCookie?.includes('client') ?
                             <>
                                 <Link  to={roleCookie ? "/profil" : '/login'}>
                                     <li className='headerItem' onClick={activeItem}> <User /> Compte</li>
                                 </Link>
                                 <Link  to={roleCookie ? "/logout" : '/login'}>
-                                    <li className='headerItem' onClick={activeItem}> <User /> Deconnexion </li>
+                                    <li className={'headerItem'} onClick={activeItem}> <User /> Deconnexion </li>
                                 </Link>
                                 <div>
                                     <li className='headerItem'>
@@ -132,7 +121,46 @@ export const Header =()=>{
                             </>
                         }
                     </div> 
-                </div>
+                </div> : 
+                // Mobile Version
+                <>
+                        {roleCookie?.includes('client') ?
+                            <>
+                                <Link  to={roleCookie ? "/profil" : '/login'}>
+                                    <li className='headerItem' onClick={activeItem}> <User /> Compte</li>
+                                </Link>
+                                <Link  to={roleCookie ? "/logout" : '/login'}>
+                                    <li className={'headerItem'} onClick={activeItem}> <User /> Deconnexion </li>
+                                </Link>
+                                <div>
+                                    <li className='headerItem'>
+                                        <ToggleSwitch />
+                                    </li>
+                                </div>
+                            </> :
+                            <>
+                            <Link  to={roleCookie ? "/logout" : '/login'}>
+                                    <li className='headerItem' onClick={activeItem}> <User /> Connexion </li>
+                                </Link>
+                                <div>
+                                    <li className='headerItem' onClick={activeItem}>
+                                        <ToggleSwitch />
+                                    </li>
+                                </div>                        
+                            </>
+                        }
+                        {roleCookie?.includes('producer') && 
+                            <>
+                                <Link  to={"/myshop"}>
+                                            <li className='headerItem' onClick={activeItem}> <Store />Shop</li>
+                                </Link>
+                                <Link  to={"/order"}>
+                                            <li className='headerItem' onClick={activeItem}> <ClipboardList />Commandes</li>
+                                </Link>
+                            </>
+                        }
+                </>
+                }
                         <Link  to={roleCookie ? "/cart" : '/login'}>
                             <li className='headerItem' onClick={activeItem}><ShoppingCart /> Panier</li>
                         </Link>

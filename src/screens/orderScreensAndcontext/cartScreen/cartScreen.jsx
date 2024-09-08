@@ -7,7 +7,9 @@ import { Trash2  } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { useOrder } from '../orderContext';
-import { InitRequest } from "../../../api/initRequest";
+import { configStorage } from "../../../helpers/config";
+import { useAuthContext } from './../../authContext';
+import { toastSuccess } from "../../../helpers/toast.helper";
 
 export const CartScreen = ()=> {
     const [cart,setCart] = useState();
@@ -15,37 +17,29 @@ export const CartScreen = ()=> {
     const [reload,setReload] = useState(false)
     const navigate = useNavigate()
     const { orderDetails, setOrderDetails } = useOrder();
-
+    const { userDetails } = useAuthContext()
     useEffect(()=>{
-        const cookies = document.cookie.split('; ')
-                let authCookie = null
-                for (let cookie of cookies) {
-                    if (cookie.startsWith('auth=')) {
-                        authCookie = cookie.substring('auth='.length);
-                        break;
-                    }
-                }
-                const cookie = decodeCookies(authCookie);
                 const fetch =async()=>{
-                    const resp = await getUserById(cookie.Id_user)
+                    const resp = await getUserById(userDetails.Id_user)
                     resp.json()
-                    .then(async(data)=>{
-                        if(data.carts.length === 0){
+                    .then(async(dataUser)=>{
+                        console.log(dataUser)
+                        if(dataUser.carts.length === 0){
                             document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                         }
                         else {
-                            setCart(data.carts[0])
-                            const respProd = await getCartApi(data.carts[0].Id_cart)
+                            setCart(dataUser.carts[0])
+                            const respProd = await getCartApi(dataUser.carts[0].Id_cart)
                             respProd.json()
-                            .then((data)=> {
-                                setProducts(data.data)
-                                setOrderDetails({...orderDetails, cart : data.data})
+                            .then((dataCart)=> {
+                                setProducts(dataCart.data)
+                                setOrderDetails({...orderDetails, cart : dataCart.data, user : dataUser})
                             })
                         }
                     })
                 }
                 fetch()
-                setCart(cookie)  
+                // setCart(cookie)  
     },[reload])
 
     const handleOrder = ()=> {
@@ -62,7 +56,7 @@ export const CartScreen = ()=> {
             resp.json()
             .then((data)=>{
                 if(data.message === 'product deleted'){
-                    toast.success('Produit supprimé du panier',{autoClose : 2000})
+                    toastSuccess('Produit supprimé du panier')
                     setReload(!reload)
                 }
             })
@@ -81,7 +75,7 @@ export const CartScreen = ()=> {
                     return (
                         <div key={productIndex} className='cartProductContainer'>
                         <div className='cartProductTitle'>
-                        <img src={InitRequest() + '/' + productItem.product?.productImages[0].storage} className='cartProductImage'/>
+                        <img src={configStorage() + '/' + productItem.product?.productImages[0].storage} className='cartProductImage'/>
                         <h2>{productItem.product?.name}</h2>
                         <h2> prix total produit {productItem.price}€ </h2>
                         </div>

@@ -2,6 +2,7 @@ import { useState,useEffect } from "react"
 import { createProduct } from "../../../../api/backEnd/producer/product.backend"
 import { getShop } from "../../../../api/backEnd/producer/shop.backend";
 import { decodeCookies } from "../../../../helpers/decodeToken";
+import { useNavigate } from "react-router-dom";
 
 export const ProducerPanelProductScreen =()=> {
     const [shop, setShop] = useState()
@@ -9,6 +10,7 @@ export const ProducerPanelProductScreen =()=> {
     console.log(cookie)
     const Id_user = cookie.Id_user
     const Id_shop = shop?.Id_shop
+    const navigate = useNavigate()
 
    
   
@@ -43,8 +45,9 @@ export const ProducerPanelProductScreen =()=> {
                 if(response){
                     response.json()
                     .then((data)=>{
+                        console.log()
                         if(data.message === 'product created'){
-                            window.location.href = `${import.meta.env.VITE_BASE_URL_FRONT}/myshop/product/${data.data.Id_product}`
+                            navigate(`/myshop/product/${data.data.Id_product}`)
                         }
                     })
                 }

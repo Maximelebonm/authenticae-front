@@ -100,8 +100,11 @@ export const RegisterScreen = ()=> {
                     <span id='registerScreenSpan' onClick={() => setType2(type2 === 'password' ? 'text' : 'password')}><Lock /></span>
                 </div>
             </div>
+            <div>
+            En cliquant sur S’inscrire, vous acceptez nos <Link className='link' to='/conditions'>Conditions générales</Link>. Découvrez comment nous recueillons, utilisons et partageons vos données en lisant les <Link className='link' to='/confidentialite'>règles de confidentialités</Link> et notre Politique d’utilisation des <Link className='link' to='/cookies'>cookies</Link>.
+            </div>
             <div className='registerScreenItemContainer'>
-                <button type='submit'> S&apos;enregistrer</button>
+                <button type='submit'> S&apos;inscrire</button>
                         <Link to='/login'> 
                             <button type='button' id='loginScreenSecondContainer'>
                                 Se connecter

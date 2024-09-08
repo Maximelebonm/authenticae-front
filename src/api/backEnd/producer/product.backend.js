@@ -62,7 +62,7 @@ export const updateProduct = async (id,productName,productDescription,productSpe
             },
             credentials : 'include',
         })
-        return response
+        return response.json()
     } catch (err){
         return "erreur : " + err;
     }

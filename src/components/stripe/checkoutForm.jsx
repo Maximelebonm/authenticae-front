@@ -1,7 +1,6 @@
-import { CardElement,useStripe,useElements,CardNumberElement,CardExpiryElement,CardCvcElement } from "@stripe/react-stripe-js";
+import { useStripe,useElements,CardNumberElement,CardExpiryElement,CardCvcElement } from "@stripe/react-stripe-js";
 import { paymentStripeApi } from "../../api/backEnd/buyProcess/stripe.backend";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import './checkOutForm.css'
 import Logo from '../../assets/logos/logo_authenticae_noir_cut.png';
 
@@ -43,7 +42,8 @@ export const CheckOutForm = ({props}) => {
                           console.log("Token généré :", paymentMethod);
                           try {
                               const {id} = paymentMethod
-                              const priceInCents = cart.price * 100
+                              const priceInCents = Math.round(cart.price * 100)
+                              
                               const response = await paymentStripeApi(id,priceInCents, cart, user,address_delivery,address_billing)
                               response.json()
                               .then((data)=>{

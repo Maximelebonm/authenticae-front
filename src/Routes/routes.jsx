@@ -27,34 +27,22 @@ import { ReturnOrderScreen } from '../screens/panelsScreens/producerPanelScreen/
 import { ConditionsScreen } from '../screens/rulesScreens/conditionsScreen/conditionsScreen.jsx';
 import { ConfScreen } from '../screens/rulesScreens/confScreen/confScreen.jsx';
 import { CookieScreen } from '../screens/rulesScreens/cookiesScreen/cookieScreen.jsx';
+import { PasswordScreen } from '../screens/authScreens/passwordScreen/passwordScreen.jsx';
 
 export const RoutesContainer = () =>{
     return (
         <>
         <Routes>
-            <Route path='/validation/:token' element={<ValidationScreen/>} />
-            <Route path={URL_FRONT.PRODUCER_PANEL} element={ 
-                <PrivateRoutes role={['producer']}>
-                        <ProducerPanelScreen/>
-                </PrivateRoutes>
-            }/>
-            <Route path='/' element={<HomeScreen/>}/>
+            {/* <Route index element={<HomeScreen/>} /> */}
+            {/* <Route path='*' element={<HomeScreen/>}/>  */}
+            <Route path={URL_FRONT.HOME} element={<HomeScreen/>}/>
             <Route path='/producer' element={<ProducerListScreen/>}/>
             <Route path='/profil' element={<PrivateRoutes role={['client']}><ProfilScreen/></PrivateRoutes>}/>
             <Route path='/myorder' element={<PrivateRoutes role={['client']}><CommandsScreen/></PrivateRoutes>}/>
-              <Route path='/paneladmin' element={
-                <PrivateRoutes role={['administrator']}>
-                    <AdminPanelScreen/>
-                </PrivateRoutes>
-            }/>      
-                     <Route path='/panelAdmin/user/:id' element={
-                <PrivateRoutes role={['administrator']}>
-                    <AdminUserPanelScreen/>
-                </PrivateRoutes>
-            }/>      
-              <Route path='/register' element={
-                    <RegisterScreen/>
-            }/>
+            <Route path='/paneladmin' element={<PrivateRoutes role={['administrator']}><AdminPanelScreen/></PrivateRoutes>}/>      
+            <Route path='/panelAdmin/user/:id' element={<PrivateRoutes role={['administrator']}><AdminUserPanelScreen/></PrivateRoutes>}/>      
+            <Route path='/register' element={<RegisterScreen/>}/>
+            <Route path='/password' element={<PasswordScreen/>}/>
             <Route path='/cookies' element={<CookieScreen/>}/>
             <Route path='/conditions' element={ <ConditionsScreen/>}/>
             <Route path='/confidentialite' element={<ConfScreen/>}/>
@@ -62,27 +50,12 @@ export const RoutesContainer = () =>{
             <Route path='/login' element={<LoginScreen/>}/>   
             <Route path='/logout' element={<LogoutScreen/>}/>
             <Route path='/shop/:id' element={<ProducerShopScreen/>}/>   
-
-            <Route path='/myshop/product/createProduct' element={
-                <PrivateRoutes role={['producer']}>
-                    <ProducerPanelProductScreen/>
-                </PrivateRoutes>
-            }/>   
-            <Route path='/order' element={
-                <PrivateRoutes role={['producer']}>
-                    <OrderScreen/>
-                </PrivateRoutes>
-            }/>   
-            <Route path='/myshop/product/:id' element={
-                <PrivateRoutes role={['producer']}>
-                    <ProducelPanelProductUpdate/>
-                </PrivateRoutes>
-            }/>      
-                  <Route path='/return' element={
-                <PrivateRoutes role={['producer']}>
-                    <ReturnOrderScreen/>
-                </PrivateRoutes>
-            }/>          
+            <Route path={URL_FRONT.PRODUCER_PANEL} element={ <PrivateRoutes role={['producer']}><ProducerPanelScreen/></PrivateRoutes>}/>
+            <Route path='/validation/:token' element={<ValidationScreen/>} />
+            <Route path='/myshop/product/createProduct' element={<PrivateRoutes role={['producer']}><ProducerPanelProductScreen/></PrivateRoutes>}/>   
+            <Route path='/order' element={<PrivateRoutes role={['producer']}><OrderScreen/></PrivateRoutes>}/>   
+            <Route path='/myshop/product/:id' element={<PrivateRoutes role={['producer']}><ProducelPanelProductUpdate/></PrivateRoutes>}/>      
+            <Route path='/return' element={<PrivateRoutes role={['producer']}><ReturnOrderScreen/></PrivateRoutes>}/>          
         </Routes>
         <OrderProvider>
             <Routes>  

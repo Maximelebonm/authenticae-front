@@ -31,3 +31,11 @@
     width: 90%;
     border-radius : 15px;
 }
+@media (max-width : 840px){
+    .productContainer{
+        display : flex;
+        flex-direction: column;
+        padding-top: 10px;
+        color : var(--font_color);
+    }
+}

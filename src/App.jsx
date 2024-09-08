@@ -5,7 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './screens/authContext';
 import { Footer } from './components/footer/footer';
 
-
 function App() {
 
 

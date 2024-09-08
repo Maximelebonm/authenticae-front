@@ -10,8 +10,8 @@ export const paymentStripeApi = (id,price,cart, user, address_delivery,address_b
                 cart : cart,
                 products : cart.cartProduct,
                 user : user,
-                address_delivery : address_delivery.Id_address,
-                address_billing : address_billing.Id_address,
+                address_delivery : address_delivery,
+                address_billing : address_billing,
             },
             credentials : 'include'
         })

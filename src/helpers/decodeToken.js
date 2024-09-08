@@ -3,13 +3,15 @@ import { jwtDecode } from "jwt-decode";
 
 export const decodeCookies = (cookie) =>{
     try {
+        // console.log('cookie : ' + cookie)
         const TokenDecode = jwtDecode(cookie)
+        // console.log('tokenDecode : ' + TokenDecode)
         if(TokenDecode){
             return TokenDecode
             }
             else return 'error'
     } catch (error) {
-        return 'not connected'
+        return 'not connected : ' + error
     }
 }
 

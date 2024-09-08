@@ -7,13 +7,13 @@ import { ProductSwiper } from "../../components/uiElements/productSwiper/product
 import { ToastContainer, toast } from 'react-toastify';
 import { addCartApi } from "../../api/backEnd/buyProcess/cart.backend";
 import { decodeCookieUser } from "../../helpers/decodeToken";
+import { toastError, toastSuccess } from "../../helpers/toast.helper";
 
 
 export const ProductScreen = () => {
     const {id} = useParams()
     const [product,setProduct]= useState();
     const [imgDisplay, setImgDisplay] = useState();
-    // const Base_URL = import.meta.env.VITE_BASE_URL_BACK
     const [price,setPrice] = useState({mainPrice : 0, quantity_available : 0,quantity_reservation : 0, options : [], personalization : []})
     const [selectedProduct, setSelectedProduct] = useState({product : {}, options : [], personalization : []})
    
@@ -21,6 +21,7 @@ export const ProductScreen = () => {
 
     const [selectedOptions, setSelectedOptions] = useState({});
     const [selectReload,setSelectReload] = useState({quantityA : 'none',quantityR : 'none', option : 'none', personalisation : ''})
+
 
 
     const cookiesAuth = decodeCookieUser(document.cookie)
@@ -167,8 +168,8 @@ export const ProductScreen = () => {
     }
 
     const handleSubmit = (e)=>{
+        e.preventDefault()
         try {
-            e.preventDefault()
             if(cookiesAuth.Id_user){
                 const fetch = async ()=> {
                     const response = await addCartApi(selectedProduct,price.finalPrice)
@@ -177,11 +178,11 @@ export const ProductScreen = () => {
                         .then((data)=> {
                             console.log(data)
                             if(data.message == "ajouté au panier" || data.message == "cart créé" || data.message == 'cart updated'){
-                                toast.success('Produit ajouté au panier', {autoclose : 2000})
+                                toastSuccess('Produit ajouté au panier')
                                 setReload(!reload)
                             }
                             if(data.message === "SequelizeUniqueConstraintError"){
-                                toast.error('Une erreur est survenu veuillez vous déconnecter et vous reconnecter', {autoclose : 2000})
+                                toastError('Une erreur est survenu veuillez vous déconnecter et vous reconnecter')
                             }
                         })
                     }
@@ -251,7 +252,6 @@ export const ProductScreen = () => {
                     }
             
                     {product?.option.map((item,index)=>{
-                        {/* console.log(item) */}
                         if(item.optionActive == true){                       
                             return(
                                 <div key={index}>
@@ -287,7 +287,7 @@ export const ProductScreen = () => {
                                 <div>{item.name}</div>
                                 <div>{item.detail}</div>
                                 <div>Prix de la personalisation : {item.price} € </div>
-                                <textarea className="ProductpersonalizationInput" onChange={(e)=>handlePersonalizationChange(e,item)} value={selectReload.personalisation}></textarea>
+                                <textarea className="ProductpersonalizationInput" onChange={(e)=>handlePersonalizationChange(e,item)} value={selectReload.personalisation} maxLength="30"></textarea>
                             </div>
                             )
                         }

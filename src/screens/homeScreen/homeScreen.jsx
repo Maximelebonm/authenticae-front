@@ -5,6 +5,7 @@ import { getAllProduct } from '../../api/backEnd/producer/product.backend';
 import { HomeProductCards } from './../../components/cards/homeProductCard/homeProductCard';
 import { InputFloatLabel } from '../../components/uiElements/inputFloatLabel/inputFloatLabel';
 import { Search } from 'lucide-react';
+import { ToastContainer } from 'react-toastify';
 
 export const HomeScreen = () => {   
     const [product,setProduct] = useState();

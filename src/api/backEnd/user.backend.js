@@ -29,7 +29,7 @@ export const loginUser = async (email,password) => {
             },
             credentials : 'include'
         })
-        return user
+        return user.json()
     } catch (err){
         return "erreur : " + err;
     }
@@ -93,13 +93,9 @@ export const logoutApi = async () => {
         const response = await ky.post(`${InitRequest()}/users/logout`,{
             credentials : 'include'
         
-        }).json();
-        if (response.message) {
-            return response;
-        } else {
-            return "La déconnexion a échoué";
-        }
-        } catch (err) {
+        });
+        return response.json();
+    } catch (err) {
         return "Erreur : " + err.message;
     }
 }
@@ -116,6 +112,32 @@ export const updateUserApi = async (formObject,id)=> {
         credentials : 'include'
     })
     return response
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const deleteUserApi = async (id)=> {
+    try {
+    const response = await ky.put(`${InitRequest()}/users/delete/${id}`,{
+        credentials : 'include'
+    })
+    return response.json()
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
+export const renewPasswordApi = async (email,password)=> {
+    try {
+    const response = await ky.put(`${InitRequest()}/users/password`,{
+        json : {
+            password : password,
+            email : email,
+        },
+        credentials : 'include'
+    })
+    return response.json()
     } catch (err){
         return "erreur : " + err;
     }

@@ -1,10 +1,11 @@
 import './ProducerShopScreen.css'
 import { useParams } from 'react-router-dom';
-import { getShop, getShopByIdAPI } from '../../../api/backEnd/producer/shop.backend';
+import { getShopByIdAPI } from '../../../api/backEnd/producer/shop.backend';
 import { decodeCookies } from '../../../helpers/decodeToken';
 import { useEffect,useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ProductCard } from '../../../components/cards/productCard/productCard';
+import { configStorage } from '../../../helpers/config';
 
 export const ProducerShopScreen = () => {
     const {id} = useParams()
@@ -13,7 +14,6 @@ export const ProducerShopScreen = () => {
     
     const [shop, setShop] = useState();
     const [product,setProduct]= useState()
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK
     console.log(shop)
 
     useEffect(()=>{
@@ -43,8 +43,8 @@ export const ProducerShopScreen = () => {
         {shop ? <div>
             <section id="ProducerShopMainContainer">
                 <div id="producerShopPictureContainer">
-                    <img src={Base_URL + shop.cover_picture} id="ProducerShopCoverPicture"/>
-                   <img src={Base_URL + shop.profil_picture} id="ProducerShopProfilPicture"/>
+                    <img src={configStorage()+ '/' + shop.cover_picture} id="ProducerShopCoverPicture"/>
+                   <img src={configStorage()+ '/' + shop.profil_picture} id="ProducerShopProfilPicture"/>
                 </div>
                 <div id="producerShopName">
                     {shop.name}

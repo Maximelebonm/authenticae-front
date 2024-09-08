@@ -41,3 +41,14 @@ export const deleteShopApi = async (id) => {
         return "erreur : " + err;
     }
 }
+
+export const unDeleteShopApi = async (id) => {
+    try {
+        const response = await ky.put(`${InitRequest()}/admin/shop/undelete/${id}`,{
+            credentials : 'include'
+        })
+        return response.json()
+    } catch (err){
+        return "erreur : " + err;
+    }
+}

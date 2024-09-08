@@ -1,76 +1,66 @@
 import { useEffect,useState } from "react";
-import {User} from 'lucide-react';
-import { decodeCookies } from "../../../helpers/decodeToken";
-import { createPseudo, getUserById, updateUserApi } from "../../../api/backEnd/user.backend";
-import { Link } from "react-router-dom";
+import { getUserById, logoutApi, updateUserApi } from "../../../api/backEnd/user.backend";
 import { v4 as uuidv4 } from 'uuid';
 import { AddressComponent } from "../../../components/address/address.component";
 import { InputFloatLabel } from "../../../components/uiElements/inputFloatLabel/inputFloatLabel";
 import { addAddressApi, deleteAdressApi, updateAddressApi } from "../../../api/backEnd/address.backend";
 import { toast, ToastContainer } from "react-toastify";
-
+import { useAuthContext } from "../../authContext";
+import { toastError, toastSuccess } from "../../../helpers/toast.helper";
+import Modal from "../../../components/modals/modal";
+import { deleteUserApi } from './../../../api/backEnd/user.backend';
+import { useNavigate } from "react-router-dom";
 export const ProfilScreen = ()=>{
-    const [token,setToken] = useState()
-    const [pseudo,setPseudo] = useState(false)
+    
+    // const [pseudo,setPseudo] = useState(false)
     const [user,setUser] = useState()
     const [address, setAddress] = useState([])
     const [reload, setReload] = useState(true)
+    const [showModalDeleteUser, setshowModalDeleteUser] = useState(null)
+    const navigate = useNavigate()
+    const { userDetails } = useAuthContext();
 
     useEffect(()=>{
-        const cookies = document.cookie.split('; ')
-                let authCookie = null
-                for (let cookie of cookies) {
-                    if (cookie.startsWith('auth=')) {
-                        // Extraire la valeur du cookie après le signe '='
-                        authCookie = cookie.substring('auth='.length);
-                        break;
-                    }
-                }
-                const cookie = decodeCookies(authCookie) 
-                console.log(cookie)
-        if(cookie){
+        if(userDetails?.Id_user){
             const fetch = async ()=>{
-                const getUser = await getUserById(cookie.Id_user)
-                console.log(getUser)
+                const getUser = await getUserById(userDetails.Id_user)
                 if(getUser){
                     getUser.json()
                     .then((data)=>{
                         console.log(data)
                         setUser(data)
                         setAddress(data.addresses)
-                        setToken(cookie)
                     })
                 }
             }
             fetch()
-       
         }
-    },[pseudo,reload])
+    },[reload])
 
-    const pseudoSubmit = async (e)=>{
-        e.preventDefault()
-        try {
-            const form = e.target
-            const formData = new FormData(form);
-            const pseudo = formData.get("pseudo");
-            const id = token.Id_user
-            const fetch = async ()=> {                       
-                const response = await createPseudo(id,pseudo)
-                if(response){
-                    console.log(response)
-                    response.json()
-                    .then((data)=>{
-                            if(data.message === 'pseudo created'){
-                                setPseudo(true)
-                            }
-                        })
-                    }
-                }
-                fetch()
-            } catch (err) {
-                alert(err)
-            }
-    }
+    // const pseudoSubmit = async (e)=>{
+    //     e.preventDefault()
+    //     try {
+    //         const form = e.target
+    //         const formData = new FormData(form);
+    //         const pseudo = formData.get("pseudo");
+    //         const id = token.Id_user
+    //         const fetch = async ()=> {                       
+    //             const response = await createPseudo(id,pseudo)
+    //             if(response){
+    //                 console.log(response)
+    //                 response.json()
+    //                 .then((data)=>{
+    //                         if(data.message === 'pseudo created'){
+    //                             setPseudo(true)
+    //                         }
+    //                     })
+    //                 }
+    //             }
+    //             fetch()
+    //         } catch (err) {
+    //             alert(err)
+    //         }
+    // }
 
     const addAdress = () => {
         const Id_address = uuidv4()
@@ -88,7 +78,7 @@ export const ProfilScreen = ()=>{
             const formNumber = formData.get("number");
             const formStreet = formData.get("street");
             const formAdditional = formData.get("additional");
-            const id = token.Id_user
+            const id = userDetails.Id_user
             const formObject = {formCountry,formCitycode,formCity,formNumber,formStreet,formAdditional}
 
             const fetch = async ()=> {  
@@ -108,10 +98,10 @@ export const ProfilScreen = ()=>{
                 response.json()
                 .then((data)=>{
                     if(['address created','address updated'].includes(data.message)){
-                        toast.success('adresse mis à jour !', {autoclose : 2000})
+                        toastSuccess('adresse mis à jour !')
                         setReload(!reload)           
                     } else {
-                        toast.error('Une erreur est survenu', {autoclose : 2000})
+                        toastError('Une erreur est survenu')
                     }
                 })
             };
@@ -149,7 +139,7 @@ export const ProfilScreen = ()=>{
             const formBirthdate = formData.get("birthdate");
             const formPhone = formData.get("phone");
 
-            const id = token.Id_user
+            const id = userDetails.Id_user
             const formObject = {formFirstname,formLastname,formBirthdate,formPhone}
             const fetch = async ()=> {  
                 console.log(formObject)                     
@@ -160,7 +150,7 @@ export const ProfilScreen = ()=>{
                         console.log(data)
                             if(data.message === 'user updated'){
                                 setUser(data.data)
-                                toast.success('Profil mis à jour', {autoClose : 3000})
+                                toastSuccess('Profil mis à jour')
                             }
                         })
                     }
@@ -205,7 +195,26 @@ export const ProfilScreen = ()=>{
             })
         })()
     }
-console.log(user)
+
+    const deleteUser = ()=>{
+        const id = userDetails.Id_user
+        const fetch = async()=>{
+            const resp = await deleteUserApi(id)
+            if(resp.message === 'utilisateur supprimé'){
+                toastSuccess('Votre compte a été supprimé vous allez être redirigé')
+                setTimeout(async()=>{
+                    const logout = await logoutApi()
+                    if(logout.message === 'deconnecté'){
+                        toast.success('Déconnexion réussie',{autoclose : 1000})
+                        return setTimeout(()=>{window.location.href = '/'},1500)
+                    }
+
+                },1000)
+            }
+        }
+        fetch()
+    }
+
     return (
         <div className="profileScreenContainer">
                 <ToastContainer/>
@@ -221,6 +230,11 @@ console.log(user)
                     {address.map((item,index)=>{
                         return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e,Id_address)=>handleSubmitAdress(e,Id_address)} deleteAddress={(e,Id_address)=>deleteAdress(e,Id_address)}/>
                     })}
+                    
+                    <Modal show={showModalDeleteUser === userDetails.Id_user} onClose={()=>setshowModalDeleteUser(null)} onConfirm={()=>deleteUser()}>
+                    êtes vous sur de vouloir supprimer votre compte ? Il s&apos;agit d&apos;une suppression définitive, toutes les données personnelles vous concernant seront effacé (email, téléphones, adresses), seul votre historique de commandes sera conservé pour nos statistiques. 
+                    </Modal>
+                <a onClick={()=>{setshowModalDeleteUser(userDetails.Id_user)}}>Supprimer le compte</a>
         </div>
     )               
 }

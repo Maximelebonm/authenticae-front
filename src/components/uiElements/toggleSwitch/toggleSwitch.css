@@ -1,5 +1,5 @@
 #toggleSwitchContainer{
-    width : 100%;
+    min-width : 100%;
     &input:checked + label::before {
         background-color : black;
     }
@@ -31,4 +31,9 @@ width: 0;
 height: 0;
 } 
 
+@media (max-width : 840px){
+    #toggleSwitchContainer{
+        margin : auto;
+        min-width : 0;
+}}
   

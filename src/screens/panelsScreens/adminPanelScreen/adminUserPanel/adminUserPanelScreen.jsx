@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { getUserById } from "../../../../api/backEnd/user.backend"
-import { deleteShopApi } from './../../../../api/backEnd/admin.backend';
+import { deleteShopApi, unDeleteShopApi } from './../../../../api/backEnd/admin.backend';
 import { toast, ToastContainer } from "react-toastify";
 
 export const AdminUserPanelScreen = ()=> {
     const [user,setUser] = useState()
+    const [reload,setReload] = useState(false)
     // const [userRoles,setUserRoles] = useState()
     const {id} = useParams()
    useEffect(()=>{
@@ -17,7 +18,7 @@ export const AdminUserPanelScreen = ()=> {
         })
     }
     fetch()
-   },[])
+   },[reload])
    
 
    const handleSubmit=()=>{
@@ -29,12 +30,26 @@ export const AdminUserPanelScreen = ()=> {
             console.log(deleteShop)
             if(deleteShop.message == 'shop désactivé'){
                 toast.success('le shop à été désactivé', {autoClose : 3000})
+                setReload(!reload)
             } else {
                 toast.error('une erreur est survenue')
             }
         }
         fetch()
    }
+   const handleUnDeleteShop = () =>{
+    const fetch = async ()=>{
+        const undeleteShop = await unDeleteShopApi(user.shop.Id_shop)
+        
+        if(undeleteShop.message == 'shop activé'){
+            setReload(!reload)
+            return toast.success('le shop à été activé', {autoClose : 3000})
+        } else {
+            toast.error('une erreur est survenue')
+        }
+    }
+    fetch()
+}
 
     return (
     <div>
@@ -54,7 +69,7 @@ export const AdminUserPanelScreen = ()=> {
             </div>
             <button onSubmit={handleSubmit}>Valider</button>
         </form>
-            {user?.shop?.Id_shop && user.shop.deleted_by == 0 ? <button onClick={handleDeleteShop}>Désactiver le shop</button> : <button onClick={handleDeleteShop}>activer le shop</button> }
+            {user?.shop?.Id_shop && user.shop.deleted_by == 0 ? <button onClick={handleDeleteShop}>Désactiver le shop</button> : <button onClick={handleUnDeleteShop}>activer le shop</button> }
     </div>
     )
 }

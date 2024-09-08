@@ -1,4 +1,3 @@
-
 import { useLocation } from 'react-router-dom'
 import {StripeComponent} from '../../../components/stripe/stripeContainer'
 import { useOrder } from '../orderContext';

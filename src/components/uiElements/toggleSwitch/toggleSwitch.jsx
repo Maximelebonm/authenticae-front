@@ -1,4 +1,3 @@
-import React from "react";
 import './toggleSwitch.css';
 import { Sun } from 'lucide-react';
 

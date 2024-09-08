@@ -1,23 +1,17 @@
-import { useState, useEffect } from "react"
-import { decodeCookies } from "../helpers/decodeToken"
+import { useAuthContext } from "../screens/authContext";
+
+
 
 export const PrivateRoutes = ({children,role}) => {
-    const [roleCookie,setRoleCookie]=useState()
-    useEffect(()=>{
-        if(document.cookie){
-            const decodeCookie = async()=>{
-                const cookie = await decodeCookies(document.cookie)
-                setRoleCookie(cookie.role)
-            }
-            decodeCookie()
-        }
-    },[])
-    if(roleCookie != null){
-        const roleMap = roleCookie.map(item => item.name)
+    const { userDetails } = useAuthContext();
+
+    
+    if(userDetails?.role?.length > 0){
+        const roleMap = userDetails.role.map(item => item.name)
 
         const shouldRenderChildren = Array.isArray(role)
         ? role.some(r => roleMap.includes(r))
-        : roleMap.includes(role);
+        : roleMap.includes(role); 
 
         return shouldRenderChildren ? children : null
     }

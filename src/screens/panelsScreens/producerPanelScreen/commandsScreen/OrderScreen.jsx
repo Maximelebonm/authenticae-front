@@ -6,6 +6,7 @@ import Logo from '../../../../assets/logos/logo_authenticae_blanc.png';
 import { toast, ToastContainer } from "react-toastify";
 import { Check } from 'lucide-react';
 import { InitRequest } from "../../../../api/initRequest";
+import { configStorage } from "../../../../helpers/config";
 
 export const OrderScreen =()=> {
     const { userDetails } = useAuthContext();
@@ -17,9 +18,9 @@ export const OrderScreen =()=> {
     useEffect(()=>{
         (async ()=>{
             try {
-                if(userDetails.user.Id_user){
+                if(userDetails?.Id_user){
                     console.log('order : ', userDetails)
-                    const response = await getOrderApi(userDetails.user.Id_user)
+                    const response = await getOrderApi(userDetails?.Id_user)
                     response.json()
                         .then(data=>{
                             if(data.message== 'order finded'){
@@ -191,7 +192,7 @@ export const OrderScreen =()=> {
                                 <div>
                                     {item.product.name}
                                 </div>   
-                                {<img src={item?.product?.productImages?.[0]?.storage ? InitRequest() + '/' + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
+                                {<img src={item?.product?.productImages?.[0]?.storage ? configStorage() + '/' + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
                             </div>
                             <div className='orderProductItem'>
                                 <div>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { UploadDropZone } from "../../../../components/uiElements/uploaddropZone/uploadDropZone";
-import { decodeCookies } from "../../../../helpers/decodeToken";
 import './producerPanelScreen.css';
 import { Link } from "react-router-dom";
 import { createShop, getShop, updateShop,updateAvatarShop } from "../../../../api/backEnd/producer/shop.backend";
@@ -9,20 +8,22 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { InputFloatLabel } from "../../../../components/uiElements/inputFloatLabel/inputFloatLabel";
 import StripeOnboarding from "../../../../components/stripe/stripeOnBoarding";
-import { InitRequest } from "../../../../api/initRequest";
+import { configStorage } from "../../../../helpers/config";
+import { useAuthContext } from "../../../authContext";
+import { toastSuccess } from "../../../../helpers/toast.helper";
 
 export const ProducerPanelScreen = () =>{
-    const cookie =  decodeCookies(document.cookie)
-    const id = cookie.Id_user
+    // const cookie =  decodeCookies(document.cookie)
+    const { userDetails } = useAuthContext();
+    const id = userDetails.Id_user
     const [shop, setShop] = useState();
     const [avatarFile, setAvatarFile] = useState();
     const [couvFile, setCouvFile] = useState();
     const [imgUrlAvatar,setImgUrlAvatar] = useState();
     const [imgUrlCover,setImgUrlCover] = useState();
     const [change,setChange] = useState(false)
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK
     const [product, setProduct] = useState()
-
+ 
     useEffect(()=>{
         const fetch = async ()=>{
             try {
@@ -34,7 +35,6 @@ export const ProducerPanelScreen = () =>{
                             console.log(data.data)
                             setShop(data.data)
                             setProduct(data.data.products)
-            
                         }
                     })
                 }
@@ -62,8 +62,8 @@ export const ProducerPanelScreen = () =>{
                             .then((data)=>{
                                 console.log(data)
                                 if(data.message === 'shop updated'){
+                                    toastSuccess("votre shop a été mis à jour avec succès");
                                     setChange(!change)
-                                    notifySuccessUpload()
                                 }
                             })
                         }
@@ -86,15 +86,15 @@ export const ProducerPanelScreen = () =>{
                         if(name){
                             const route = 'updateAvatar'
                             await updateAvatarShop(id,formData,route);
-                            setChange(!change)
                             setImgUrlAvatar()
-                            notifySuccessPicture()
+                            toastSuccess("votre shop a été mis à jour avec succès");
+                            setChange(!change)
                         }else{
                             const route = 'updateCover'
                             await updateAvatarShop(id,formData,route);
-                            setChange(!change)
                             setImgUrlCover()
-                            notifySuccessPicture()
+                            toastSuccess("votre shop a été mis à jour avec succès",);
+                            setChange(!change)
                         }  
                     }
                 }
@@ -137,22 +137,18 @@ export const ProducerPanelScreen = () =>{
         }
         setShop(newShop)
     }
-
-    console.log(shop)
-    const notifySuccessUpload = () => toast.success("votre shop a été mis à jour avec succès");
-    const notifySuccessPicture = () => toast.success("image télécharger avec succès")
-
+  
 return(
     <>
-    <ToastContainer />
     { shop !=null ?
         <div>
+        <ToastContainer />
         <form encType="multipart/form-data" onSubmit={avatarSubmit} className="ProducerPanelDropZoneForm">
         <div>
             Changer l&apos;avatar de votre boutique
         </div>
         <div className="ProducerPanelDropZoneContainer">
-        <img src={shop?.profil_picture &&  InitRequest() +'/'+shop.profil_picture}/>
+        <img src={shop?.profil_picture &&  configStorage() +'/'+shop.profil_picture}/>
             <UploadDropZone setFile={setAvatarFile} loadUrlImg={setImgUrlAvatar} imageSet={imgUrlAvatar} name='avatar'/>
             <button type='submit'> Envoyer l&apos;image</button>
         </div>
@@ -160,16 +156,16 @@ return(
         <div>
             Changer la photo de couverture de votre boutique
         </div>
-        { !shop.user.Stripe_ID && <StripeOnboarding id={shop.Id_user} />}
+        { !shop?.user?.Stripe_ID && <StripeOnboarding id={shop.Id_user} />}
         <form encType="multipart/form-data" onSubmit={avatarSubmit}>
             <div className="ProducerPanelDropZoneContainer">
-                <img src={shop?.cover_picture && InitRequest() +'/'+shop.cover_picture}/>
+                <img src={shop?.cover_picture && configStorage() +'/'+shop.cover_picture}/>
                 <UploadDropZone setFile={setCouvFile} loadUrlImg={setImgUrlCover} imageSet={imgUrlCover} name='cover'/>
                 <button type='submit'> Envoyer l&apos;image </button>
             </div>
         </form>
         <form onSubmit={handleSubmit} className='producerPanelform'>
-            <InputFloatLabel type='text' placeholder='nom du shop' inputValue={shop?.name} onchange={(e)=>handleChange(e,'shop')} labelName='nom du shop' inputName='shopName' minLength={1} maxLength={30} required='yes' />
+            <InputFloatLabel type='text' placeholder='nom du shop' inputValue={shop?.name} onchange={(e)=>handleChange(e,'shop')} labelName='nom du shop' inputName='shopName' minLength={1} maxLength={30} required='yes'/>
             <InputFloatLabel type='text' placeholder='Description du shop' inputName='shopDescriptiopn' onchange={(e)=>handleChange(e,'desc')} labelName='description' inputValue={shop?.description} minLength={1} maxLength={255} required='yes' />
             <button type='submit'> valider </button>
         </form>
