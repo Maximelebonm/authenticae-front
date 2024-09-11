@@ -10,16 +10,15 @@ function App() {
 
   return (
     <>
-    <BrowserRouter>
-     <AuthProvider>
-        <Header/>
-        <main id='mainContainer'>
-          <RoutesContainer/>
-        </main>
-     <Footer/>
-     </AuthProvider>
-    </BrowserRouter>
-
+      <BrowserRouter>
+      <AuthProvider>
+          <Header/>
+          <main id='mainContainer'>
+            <RoutesContainer/>
+          </main>
+      <Footer/>
+      </AuthProvider>
+      </BrowserRouter>
     </>
   )
 }

@@ -5,7 +5,7 @@ section#homeScreenProducts{
     grid-template-columns: repeat(1, 1fr); /* 3 colonnes de largeur égale */
     gap: 10px;
 }
-@media (min-width : 740px){
+@media (min-width : 640px){
     section#homeScreenProducts{
         grid-template-columns: repeat(2, 1fr); /* 3 colonnes de largeur égale */
     }

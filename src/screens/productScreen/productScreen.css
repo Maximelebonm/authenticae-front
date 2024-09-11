@@ -39,3 +39,19 @@
         color : var(--font_color);
     }
 }
+@media (max-width : 1280px){
+    .productContainer{
+        display : flex;
+        flex-direction: column;
+     
+    }
+    .productInfoContainer{
+        width : 100%;
+    }
+    .productOption{
+        width : 100%;
+    }
+    .ProductpersonalizationInput{
+        width: 90%;
+    }
+}

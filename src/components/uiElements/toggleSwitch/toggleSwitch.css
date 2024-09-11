@@ -1,5 +1,6 @@
 #toggleSwitchContainer{
     min-width : 100%;
+    padding-left : 0px !important;
     &input:checked + label::before {
         background-color : black;
     }
@@ -14,10 +15,10 @@
     align-items: center;
     justify-content: flex-start;
     transition : 0.3s;
-    position : relative;
+    /* position : relative; */
     color : var(--hover_color);
     min-width: 100%;
-    min-height: 100%;
+    min-height: 100%; 
 }
 
 #iconSwitch{

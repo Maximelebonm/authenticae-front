@@ -14,7 +14,7 @@ export const ProducteurCard = ({props}) => {
                 </div>
                 <div className='producteurCardTextHover'>
                     <div className='producteurCardFav'>
-                            <Heart strokeWidth={2}/>
+                            {/* <Heart strokeWidth={2}/> */}
                     </div>
                     <div className='producteurCardName'>
                     <h3>

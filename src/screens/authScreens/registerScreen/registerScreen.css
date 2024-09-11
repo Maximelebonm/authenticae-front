@@ -3,6 +3,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color : var(--font_color);
+    font-family: "Outfit", sans-serif;
 }
 
 #registerScreenSecondContainer{
@@ -31,7 +33,7 @@
     align-items: center;
 }
 #registerScreenSpan{
-    background-color: var(--nuance_color4);
+    background-color: var(--nuance_color5);
     color: var(--nuance_color2);
     padding: 12px;
     width: 50px;
@@ -49,6 +51,17 @@
 
 .registerScreenItemContainer{
     display: flex;
+    & input {
+        border-radius: 15px 0px 0 15px;
+        border-bottom: 2px solid var(--nuance_color5);
+        border-left: 2px solid var(--nuance_color5);
+    }
+    & span {
+        border-bottom: 2px solid var(--nuance_color5);
+    }
+    & button {
+        margin-top : 30px;
+    }
 }
 
 @media (max-width : 920px) {

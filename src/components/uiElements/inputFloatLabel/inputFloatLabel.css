@@ -14,7 +14,7 @@
     }
     &>label{
         position : absolute;
-        color : var(--nuance_color2);
+        color : var(--font_color);
         top : 32px;
         font-size: 14px;
         left : 10px;
@@ -22,12 +22,16 @@
         pointer-events:none;
         transition-duration : 200ms;
     }
+    &>input{
+        color : var(--font_color);
+    }
 }
 
 .InputFloatLabelContainer{
     &>input:focus ~ label, input:not(:placeholder-shown) ~ label{
         opacity : 1;
         font-size: 12px;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         top : 0;  
         padding : 0px;
         transition-duration : 200ms;

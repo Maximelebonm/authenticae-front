@@ -236,8 +236,10 @@ export const ProductScreen = () => {
                                     ))
                                 }
                             </select>
-                        </> 
-                        : 
+                        </> :
+                        <div>Produit indisponible</div>
+                    }
+                        {/* 
                         <>
                             Quantité réservable : {product?.product.quantity_reservation}    
                             <select className='productOption' name='quantityReservation' onChange={(e)=>handlequantityChange(e, 'R')} value={selectReload.quantityR}>
@@ -248,8 +250,9 @@ export const ProductScreen = () => {
                                     ))
                                 }
                             </select>
-                        </>
-                    }
+                        </> 
+                        */}
+                 
             
                     {product?.option.map((item,index)=>{
                         if(item.optionActive == true){                       

@@ -55,3 +55,24 @@
         height : 50px;
     }
 }
+@media (max-width : 1280px){
+    /* #swiperContainer{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width : 100%;
+    } */
+    .Swiper{
+        overflow: visible;
+    }
+    /* .productSwiperMain{
+        width : 100%;
+        height : 500px;
+        border-radius: 25px;
+        object-fit: cover;
+    }
+    .SwiperNav{
+        width : 100%;
+        height : 50px;
+    } */
+}

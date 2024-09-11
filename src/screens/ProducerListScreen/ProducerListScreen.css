@@ -1,17 +1,22 @@
 section#producteursScreenProducts{
     padding : 10px;
     display : grid;
-    grid-template-columns: repeat(2, 1fr); /* 3 colonnes de largeur égale */
+    grid-template-columns: repeat(1, 1fr); /* 3 colonnes de largeur égale */
     gap: 20px;
-    
 }
 @media (min-width : 640px){
     section#producteursScreenProducts{
-        grid-template-columns: repeat(3, 1fr); /* 3 colonnes de largeur égale */
+        grid-template-columns: repeat(2, 1fr); /* 3 colonnes de largeur égale */
     }
 }
 
 @media (min-width : 960px){
+    section#producteursScreenProducts{
+
+        grid-template-columns: repeat(4, 1fr); /* 3 colonnes de largeur égale */
+    }
+}
+@media (min-width : 1280px){
     section#producteursScreenProducts{
         grid-template-columns: repeat(5, 1fr); /* 3 colonnes de largeur égale */
     }

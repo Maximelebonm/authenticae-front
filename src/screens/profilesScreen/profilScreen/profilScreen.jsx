@@ -141,8 +141,7 @@ export const ProfilScreen = ()=>{
 
             const id = userDetails.Id_user
             const formObject = {formFirstname,formLastname,formBirthdate,formPhone}
-            const fetch = async ()=> {  
-                console.log(formObject)                     
+            const fetch = async ()=> {                      
                 const response = await updateUserApi(formObject,id)
                 if(response){
                     response.json()

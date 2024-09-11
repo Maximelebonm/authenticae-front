@@ -1,13 +1,10 @@
 #footerContainer {
     height : 150px;
     bottom : 0;
-
+    color : var(--nuance_color1);
     background-color: var(--nuance_color5);
     width : auto;
     padding: 20px;
-    /* margin-left: -10px;
-    margin-right: -10px;  */
-    /* margin-bottom: -10px; */
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -16,13 +13,23 @@
 #footerInfo{
     display: flex;
     flex-direction: column;
-    & a:hover {
-            color : white
+    & a {
 
+        color : var(--nuance_color1);
+        & a:hover {
+            color : white
+    
+        }
     }
 }
-
 #footerContact{
     display: flex;
     flex-direction: column;
+}
+@media (max-width : 840px){
+    #footerContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
 }

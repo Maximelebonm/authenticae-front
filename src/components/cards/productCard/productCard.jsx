@@ -4,7 +4,6 @@ import { configStorage } from '../../../helpers/config';
 
 export const ProductCard = ({props,picture})=>{
     const {name,price} = props
-    const Base_URL = import.meta.env.VITE_BASE_URL_BACK_TEST
 
     return (
         

@@ -1,19 +1,16 @@
 import { useState,useEffect } from "react"
 import { createProduct } from "../../../../api/backEnd/producer/product.backend"
 import { getShop } from "../../../../api/backEnd/producer/shop.backend";
-import { decodeCookies } from "../../../../helpers/decodeToken";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from './../../../authContext';
 
 export const ProducerPanelProductScreen =()=> {
     const [shop, setShop] = useState()
-    const cookie =  decodeCookies(document.cookie)
-    console.log(cookie)
-    const Id_user = cookie.Id_user
     const Id_shop = shop?.Id_shop
     const navigate = useNavigate()
-
-   
-  
+    const {userDetails} = useAuthContext()
+    const Id_user = userDetails?.Id_user
+    console.log('Id_shop : '+ Id_shop, 'Id_user : ' + Id_user )
     useEffect(()=>{
         const fetch = async ()=>{
             try {

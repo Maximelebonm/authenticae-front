@@ -1,5 +1,6 @@
 #ProducerShopMainContainer{
-
+ margin-top : 10px;
+ color: var(--nuance_color1);
 }
 #producerShopPictureContainer{
     position : relative;
@@ -7,8 +8,9 @@
 #ProducerShopCoverPicture{
     width : 100%;
     border-radius: 25px;
-    height : 400px;
+    height : 250px;
     object-fit: cover;
+    transition: height 0.5s ease-in-out;
 }
 #ProducerShopProfilPicture{
     position : absolute;
@@ -20,11 +22,44 @@
     left : 50%;
     bottom : -125px;
     margin-left : -110px;
-    border : 10px var(--nuance_color4) solid;
+    border : 10px var(--body_color) solid;
 }
 #producerShopName{
-    color: var(--nuance_color 4);
+
     font-weight: bold;
     font-size: 30px;
     margin-top: 120px;
+}
+#profileArticle{
+    width :100%;
+    display: flex;
+    justify-content: center;
+}
+#ProducerShopProductsContainer{
+    display : grid;
+    padding : 10px;
+    width : 100%;
+    gap: 10px;
+}
+@media (min-width : 640px){
+    #ProducerShopProductsContainer{
+        grid-template-columns: repeat(2, 1fr); 
+    }
+    #ProducerShopCoverPicture{
+        height : 300px;
+    }
+}
+@media (min-width : 1000px){
+    #ProducerShopProductsContainer{
+        grid-template-columns: repeat(3, 1fr);
+    }
+    #ProducerShopCoverPicture{
+        height : 400px;
+    }
+}
+
+@media (min-width : 1340px){
+    #ProducerShopProductsContainer{
+        grid-template-columns: repeat(4, 1fr); 
+    }
 }

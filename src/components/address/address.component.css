@@ -1,15 +1,14 @@
 .adressComponentContainer{
-    width : 100%;
     align-self: center;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding : 20px;
+    padding : 10px;
     box-sizing: border-box;
     margin-top : 10px;
-    background-color: var(--nuance_color3);
+    background-color: var(--nuance_color5);
     &>div {
         width : 75%;
     }
@@ -17,7 +16,6 @@
 
 .adressComponentSubContainer{
     display : flex;
-    width : 100%;
     
     & .adresscountry{
         margin-right : 10px;

@@ -6,6 +6,7 @@ import { useEffect,useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ProductCard } from '../../../components/cards/productCard/productCard';
 import { configStorage } from '../../../helpers/config';
+import { HomeProductCards } from '../../../components/cards/homeProductCard/homeProductCard';
 
 export const ProducerShopScreen = () => {
     const {id} = useParams()
@@ -54,15 +55,15 @@ export const ProducerShopScreen = () => {
                 </div>
             </section>
             <section id="profileArticle">
-            <div id='ProducerPanelProductsContainer'>
-            {product?.map((item,index)=>{
-                return (
-                    <Link to={`/product/${item.Id_product}`} key={index}>
-                        <ProductCard props={item} picture={item.productImages[0]} />   
-                    </Link>
-                )
-            })}
-    </div>
+                <div id='ProducerShopProductsContainer'>
+                {product?.map((item,index)=>{
+                    return (
+                        <Link to={`/product/${item.Id_product}`} key={index}>
+                            <HomeProductCards props={item} picture={item.productImages[0]} />   
+                        </Link>
+                    )
+                })}
+                </div>
             </section>
             <section>
                 {/* contacter le vendeur */}

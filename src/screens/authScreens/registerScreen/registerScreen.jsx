@@ -77,7 +77,7 @@ export const RegisterScreen = ()=> {
                     <span id='registerScreenSpan'><User /></span>
                 </div>
             </div>
-            <div>
+            <div className='registerScreenItemContainer'>
                 <InputFloatLabel placeholder="Dupont" type='date' labelName='Date de Naissance' inputName='registerScreenBirthDate' required='yes' max='2008-01-01'/>
             </div>
             <div className='registerScreenItemContainer'>
@@ -105,13 +105,8 @@ export const RegisterScreen = ()=> {
             </div>
             <div className='registerScreenItemContainer'>
                 <button type='submit'> S&apos;inscrire</button>
-                        <Link to='/login'> 
-                            <button type='button' id='loginScreenSecondContainer'>
-                                Se connecter
-                            </button>
-                        </Link>
             </div>
-                <GoogleLogin/>
+                {/* <GoogleLogin/> */}
         </form>
      
       

@@ -7,8 +7,9 @@
   
   --font_color : black;
   --title_color : black;
-  --body_color: #ffffff;
-  --link_color : #630688;
+  --body_color: #f8f8f8;
+  --link_color : #4c00ff;
+  --input_color : #ffffff;
   --hover_color : white;
   --white_only : white;
   --nuance_color1 : #332412;
@@ -31,10 +32,11 @@
   --nuance_color2 : #a3a3a3;
   --primary_color : #4d4d4d;
   --nuance_color3 : #707070;
+  --input_color : #707070;
   --nuance_color4 : #4b4b4b;
   --nuance_color5 : #252525;
   --font_color : rgb(255, 255, 255);
-  --link_color : rgb(255, 255, 255);
+  --link_color : #630688;
   --title_color : rgb(255, 255, 255);
 }
 
@@ -52,8 +54,10 @@ p{
 }
 
 h1 {
-  font-size: 3.2em;
+  font-family: "Poppins", sans-serif;
+  font-size: 2.8em;
   line-height: 1.1;
+  font-weight: 500;
 }
 h1, h2, h3, h4, h5, h6 {
   margin : 0;
@@ -61,7 +65,7 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   text-decoration: none;
-  color : var(--link_color);
+  color : var(--nuance_color5);
   &:hover{
     cursor: pointer;
   }
@@ -73,12 +77,13 @@ ul {
 }
 
 .link{
-  color : var(--nuance_color4);
+  color : var(--nuance_color5);
   &:hover{
     color : blue
   }
 }
 button {
+  font-family: "Poppins", sans-serif;
   border-radius: 25px;
   border-style: none;
   padding : 10px 20px;
@@ -86,10 +91,10 @@ button {
   font-weight: 500;
   font-size: 20px;
   cursor : pointer;
-  background-color: var(--nuance_color2);
+  background-color: var(--nuance_color3);
   color : var(--white_only);
   &:hover{
-    background-color: var(--nuance_color4);
+    background-color: var(--nuance_color2);
    
   }
   &:active{
@@ -101,14 +106,14 @@ button {
 input {
   border-radius: 15px;
   box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
   padding: 10px;
   margin : 10px 0px;
   height :50px;
   width : 100%;
   border : 0px;
-  background-color: var(--nuance_color5);
-  color : black;
   outline: none;
+  background-color: var(--input_color);
   &[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button{
     appearance: none;
@@ -123,6 +128,9 @@ input {
     color: var(--nuance_color2);
   }
 }
+/* input:focus {
+  border-bottom : 2px solid var(--nuance_color3);
+} */
 
 
 select {

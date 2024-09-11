@@ -1,9 +1,8 @@
 import './toggleSwitch.css';
-import { Sun } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 
 
 export const ToggleSwitch = (props) => {
-
 
     const setDarkMode = () =>{
         document.querySelector("body").setAttribute('data-theme','dark');
@@ -28,10 +27,9 @@ export const ToggleSwitch = (props) => {
     return (
     <div id='toggleSwitchContainer' className={props.className}>
         <label className='switch'>
-            <input type="checkbox" onChange={toggleTheme} defaultChecked={selectedTheme === "dark"} />
-                <Sun id="iconSwitch" />theme
+            <input type="checkbox" onChange={toggleTheme} />
+                { selectedTheme == 'light' ? <><Sun id="iconSwitch" /> theme</> : <><Moon id="iconSwitch" /> theme</>}
         </label>
-            {/* <span className="slider round"></span> */}
     </div>
     )
 }

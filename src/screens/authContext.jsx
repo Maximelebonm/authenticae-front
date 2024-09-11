@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
             if (cookie.startsWith('auth=')) {
                 // Extraire la valeur du cookie après le signe '='
                 authCookie = cookie.substring('auth='.length);   
-                console.log('auth cookie : '  + authCookie)     
+                // console.log('auth cookie : '  + authCookie)     
                 break;
             }
         }
