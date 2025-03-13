@@ -18,6 +18,7 @@
     display : flex;
     
     & .adresscountry{
+
         margin-right : 10px;
         width : 100%;
     }
@@ -31,4 +32,11 @@
     & .adressCode {
         width : 100%;
     }
+}
+
+.spanError{
+    left : 0;
+    color : rgb(172, 27, 27);
+    font-size : 12px;
+    margin-top : 0px;
 }

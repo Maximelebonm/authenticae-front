@@ -26,7 +26,9 @@
         color : var(--font_color);
     }
 }
-
+.inputError{
+    border : 2px solid rgb(172, 27, 27);
+}
 .InputFloatLabelContainer{
     &>input:focus ~ label, input:not(:placeholder-shown) ~ label{
         opacity : 1;

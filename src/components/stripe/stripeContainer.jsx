@@ -9,7 +9,6 @@ export const StripeComponent = ({props})=> {
     } else if(process.env.NODE_ENV === 'production'){
         public_Key = import.meta.env.VITE_STRIPE_PUBLIC
     }
-    console.log(public_Key)
     const stripePromise = loadStripe(public_Key)
 
     return (

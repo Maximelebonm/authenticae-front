@@ -21,16 +21,36 @@
 
 #carValidItemContianer{
     display : flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     width : 100%;
 }
 
 .cartValidItem{
-    margin-left: 10px;
-    margin-right: 10px;
-    width : 300px;
+    width : 100%;
+    margin-top : 10px;
     border : 2px solid var(--nuance_color5);
     padding : 10px;
     border-radius : 25px;
+    &>div{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &>div{
+            width : 25%;
+        }
+        &>input{
+            width: 25px;
+        }
+        &>input[type="radio"]:checked{
+            background-color: var(--nuance_color5);
+        }
+    }
+}
 
+@media (min-width : 840px){
+    #carValidItemContianer{
+        width : 750px;
+        margin : auto;   
+    }
 }

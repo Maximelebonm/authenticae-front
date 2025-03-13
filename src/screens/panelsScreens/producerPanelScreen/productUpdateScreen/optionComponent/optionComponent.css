@@ -1,5 +1,5 @@
 .optionContainer{
-    background-color: var(--nuance_color3);
+    background-color: var(--nuance_color4);
     border-radius: 10px;
     padding : 20px;
     margin : 20px;
@@ -14,7 +14,7 @@
 }
 .subOptioncontainer {
     border-radius : 10px;
-    background-color: var(--nuance_color2);
+    background-color: var(--nuance_color3);
     display: flex;
     justify-content: space-evenly;
     align-items: center;

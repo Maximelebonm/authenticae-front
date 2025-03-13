@@ -1,21 +1,15 @@
 import './ProducerShopScreen.css'
 import { useParams } from 'react-router-dom';
 import { getShopByIdAPI } from '../../../api/backEnd/producer/shop.backend';
-import { decodeCookies } from '../../../helpers/decodeToken';
 import { useEffect,useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ProductCard } from '../../../components/cards/productCard/productCard';
 import { configStorage } from '../../../helpers/config';
 import { HomeProductCards } from '../../../components/cards/homeProductCard/homeProductCard';
 
 export const ProducerShopScreen = () => {
     const {id} = useParams()
-    console.log(id)
-    const cookie =  decodeCookies(document.cookie)
-    
     const [shop, setShop] = useState();
     const [product,setProduct]= useState()
-    console.log(shop)
 
     useEffect(()=>{
         const fetch = async ()=>{
@@ -24,7 +18,6 @@ export const ProducerShopScreen = () => {
                 if(response){
                     response.json()
                     .then(data=>{
-                        console.log(data)
                         if(data.message== 'shop exist'){
                             setShop(data.data)
                             setProduct(data.data.products)
@@ -37,7 +30,7 @@ export const ProducerShopScreen = () => {
 
         }
         fetch()
-    },[cookie.Id_user])
+    },[id])
     
     return (
         <>
@@ -59,7 +52,7 @@ export const ProducerShopScreen = () => {
                 {product?.map((item,index)=>{
                     return (
                         <Link to={`/product/${item.Id_product}`} key={index}>
-                            <HomeProductCards props={item} picture={item.productImages[0]} />   
+                            <HomeProductCards info={item} picture={item.productImages[0]} />   
                         </Link>
                     )
                 })}

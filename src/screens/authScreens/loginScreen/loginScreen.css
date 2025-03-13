@@ -107,8 +107,12 @@
    width : 100%;
 }   
 
-@media (max-width : 920px) {
-    #loginScreenSecondContainer{
-        flex-direction : column;
+@media (max-width : 640px) {
+    #loginScreenContainer{
+        padding : 10px;
+    }
+    #loginScreenForm{
+        width : 100%;
+        padding : 15px;
     }
 }

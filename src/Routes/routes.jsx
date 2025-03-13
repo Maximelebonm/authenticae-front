@@ -28,21 +28,34 @@ import { ConditionsScreen } from '../screens/rulesScreens/conditionsScreen/condi
 import { ConfScreen } from '../screens/rulesScreens/confScreen/confScreen.jsx';
 import { CookieScreen } from '../screens/rulesScreens/cookiesScreen/cookieScreen.jsx';
 import { PasswordScreen } from '../screens/authScreens/passwordScreen/passwordScreen.jsx';
+import { AdminTvaPanel } from '../screens/panelsScreens/adminPanelScreen/adminTvaPanel/adminTvaPanel.jsx';
+import { AdminUserListScreen } from '../screens/panelsScreens/adminPanelScreen/adminUserList/adminUserList.jsx';
+import { AdminCategory } from '../screens/panelsScreens/adminPanelScreen/adminCategory/adminCategory.jsx';
+import { AdminMaterial } from '../screens/panelsScreens/adminPanelScreen/adminMaterial/adminMaterial.jsx';
+// import { DeliveryScreen } from '../screens/orderScreensAndcontext/deliveryScreen/deliveryScreen.jsx';
+import { CheckEmailScreen } from '../screens/authScreens/checkEmailScreen/CheckEmailScreen.jsx';
 
 export const RoutesContainer = () =>{
     return (
         <>
         <Routes>
-            {/* <Route index element={<HomeScreen/>} /> */}
+            <Route index element={<HomeScreen/>} />
             {/* <Route path='*' element={<HomeScreen/>}/>  */}
             <Route path={URL_FRONT.HOME} element={<HomeScreen/>}/>
             <Route path='/producer' element={<ProducerListScreen/>}/>
             <Route path='/profil' element={<PrivateRoutes role={['client']}><ProfilScreen/></PrivateRoutes>}/>
             <Route path='/myorder' element={<PrivateRoutes role={['client']}><CommandsScreen/></PrivateRoutes>}/>
+            
+
             <Route path='/paneladmin' element={<PrivateRoutes role={['administrator']}><AdminPanelScreen/></PrivateRoutes>}/>      
-            <Route path='/panelAdmin/user/:id' element={<PrivateRoutes role={['administrator']}><AdminUserPanelScreen/></PrivateRoutes>}/>      
+            <Route path='/paneladmin/user/:id' element={<PrivateRoutes role={['administrator']}><AdminUserPanelScreen/></PrivateRoutes>}/> 
+            <Route path='/paneladmin/tva' element={<PrivateRoutes role={['administrator']}><AdminTvaPanel/></PrivateRoutes>}/> 
+            <Route path='/paneladmin/userList' element={<PrivateRoutes role={['administrator']}><AdminUserListScreen/></PrivateRoutes>}/> 
+            <Route path='/paneladmin/category' element={<PrivateRoutes role={['administrator']}><AdminCategory/></PrivateRoutes>}/>
+            <Route path='/paneladmin/materials' element={<PrivateRoutes role={['administrator']}><AdminMaterial/></PrivateRoutes>}/>
+
             <Route path='/register' element={<RegisterScreen/>}/>
-            <Route path='/password' element={<PasswordScreen/>}/>
+            <Route path='/password/:token' element={<PasswordScreen/>}/>
             <Route path='/cookies' element={<CookieScreen/>}/>
             <Route path='/conditions' element={ <ConditionsScreen/>}/>
             <Route path='/confidentialite' element={<ConfScreen/>}/>
@@ -55,13 +68,15 @@ export const RoutesContainer = () =>{
             <Route path='/myshop/product/createProduct' element={<PrivateRoutes role={['producer']}><ProducerPanelProductScreen/></PrivateRoutes>}/>   
             <Route path='/order' element={<PrivateRoutes role={['producer']}><OrderScreen/></PrivateRoutes>}/>   
             <Route path='/myshop/product/:id' element={<PrivateRoutes role={['producer']}><ProducelPanelProductUpdate/></PrivateRoutes>}/>      
-            <Route path='/return' element={<PrivateRoutes role={['producer']}><ReturnOrderScreen/></PrivateRoutes>}/>          
+            <Route path='/return' element={<PrivateRoutes role={['producer']}><ReturnOrderScreen/></PrivateRoutes>}/> 
+            <Route path='/checkEmail' element={<CheckEmailScreen/>}/>         
         </Routes>
         <OrderProvider>
             <Routes>  
                 <Route path='/cart' element={<PrivateRoutes role={['client']}><CartScreen/></PrivateRoutes>}/>
                 <Route path='/cartvalidation' element={<PrivateRoutes role={['client']}><CartValidationScreen/></PrivateRoutes>}/>  
                 <Route path='/paiement' element={<PrivateRoutes role={['client']}><PayementScreen/></PrivateRoutes>}/>  
+                {/* <Route path='/livraison' element={<PrivateRoutes role={['client']}><DeliveryScreen/></PrivateRoutes>}/> */}
                 <Route path='/paiement/success' element={<PrivateRoutes role={['client']}><SuccessOrderScreen/></PrivateRoutes>}/>
             </Routes>
         </OrderProvider>

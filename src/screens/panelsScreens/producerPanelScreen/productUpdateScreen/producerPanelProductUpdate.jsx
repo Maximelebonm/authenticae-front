@@ -16,6 +16,8 @@ import { Trash2,Archive,ChevronLeft,ChevronRight  } from 'lucide-react';
 import { decodeCookies } from "../../../../helpers/decodeToken";
 import { configStorage } from "../../../../helpers/config";
 import { toastError, toastSuccess } from "../../../../helpers/toast.helper";
+import { getAllTvaApi } from "../../../../api/backEnd/producer/tva.backend";
+
 
 export const ProducelPanelProductUpdate = () => {
     const {id} = useParams()
@@ -26,8 +28,10 @@ export const ProducelPanelProductUpdate = () => {
     const [updatePage, setUpdatePage] = useState(false)
     const [onCommand,setOnCommand] = useState()
     const [materials,setMaterials] = useState();
-    const [options, setOptions] = useState([])
-    const [personlization,setPersonalization] = useState([])
+    const [options, setOptions] = useState([]);
+    const [tva, setTva] = useState([]);
+    
+    const [personlization,setPersonalization] = useState([]);
     const navigate = useNavigate()
     const cookie = decodeCookies(document.cookie)  
 
@@ -38,7 +42,6 @@ export const ProducelPanelProductUpdate = () => {
                 response.json()
                 .then(data=>{
                     if(data.message == 'product geted'){
-
                             setImgDisplay(data.data.images)
                             setProduct(data.data.product);
                             setOptions(data.data.option);
@@ -48,6 +51,7 @@ export const ProducelPanelProductUpdate = () => {
                 })
             }
         }
+
         const fetchmaterials = async()=>{
             const response = await getAllmaterials()
             if(response){
@@ -59,8 +63,23 @@ export const ProducelPanelProductUpdate = () => {
                 })
             }
         }
+
+        const fetchTva = async () => {
+            const response = await getAllTvaApi()
+            if(response){
+                response.json()
+                .then(data=>{
+                    if(data){
+                        setTva(data)
+                    }
+                })
+            }
+        }
+
+        fetchTva()
         fetchProduct()
         fetchmaterials()
+        
     },[updatePage])
 
     const productImages = async(e)=>{
@@ -103,30 +122,29 @@ export const ProducelPanelProductUpdate = () => {
     const handleChange = (e) =>{
         console.log(e)
         const input = e.target;
-   
-            const myRegex = /^[a-zA-Z0-9-\sàáâäãåçèéêëìíîïñòóôöõùúûüýÿÀÁÂÄÃÅÇÈÉÊËÌÍÎÏÑÒÓÔÖÕÙÚÛÜÝŸ,."'\-!?]+$/
-            const Error = input.nextElementSibling;
-            // console.log(input.type)
-            if(input.type === "checkbox"){
-                console.log("pass")
-                const newProduct = product
-                newProduct.on_command = e.target.checked
+        const myRegex = /^[a-zA-Z0-9-\sàáâäãåçèéêëìíîïñòóôöõùúûüýÿÀÁÂÄÃÅÇÈÉÊËÌÍÎÏÑÒÓÔÖÕÙÚÛÜÝŸ,."'\-!?]+$/
+        const Error = input.nextElementSibling;
+        // console.log(input.type)
+        if(input.type === "checkbox"){
+            console.log("pass")
+            const newProduct = product
+            newProduct.on_command = e.target.checked
 
-                console.log(newProduct)
-                setProduct(newProduct)
+            console.log(newProduct)
+            setProduct(newProduct)
+        }
+        if(input.type === "text"){
+            if(input.value === ""){
+                Error.innerHTML = "ecrire un nom de produit"
             }
-            if(input.type === "text"){
-                if(input.value === ""){
-                    Error.innerHTML = "ecrire un nom de produit"
-                }
-                else if(myRegex.test(input.value)=== false){
-                    console.log(input.value)
-                    Error.innerHTML = "le nom doit comporter des lettre et tirer uniquement"
-                }
-                else{
-                    Error.innerHTML =""
-                }
+            else if(myRegex.test(input.value)=== false){
+                console.log(input.value)
+                Error.innerHTML = "le nom doit comporter des lettre et tirer uniquement"
             }
+            else{
+                Error.innerHTML =""
+            }
+        }
             // else if(input.type ==="number"){
     
             // }
@@ -135,12 +153,14 @@ export const ProducelPanelProductUpdate = () => {
     const handleOptionChange = (e,Id_option,obj)=>{
         const newOption = [...options]
         newOption.forEach((item)=> {
-            console.log(e)
+            console.log(obj)
             if(item.Id_product_option == Id_option){
                 switch(obj){
                     case 'name' : item.name = e;
                     break;
                     case 'available' : item.optionActive = e;
+                    break;
+                    case 'obligatory' : item.obligatory = e;
                     break;
                 }
             
@@ -191,13 +211,17 @@ export const ProducelPanelProductUpdate = () => {
             const productQuantityAvailable = formData.get("productQuantityAvailable");
             const productQuantityReservation = formData.get("productQuantityReservation");
             const producmaterial = formData.get("productMaterial");
+            const productTva = formData.get("productTva");
             const producOnCommand = onCommand;
             const productWorkingDays = formData.get("productWorkingDays")
             const formOptionObject = options
             const formPersonalizationObject = personlization
-            if(producmaterial != 'none'){
+
+            console.log(productTva)
+
+            if(producmaterial != 'none' && productTva != 'none'){
                 const fetch = async ()=> {                   
-                    const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject,producOnCommand,productWorkingDays)
+                    const response = await updateProduct(id,productName,productDescription,productSpecification, producmaterial,productTva,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject,producOnCommand,productWorkingDays)
                     if(response.message === 'product updated'){
                         setUpdatePage(!updatePage);
                         toast.success('produit mis à jour', {autoClose : 1000})
@@ -206,7 +230,13 @@ export const ProducelPanelProductUpdate = () => {
                     fetch() 
                 }
             else {
-                toast.error('Veuillez selectionner une matière utilisé', {autoClose : 2000})
+                if(producmaterial == 'none'){
+                    toast.error('Veuillez selectionner une matière principale', {autoClose : 2000})
+                }
+                if(productTva == 'none'){
+                    toast.error('Veuillez selectionner une tva', {autoClose : 2000})
+                }
+                
             }
         } catch (error) {
             console.log(error);
@@ -232,7 +262,7 @@ export const ProducelPanelProductUpdate = () => {
         const uuidSuboption = uuidv4()
         setOptions([
             ...options,
-            { name: '', Id_product_option : uuidOption, optionActive : 0, subOptions : [{ detail: '', price: 0, quantity_available: 0, quantity_reservation: 0, Id_subOption : uuidSuboption}]}
+            { name: '', Id_product_option : uuidOption, optionActive : 0,obligatory : 0, subOptions : [{ detail: '', price: 0, quantity_available: 0, quantity_reservation: 0, Id_subOption : uuidSuboption}]}
         ])
     }
 
@@ -435,17 +465,26 @@ export const ProducelPanelProductUpdate = () => {
                         <span id='productSpecificationError'></span>
                     </div>
                 </div>
-                <div id='productUpdateNumberContainer'>
+                <div id='productUpdateMainPriceContainer'>
                     <div  id="optionInputCheckBox" >
                         <label> produit sur commande : </label>
                         <input type='checkbox' name={`onCommand`} checked={onCommand} onChange={()=> setOnCommand(!onCommand)}/>
                     </div>
                     <div className='productUpdateInputContainerNumber'>
                         <label>*Matière principale utilisé :</label>
-                        <select className='panelInput' placeholder='Prix du produit' name='productMaterial' defaultValue={product?.Id_material || "none"} required>
+                        <select className='panelInput' name='productMaterial' defaultValue={product?.Id_material || "none"} required>
                             <option value="none">None</option>
                             {materials?.map((item)=>{
                                 return <option  key={item.Id_material} value={item.Id_material} > {item.name}</option>
+                            })}
+                        </select>
+                    </div>
+                    <div>
+                        <label>TVA</label>
+                        <select className='panelInput' name='productTva'  defaultValue={product?.Id_tva || "none"}>
+                            <option value="none">None</option>
+                            {tva?.map((item)=>{
+                                return <option  key={item.Id_tva} value={item.Id_tva} > {item.tva_rate} %</option>
                             })}
                         </select>
                     </div>
@@ -461,15 +500,10 @@ export const ProducelPanelProductUpdate = () => {
                         <label>*Jour de travail : </label>
                         <input className='panelInput' type='number' placeholder='Jour de travail' name='productWorkingDays' defaultValue={product?.working_days} min={0} max={90} required/> 
                     </div>
-                    {/* <div className='productUpdateInputContainerNumber'>
-                        <label>*quantité réservable : (5 maximum) </label>
-                        <input className='panelInput' type='number' placeholder='Quantité reservable' name='productQuantityReservation' defaultValue={product?.quantity_reservation} min={0} max={5} required/> 
-                    </div> */}
                 </div>
             </div>
             <div>
                 {options.map((item,index)=> {
-                    {/* console.log(item) */}
                     return <OptionComponent 
                                 props={item} 
                                 key={index} 

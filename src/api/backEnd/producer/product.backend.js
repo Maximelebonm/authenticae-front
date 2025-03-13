@@ -43,9 +43,9 @@ export const getAllProduct = async () => {
     }
 }
 
-export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject,producOnCommand,productWorkingDays) => {
-    console.log(producOnCommand)
+export const updateProduct = async (id,productName,productDescription,productSpecification,producmaterial,productTva,productPrice,productQuantityAvailable,productQuantityReservation,formOptionObject,formPersonalizationObject,producOnCommand,productWorkingDays) => {
     try {
+        // console.log(formOptionObject)
         const response = await ky.put(`${InitRequest()}/product/update/${id}`,{
             json : {
                 name : productName,
@@ -54,6 +54,7 @@ export const updateProduct = async (id,productName,productDescription,productSpe
                 on_command : producOnCommand,
                 Id_material : producmaterial,
                 price : productPrice,
+                Id_tva : productTva,
                 productWorkingDays : productWorkingDays,
                 quantity_available : productQuantityAvailable,
                 quantity_reservation : productQuantityReservation,
@@ -69,7 +70,6 @@ export const updateProduct = async (id,productName,productDescription,productSpe
 }
 
 export const updatePicturesProduct = async (id,formData) => {
-    console.log('passe api', id, formData)
     try {
         const response = await ky.post(`${InitRequest()}/product/uploadPictures/${id}`,{
             body: formData,

@@ -43,6 +43,7 @@ export const decodeCookieCart = ()=> {
 
 export const decodetoken = (token) =>{
     const TokenDecode = jwtDecode(token)
+    console.log('decode' + TokenDecode)
     if(TokenDecode){
         return TokenDecode
         }

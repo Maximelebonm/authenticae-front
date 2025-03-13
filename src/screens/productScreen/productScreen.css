@@ -1,57 +1,99 @@
-.productContainer{
-    display : flex;
-    padding-top: 10px;
-    color : var(--font_color);
+.productContainerFlex{
+    margin-top : 20px;
 }
 
-.productScreenImage{
-    width : 150px;
-    height : auto;
+.productContainer{
+    padding-top: 10px;
+    display : flex;
+    flex-direction: column;
+    width : 100%;
+    color : var(--font_color);
+    text-align : start;
+    font-family: "Poppins", sans-serif;
 }
 .productInfoContainer{
-    width : 40%;
-    text-align: start;
-    padding-top: 10px;
-    color : var(--font_color);
+    width : 100%;
+    margin-top : 30px;
 }
 .productOption{
-    font-size: larger;
-    width : 90%;
-    border-radius: 10px;
-    color : black;
+    width : 100%;
+    color : var(--font_color);
+    font-family: "Poppins", sans-serif;
     background-color: var(--white_only);
-    &>option{
+    border-radius: 10px;
+    & option{
+        font-family: "Poppins", sans-serif;
         background-color: var(--white_only);
+        &:hover{
+            background-color: var(--nuance-color5);
+        }
+    }
+}
+.ProductpersonalizationInput{
+    width: 100%;
+    background-color: var(--white_only);
+    border-radius: 10px;
+    & textarea {
+        width : 100%;
+        margin : 0;
+        padding : 0;
     }
 }
 
-.ProductpersonalizationInput{
-    background-color: var(--white_only);
-    min-height : 10px;
-    width: 90%;
-    border-radius : 15px;
-}
-@media (max-width : 840px){
+
+
+@media (min-width : 840px){
+    .productContainerFlex{
+        margin-top : 20px;
+    }
     .productContainer{
         display : flex;
         flex-direction: column;
-        padding-top: 10px;
         color : var(--font_color);
     }
 }
-@media (max-width : 1280px){
+@media (min-width : 1280px){
+    .productContainerFlex{
+        margin-top : 20px;
+        width : 1200px;
+        display: flex;
+        justify-content: center;
+        margin-left : auto;
+        margin-right : auto;
+    }
     .productContainer{
         display : flex;
-        flex-direction: column;
-     
+        flex-direction: row;
+        align-self: center;
+        width : 100%;
+        color : var(--font_color);
+    }
+    
+    .productScreenImage{
+        width : 150px;
+        height : auto;
     }
     .productInfoContainer{
-        width : 100%;
+        width : 40%;
+        text-align: start;
+        padding-top: 10px;
+        color : var(--font_color);
     }
     .productOption{
-        width : 100%;
+        font-size: larger;
+        width : 90%;
+        border-radius: 10px;
+        color : black;
+        background-color: var(--white_only);
+        &>option{
+            background-color: var(--white_only);
+        }
     }
+    
     .ProductpersonalizationInput{
+        background-color: var(--white_only);
+        min-height : 10px;
         width: 90%;
+        border-radius : 15px;
     }
 }

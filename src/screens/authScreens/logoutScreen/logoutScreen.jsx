@@ -26,7 +26,7 @@ export const LogoutScreen = () => {
                 Etes vous sur de vouloir vous déconnecter ?
             </p>
             <button onClick={logout}>Oui</button>
-            <button>Non</button>
+            <button onClick={()=>window.location.href = '/'} >Non</button>
         </div>
     )
 }

@@ -148,11 +148,17 @@ export const Header =()=>{
                                 Producteurs
                                 </li>
                             </Link>
-                     
+                            <Link  to={roleCookie ? "/cart" : '/login'}>
+                            <li className='headerItemMobile' onClick={activeItem}><ShoppingCart /> Panier</li>
+                        </Link>
+               
                         {roleCookie?.includes('client') ?
                             <>
                                 <Link  to={roleCookie ? "/profil" : '/login'}>
                                     <li className='headerItemMobile' onClick={activeItem}> <User /> Compte</li>
+                                </Link>
+                                <Link  to={roleCookie ? "/myorder" : '/login'}>
+                                    <li className='headerItemMobile' onClick={activeItem}> <ClipboardList />Commandes</li>
                                 </Link>
                                 <Link  to={roleCookie ? "/logout" : '/login'}>
                                     <li className={'headerItemMobile'} onClick={activeItem}> <User /> Deconnexion </li>
@@ -162,6 +168,10 @@ export const Header =()=>{
                             <Link  to={roleCookie ? "/logout" : '/login'}>
                                     <li className='headerItemMobile' onClick={activeItem}> <User /> Connexion </li>
                             </Link>
+                            <Link  to={roleCookie ? "/logout" : '/register'}>
+                                    <li className='headerItemMobile'> <User /> s&apos;enregistrer </li>
+                            </Link>
+                     
                               
                                                     
                             </>
@@ -176,12 +186,8 @@ export const Header =()=>{
                                 </Link>
                             </>
                         }
-                        <Link  to={roleCookie ? "/cart" : '/login'}>
-                            <li className='headerItemMobile' onClick={activeItem}><ShoppingCart /> Panier</li>
-                        </Link>
-                        <Link  to={roleCookie ? "/myorder" : '/login'}>
-                                    <li className='headerItemMobile' onClick={activeItem}> <ClipboardList />Commandes</li>
-                        </Link>
+                     
+          
                         {/* <div  className='headerItemMobileToggle'>
                             <li onClick={toggleActive}>
                             <div>

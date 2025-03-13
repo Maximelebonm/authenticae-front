@@ -13,6 +13,7 @@ export const ValidationScreen = () => {
         console.log(email,firstname,lastname,password,phone,birthdate,identifiant)
         const fetch = async()=>{
             const response = await registerUser(firstname,lastname,birthdate,email,phone,password,identifiant)
+            console.log(response)
             response.json()
             .then((data)=>{
                 console.log(data)

@@ -58,7 +58,7 @@ export const ProducerPanelProductScreen =()=> {
     return (
     <form onSubmit={productSubmit} className='producerPanelform'>
         <input type='text' placeholder="nom du produit" name='productName' minLength={1} maxLength={30} required/>
-        <textarea type='text' placeholder="Description rapide du produit" name='productDescription' minLength={1} maxLength={255} required/>
+        <textarea className="ProductpersonalizationInput" type='text' placeholder="Description rapide du produit" name='productDescription' minLength={1} maxLength={255} required/>
         <button type='submit'> creer mon article </button>
     </form>
     )

@@ -6,25 +6,23 @@ import './productScreen.css'
 import { ProductSwiper } from "../../components/uiElements/productSwiper/productSwiper";
 import { ToastContainer, toast } from 'react-toastify';
 import { addCartApi } from "../../api/backEnd/buyProcess/cart.backend";
-import { decodeCookieUser } from "../../helpers/decodeToken";
 import { toastError, toastSuccess } from "../../helpers/toast.helper";
-
+import { useAuthContext } from "../authContext";
 
 export const ProductScreen = () => {
     const {id} = useParams()
+    const {userDetails} = useAuthContext();
     const [product,setProduct]= useState();
     const [imgDisplay, setImgDisplay] = useState();
     const [price,setPrice] = useState({mainPrice : 0, quantity_available : 0,quantity_reservation : 0, options : [], personalization : []})
-    const [selectedProduct, setSelectedProduct] = useState({product : {}, options : [], personalization : []})
+    const [selectedProduct, setSelectedProduct] = useState({product : {quantity : 0}, options : [], personalization : []})
    
     const [reload,setReload] = useState(false)
 
     const [selectedOptions, setSelectedOptions] = useState({});
     const [selectReload,setSelectReload] = useState({quantityA : 'none',quantityR : 'none', option : 'none', personalisation : ''})
 
-
-
-    const cookiesAuth = decodeCookieUser(document.cookie)
+    
     useEffect(()=> {
         const fetch = async()=>{
             const response = await getProduct(id)
@@ -76,7 +74,7 @@ export const ProductScreen = () => {
         if(selectedProduct.product.quantity>1){
             newPrice *= selectedProduct.product.quantity
         }
-        setPrice({finalPrice : newPrice})
+        setPrice({finalPrice : Math.round(newPrice * 100)/100})
     },[selectedProduct]);
 
     const handleOptionChange = (event,idOption) => {
@@ -170,29 +168,56 @@ export const ProductScreen = () => {
     const handleSubmit = (e)=>{
         e.preventDefault()
         try {
-            if(cookiesAuth.Id_user){
-                const fetch = async ()=> {
-                    const response = await addCartApi(selectedProduct,price.finalPrice)
-                    if(response){
-                        response.json()
-                        .then((data)=> {
-                            console.log(data)
-                            if(data.message == "ajouté au panier" || data.message == "cart créé" || data.message == 'cart updated'){
-                                toastSuccess('Produit ajouté au panier')
-                                setReload(!reload)
-                            }
-                            if(data.message === "SequelizeUniqueConstraintError"){
-                                toastError('Une erreur est survenu veuillez vous déconnecter et vous reconnecter')
-                            }
-                        })
+            if(product?.product.quantity_available  > 0){
+                let optionObligatorySelected = false;
+                product.option.forEach((item)=>{
+                    if(item.obligatory === true){
+                        optionObligatorySelected = selectedProduct.options.some(option => option.option === item.Id_product_option);
+                        //selectedProduct.options.includes(item.Id_product_option)
+                        console.log('boucle : ',item.Id_product_option)
                     }
-                    // else{
-                    //     toast.error('Une erreur est survenu veuillez vous déconnecter et vous reconnecter', {autoclose : 2000})
-                    // }
+                })
+                
+                console.log(optionObligatorySelected)
+                if (!optionObligatorySelected) {
+                    toastError('Vous devez selectionner une option obligatoire')
+                    return;
                 }
-                fetch()
-            } else {
-                toast.error('Vous devez creer un compte pour creer un panier', {autoclose : 2000})
+
+                if(userDetails.Id_user){
+                    if(optionObligatorySelected == true && selectedProduct.product.quantity){
+                    const fetch = async ()=> {
+                        const response = await addCartApi(selectedProduct,price.finalPrice)
+                        if(response){
+                            response.json()
+                            .then((data)=> {
+                                console.log(data)
+                                if(data.message == "ajouté au panier" || data.message == "cart créé" || data.message == 'cart updated'){
+                                    toastSuccess('Produit ajouté au panier')
+                                    setSelectedProduct({product : {quantity : 0}, options : [], personalization : []})
+                                    setReload(!reload)
+                                }
+                                if(data.message === "SequelizeUniqueConstraintError"){
+                                    toastError('Une erreur est survenu veuillez vous déconnecter et vous reconnecter')
+                                }
+                            })
+                        }
+                    }
+                    fetch()
+                } else {
+                    if(selectedProduct.product.quantity == 0){
+                        toast.error('Vous devez selectionner une quantité', {autoclose : 2000})
+                    }else {
+                        toast.error('Vous devez selectionner au moins une option obligatoire', {autoclose : 2000})
+                    }
+                }
+                } else {
+                    toast.error('Vous devez creer un compte pour creer un panier', {autoclose : 2000})
+                }
+
+            }
+            else {
+                toast.error('Produit indisponible', {autoclose : 2000})
             }
         } catch (error) {
             console.log('error')
@@ -200,17 +225,25 @@ export const ProductScreen = () => {
         }
     }
 
+    const tvaRate = product?.product?.tva?.tva_rate ?? 0;
+    const prixTTC = (price.finalPrice + (price.finalPrice * tvaRate / 100)) || 
+               (price?.mainPrice + (price?.mainPrice * tvaRate / 100));
+    const prixHT = price.finalPrice || price.mainPrice
     return (
-        <>
+        <div className="productContainerFlex">
             <ToastContainer/>
             {product?.product && 
             <div className='productContainer'>
                 <ProductSwiper props={imgDisplay}/>
-                { product.option &&   
+                { product.option &&  
                 <div className="productInfoContainer">
                 <h2>
-                   prix total : {price.finalPrice || price.mainPrice}€
+                   prix HT : {prixHT.toFixed(2)} €
                 </h2>   
+                <h3>
+                   prix TTC : {prixTTC.toFixed(2)}€
+                </h3>
+                <h4>{tvaRate == 0 ? 'Pas de Tva sur ce produit' : null} </h4>  
                 <h2>
                     {product?.product.name}
                 </h2> 
@@ -239,27 +272,13 @@ export const ProductScreen = () => {
                         </> :
                         <div>Produit indisponible</div>
                     }
-                        {/* 
-                        <>
-                            Quantité réservable : {product?.product.quantity_reservation}    
-                            <select className='productOption' name='quantityReservation' onChange={(e)=>handlequantityChange(e, 'R')} value={selectReload.quantityR}>
-                                <option value="none">choisir une quantité</option>
-                                {
-                                    Array.from({ length: product?.product.quantity_reservation + 1 }).map((_, i) => (
-                                        <option key={i} value={i}>{i}</option>
-                                    ))
-                                }
-                            </select>
-                        </> 
-                        */}
                  
-            
                     {product?.option.map((item,index)=>{
                         if(item.optionActive == true){                       
                             return(
                                 <div key={index}>
-                                <div> {item.name} </div>
-                                    <select className='productOption' name='optionSelected'  value={selectedOptions[item.Id_product_option] || 'none'} onChange={(e)=>handleOptionChange(e,item.Id_product_option)}>
+                                <div> {item.name} {item.obligatory ? "(option obligatoire)" : null}  </div>
+                                    <select className='productOption' name='optionSelected' value={selectedOptions[item.Id_product_option] || 'none'} onChange={(e)=>handleOptionChange(e,item.Id_product_option)}>
                                         <option value="none">Selectionner une option</option>
                                         {item.subOptions.map((subItem,subIndex)=>{
                                                 if(subItem){
@@ -267,16 +286,6 @@ export const ProductScreen = () => {
                                                     <option key={subIndex} value={JSON.stringify(subItem)} > {subItem.detail + ' (+ ' + subItem.price + '€)'}</option>
                                                 )
                                                 } 
-                                                {/* if(subItem.quantity_reservation > 0){
-                                                    return (
-                                                        <option key={subIndex} value={JSON.stringify(subItem)} > {subItem.detail + ' (+ ' + subItem.price + '€) à réserver'}</option>
-                                                    ) 
-                                                }
-                                                 else {
-                                                    return (
-                                                        <option key={subIndex} disabled> {subItem.detail + ' (+ ' + subItem.price + '€) Non disponible'}</option>
-                                                    ) 
-                                                } */}
                                         })}
                                     </select>      
                             </div>
@@ -295,12 +304,12 @@ export const ProductScreen = () => {
                             )
                         }
                     })}
-                    <button type='submit'>Ajouter au panier</button>
+                    <button type='submit' >Ajouter au panier</button>
                 </form>
                 </div>                 
             }
             </div>
             }
-        </>
+        </div>
     )
 }

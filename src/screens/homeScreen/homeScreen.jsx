@@ -5,7 +5,6 @@ import { getAllProduct } from '../../api/backEnd/producer/product.backend';
 import { HomeProductCards } from './../../components/cards/homeProductCard/homeProductCard';
 import { InputFloatLabel } from '../../components/uiElements/inputFloatLabel/inputFloatLabel';
 import { Search } from 'lucide-react';
-import { ToastContainer } from 'react-toastify';
 
 export const HomeScreen = () => {   
     const [product,setProduct] = useState();
@@ -43,7 +42,7 @@ return (
                    const mainPicture = item.productImages[0]
                 return(
                     <Link to={`/product/${item.Id_product}`}  key={index}>
-                        <HomeProductCards props={item} picture={mainPicture} />
+                        <HomeProductCards info={item} picture={mainPicture} />
                     </Link>
                 )
             })}

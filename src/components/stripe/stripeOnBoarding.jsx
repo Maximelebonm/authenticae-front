@@ -9,7 +9,7 @@ export const StripeOnboarding = ({id}) => {
     };
   
     return (
-      <button onClick={handleCreateAccount}>S&apos;inscrire avec Stripe</button>
+      <button onClick={handleCreateAccount}>créer son compte Stripe</button>
     );
   };
   

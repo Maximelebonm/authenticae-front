@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useOrder } from '../orderContext';
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import { DeliveryScreen } from '../deliveryScreen/deliveryScreen';
 
 export const CartValidationScreen = () => {
     const { orderDetails, setOrderDetails } = useOrder();
@@ -39,18 +40,17 @@ export const CartValidationScreen = () => {
     return (
         <div className="cartValidationContainer">
         <ToastContainer/>
-            <h2>Veuillez valider / choisir vos adresses</h2>
+            <h2>Veuillez choisir votre mode de livraison</h2>
             <div>
+        
+        <DeliveryScreen/>
         <div id='carValidItemContianer'>
             <div className = 'cartValidItem'>
                 <h3>adresse de facturation</h3>
                 {adress?.map((item,index)=>{
                     return (
-                        <form className='cartValidationAddressContainer' key={index}>
-                            <div onClick={(e)=>handleSelect(e,item,'livraison')} className={selectedAddressLivraison === item ? 'selected' : ''}>
-                                <div>
-                                    {item.country}
-                                </div>
+                        //<form className='cartValidationAddressContainer' key={index}>
+                            <div key={index}  className={selectedAddressLivraison === item ? 'selected' : ''}>
                                 <div>
                                     {item.number + ' '}
                                     {item.street + ' '}
@@ -60,8 +60,12 @@ export const CartValidationScreen = () => {
                                     {item.cityCode + ' '}
                                     {item.city}           
                                 </div>
+                                <div>
+                                    {item.country}
+                                </div>
+                            <input type="radio" name="addressLivraison" onClick={(e)=>handleSelect(e,item,'livraison')} value={item} />
                             </div>
-                        </form>
+                        //</form>
                     )
                 })}
             </div>
@@ -69,22 +73,25 @@ export const CartValidationScreen = () => {
                 <h3>adresse de Livraison</h3>
                 {adress?.map((item,index)=>{
                     return (
-                        <form className='cartValidationAddressContainer' key={index}>
-                            <div onClick={(e)=>handleSelect(e,item,'facturation')} className={selectedAddressFacturation === item ? 'selected' : ''}>
-                                <div>
-                                    {item.country}
-                                </div>
-                                <div>
-                                    {item.number + ' '}
-                                    {item.street + ' '}
-                                    {item.additional}
-                                </div>
-                                <div>
-                                    {item.cityCode + ' '}
-                                    {item.city}           
-                                </div>
+                        //<form className='cartValidationAddressContainer' key={index}>
+                            <div key={index}  className={selectedAddressFacturation === item ? 'selected' : ''}>
+                              
+                                    <div>
+                                        {item.country}
+                                    </div>
+                                    <div>
+                                        {item.number + ' '}
+                                        {item.street + ' '}
+                                        {item.additional}
+                                    </div>
+                                    <div>
+                                        {item.cityCode + ' '}
+                                        {item.city}           
+                                    </div>
+                                
+                                <input type="radio" name="addressfacturation" onClick={(e)=>handleSelect(e,item,'facturation')} value={item} />
                             </div>
-                        </form>
+                       // </form>
                     )
                 })}
             </div>

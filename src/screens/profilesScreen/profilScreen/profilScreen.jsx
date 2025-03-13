@@ -1,4 +1,5 @@
 import { useEffect,useState } from "react";
+import './profilescreen.css';
 import { getUserById, logoutApi, updateUserApi } from "../../../api/backEnd/user.backend";
 import { v4 as uuidv4 } from 'uuid';
 import { AddressComponent } from "../../../components/address/address.component";
@@ -15,8 +16,11 @@ export const ProfilScreen = ()=>{
     // const [pseudo,setPseudo] = useState(false)
     const [user,setUser] = useState()
     const [address, setAddress] = useState([])
+    const [newAddress, setNewAddress] = useState([])
+    const [formSwitch, setformSwitch] = useState({})
     const [reload, setReload] = useState(true)
     const [showModalDeleteUser, setshowModalDeleteUser] = useState(null)
+    const [showModalDeleteAdress, setshowModalDeleteAdress] = useState(null)
     const navigate = useNavigate()
     const { userDetails } = useAuthContext();
 
@@ -64,10 +68,11 @@ export const ProfilScreen = ()=>{
 
     const addAdress = () => {
         const Id_address = uuidv4()
-        setAddress([ { Id_address : Id_address, country : '', cityCode : '',city : '', additional : '',street : '', number :''}, ...address]) 
+        setNewAddress([ { Id_address : Id_address, country : '', cityCode : '',city : '', additional : '',street : '', number :''}]) 
     }
 
     const handleSubmitAdress = (e,Id_address) => {
+        console.log('address submit')
         e.preventDefault()
         try {
             const form = e.target
@@ -99,6 +104,8 @@ export const ProfilScreen = ()=>{
                 .then((data)=>{
                     if(['address created','address updated'].includes(data.message)){
                         toastSuccess('adresse mis à jour !')
+                        setNewAddress([])
+                        setformSwitch(false)
                         setReload(!reload)           
                     } else {
                         toastError('Une erreur est survenu')
@@ -160,9 +167,18 @@ export const ProfilScreen = ()=>{
             }
     }
 
-    const handleChangeAddress = (e,obj,id)=> {
+    const handleChangeAddress = (e,obj,id,state)=> {
         const newValue = e.target.value
-        const newAdress = [...address]
+        console.log(state)
+        let newAdress = [];
+        if(state === 'new'){
+            newAdress = [...newAddress] 
+
+        }
+        if(state !== 'new'){
+            newAdress = [...address] 
+
+        }
         newAdress.map((item)=>{
         if(item.Id_address === id)
             switch(obj){
@@ -180,19 +196,28 @@ export const ProfilScreen = ()=>{
                 break;
             }
         })
-        setAddress(newAdress)
+        if(state === 'new'){
+            setNewAddress(newAdress)
+        } else {
+            setAddress(newAdress)
+        }
     }
 
-    const deleteAdress = (e,Id_adress)=> {
+    const deleteAdress = (Id_adress)=> {
         (async()=>{
             const resp = await deleteAdressApi(Id_adress)
             resp.json()
             .then((data)=>{
                 if(data.message == "row deleted")
-                    toast.success('adress supprimé', {autoclose : 2000});
+                    toast.success('adresse supprimé', {autoclose : 2000});
+                    setshowModalDeleteAdress(null)
                     setReload(!reload)
             })
         })()
+    }
+
+    const modalDeleteAdress = (Id_adress) => {
+        setshowModalDeleteAdress(Id_adress);
     }
 
     const deleteUser = ()=>{
@@ -214,6 +239,13 @@ export const ProfilScreen = ()=>{
         fetch()
     }
 
+    const toggleModifyState = (index) => {
+        setformSwitch((prevState) => ({
+            ...prevState,
+            [index]: !prevState[index]
+        }));
+    }
+
     return (
         <div className="profileScreenContainer">
                 <ToastContainer/>
@@ -225,10 +257,43 @@ export const ProfilScreen = ()=>{
                     <InputFloatLabel placeholder="Ex : 0606060606" onchange={(e)=>handleChangeProfile(e,'phone')} type='number' labelName='N° de téléphone' inputName='phone' inputValue={user?.phone ?? ''} required='yes' maxLength={30} minLength={12} />
                     <button>Valider profil</button>
                 </form>
-                <button type="button" onClick={addAdress} >ajouter une addresse</button>
-                    {address.map((item,index)=>{
-                        return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e,Id_address)=>handleSubmitAdress(e,Id_address)} deleteAddress={(e,Id_address)=>deleteAdress(e,Id_address)}/>
+                {address.map((item,index)=>{
+                        return (
+                            <div key={index}>
+                            {!formSwitch[index] ? 
+                                <div className="addressContainer" key={index}>
+                                    <div>
+                                        <h2>Adresse {index+1}</h2>
+                                    </div>
+                                    <div className='address'>
+                                        <p>{item.number}</p>
+                                        <p>{item.street}</p>
+                                        <p>{item.cityCode}</p>
+                                        <p>{item.city}</p>
+                                        <p>{item.additional}</p>
+                                        <p>{item.country}</p>
+                                        <button onClick={() => toggleModifyState(index)}>Modifier</button>
+                                    </div>
+                                </div>
+                            : 
+                            <>
+                                <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id)} submitAdress={(e,Id_address)=>{handleSubmitAdress(e,Id_address);setformSwitch(!formSwitch)}} deleteAddress={()=>modalDeleteAdress(item.Id_address)}/>
+                                <button onClick={() => toggleModifyState(index)}>annuler</button>
+                                </>
+                            }
+                            </div>
+                        )
                     })}
+                <button type="button" onClick={addAdress} >ajouter une addresse</button>
+                    {newAddress.map((item,index)=>{
+                        return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id,'new')} submitAdress={(e,Id_address)=>{handleSubmitAdress(e,Id_address,'new');setformSwitch(false)}} deleteAddress={()=>modalDeleteAdress(item.Id_address)}/>
+                    })}
+                    
+                    {showModalDeleteAdress && (
+                        <Modal show={true} onClose={()=>setshowModalDeleteAdress(null)} onConfirm={()=>deleteAdress(showModalDeleteAdress)}>
+                            êtes vous sur de vouloir supprimer votre adrresse ?
+                        </Modal>
+                    )}
                     
                     <Modal show={showModalDeleteUser === userDetails.Id_user} onClose={()=>setshowModalDeleteUser(null)} onConfirm={()=>deleteUser()}>
                     êtes vous sur de vouloir supprimer votre compte ? Il s&apos;agit d&apos;une suppression définitive, toutes les données personnelles vous concernant seront effacé (email, téléphones, adresses), seul votre historique de commandes sera conservé pour nos statistiques. 

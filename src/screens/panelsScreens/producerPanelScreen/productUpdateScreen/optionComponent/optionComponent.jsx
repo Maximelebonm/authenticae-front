@@ -1,10 +1,9 @@
 import "./optionComponent.css";
-import { Trash2,Archive,ChevronLeft,ChevronRight  } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 export const OptionComponent = (props) => {
     const {nameObject} = props
-    const {name, Id_product_option,optionActive} = props.props
-    // console.log(optionActive)
+    const {name, Id_product_option,optionActive,obligatory} = props.props
     const subOption = props.props.subOptions
 
     const addSubOptionform = ()=> {
@@ -31,17 +30,21 @@ export const OptionComponent = (props) => {
         <div className='optionContainer'>
                 <div className='optionTopContainer'>
                     <div className='optionInputContainer'>
-                        <label>Nom de l'option :  </label>
+                        <label>Nom de l&apos;option :  </label>
                         <input name={nameObject} type='text' value={name} onChange={(e)=>handleOptionChange(e.target.value,'name')} className='optionInput' required/>
                     </div>
                     <div  id="optionInputCheckBox" >
                         <label> option disponible : </label>
                         <input type='checkbox' name={`${nameObject}[available]`} checked={optionActive} onChange={(e)=>handleOptionChange(e.target.checked,'available')}/>
                     </div>
+                    <div  id="optionInputCheckBox" >
+                        <label> option obligatoire : </label>
+                        <input type='checkbox' name={`${nameObject}[obligatory]`} checked={obligatory} onChange={(e)=>handleOptionChange(e.target.checked,'obligatory')}/>
+                    </div>
                 </div>
                 <div>
                 <div className='subOptionsContainer'>
-                {subOption.map((item, index) => (
+                {subOption?.map((item, index) => (
                     <div key={index}>
                         <div className="subOptioncontainer">
                         <div className="subOptionInputcontainer">

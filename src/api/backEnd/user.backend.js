@@ -49,6 +49,21 @@ export const createPseudo = async (id,pseudo) => {
     }
 }
 
+export const checkEmailApi = async (email) => {
+    try {
+        console.log(email)
+        const user = await ky.post(`${InitRequest()}/users/checkEmail`,{
+            json: {
+                email : email,
+            },
+            credentials : 'include'
+        })
+        return user.json()
+    } catch (err){
+        return "erreur : " + err;
+    }
+}
+
 
 export const ValidationUser = async (firstname,lastname,birthdate,email,phone,password,identifiant) => {
     try {
@@ -64,8 +79,10 @@ export const ValidationUser = async (firstname,lastname,birthdate,email,phone,pa
             },
             credentials : 'include'
         })
+        
         return user
     } catch (err){
+        console.log(err)
         return "erreur : " + err;
     }
 }

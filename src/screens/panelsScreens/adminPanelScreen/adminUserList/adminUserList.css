@@ -1,0 +1,26 @@
+#adminUserListContainer{
+    
+}
+.adminUserListItem{
+    display : flex;
+    height : 50px;
+    align-items: center;
+    margin : 10px 0px;
+}
+.adminuserListValue{
+    border-left : 2px solid var(--nuance_color2);
+    width : 20%;
+    height : 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+#adminUserListRole{
+    &>div{
+        margin : 0px 5px;
+    }
+}
+#adminuserListItemBC {
+    background-color: var(--nuance_color4);
+}
