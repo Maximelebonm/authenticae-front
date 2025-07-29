@@ -114,13 +114,13 @@ export const CommandsScreen = ()=> {
         }
 
         const CancelReturn = ({state,id})=> {
-            if(state == 'wait'){
-                return <a onClick={()=>{setShowModalProduct(id)}}>Annuler le produit</a>
+            if(state == 'paid'){
+                return <a onClick={()=>{setShowModalProduct(id)}} id='cancelOrderLink'>Annuler le produit</a>
             }
-            if(state == 'production'){
-                return <a onClick={()=>{setShowModalPartiel(id)}}>Annuler le produit (remboursement partiel)</a>
+            if(state == 'processing'){
+                return <button onClick={()=>{setShowModalPartiel(id)}}>Annuler le produit (remboursement partiel)</button>
             }
-            if(state == 'send'){
+            if(state == 'shipped' || state == 'delivered'){
                 return <div>produit envoyé</div>
             }
             else {
@@ -130,10 +130,13 @@ export const CommandsScreen = ()=> {
 
         //lien d'annulation de commande
         const OrderCancelorFinsih = ({state,id})=> {
-            if(state == 'Pay'){
-                return <a onClick={()=>setShowModal(id)}>Annuler la commande</a>
+            if(state == 'paid'){
+                return <a onClick={()=>setShowModal(id)} >Annuler la commande</a>
             }
-            if(state == 'finish'){
+            if(state == 'processing'){
+                return <p>commande en cours de traitement</p>
+            }
+            if(state == 'delivered'){
                 return <div>commande terminé</div>
             }
             else if(state == 'canceled'){
@@ -154,7 +157,7 @@ export const CommandsScreen = ()=> {
                         date de la commande : <br/>{formatDate(orderItem.created_date)}
                     </div>
                     <div className='commandHeaderItem'>
-                        <a href={configStorage()+ '/' + orderItem.storage_facture} target='_blank'>Facture</a>
+                        <a href={configStorage()+ '/' + orderItem.storage_facture} target='_blank' id='factureLink'>Facture</a>
                     </div>
                     <div className='commandHeaderItem'>
                         <strong>prix total :  <br/> {orderItem.price}€ </strong>
@@ -163,8 +166,8 @@ export const CommandsScreen = ()=> {
                            Livraison à  : {orderItem.user.firstname} {orderItem.user.lastname}
                     </div>
                     <div className='commandHeaderItem'>
-                            <div id='idDecommande'>id de commande : {orderItem.Id_order}</div>
-                            etat de la commande : {orderItem.order_state}
+                            <div id='idDecommande'>id de commande : {orderItem.number_facture}</div>
+                            etat de la commande : {orderItem.orderstate.name}
                     </div>
                     </div>
                         <div className='containerProductAndOption'>
@@ -202,11 +205,11 @@ export const CommandsScreen = ()=> {
                                     <div className='commandProduct'>
                                         <div> prix de base : {productitem.product.price}</div>
                                        <div> quantité : {productitem.quantity}</div>
-                                       <div> prix produit + options : {(productitem.price)} €</div>
+                                       <div> prix produit + options : {productitem.price} €</div>
                                     </div>
                               
                                     <div className='commandProduct'>
-                                        <CancelReturn state={productitem.order_state} id={productitem.Id_order_product} />
+                                        <CancelReturn state={productitem.orderproductstate.name} id={productitem.Id_order_product} />
                                     </div>
                                     <Modal onClose={()=>setShowModalProduct(null)} show={showModalProduct === productitem.Id_order_product} onConfirm={()=>{handleCancelProduct(orderItem.Id_order,orderItem.payment_id,orderItem.price,productitem.Id_order_product,productitem.price,orderItem.refund,orderItem.orderproducts.length,orderItem.user)
                                     setShowModalProduct(null)
@@ -232,7 +235,7 @@ export const CommandsScreen = ()=> {
                             êtes vous sur de vouloir annuler cette commande
                         </Modal>
                         </div>
-                        <OrderCancelorFinsih state={orderItem.order_state} id={orderItem.Id_order} />
+                        {/* <OrderCancelorFinsih state={orderItem.orderstate.name} id={orderItem.Id_order} /> */}
                         {/* {(orderItem.order_state !== 'canceled' || orderItem.order_state !== 'finsih') && orderItem.order_state === 'Pay' ? <button onClick={()=>setShowModal(orderItem.Id_product)}>Annuler la commande</button> : <div> Commande annulé </div>} */}
                   
                     </div>

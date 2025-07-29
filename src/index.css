@@ -42,7 +42,7 @@
 
 body {
   margin: 0;
-  place-items: center;
+  /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
   padding : 0;
@@ -65,7 +65,7 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   text-decoration: none;
-  color : var(--nuance_color5);
+  color : var(--nuance_color1);
   &:hover{
     cursor: pointer;
   }

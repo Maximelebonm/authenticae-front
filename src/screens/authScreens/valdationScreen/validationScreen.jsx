@@ -9,10 +9,10 @@ export const ValidationScreen = () => {
     useEffect(()=>{
         const currentURL = window.location.pathname;
         const tokenFromURL = currentURL.substring(currentURL.lastIndexOf('/') + 1);
-        const {email,firstname,lastname,password,phone,birthdate,identifiant} = decodetoken(tokenFromURL)
-        console.log(email,firstname,lastname,password,phone,birthdate,identifiant)
+        const {email,firstname,lastname,password,phone,birthdate,gender} = decodetoken(tokenFromURL)
+        console.log(email,firstname,lastname,password,phone,birthdate,gender)
         const fetch = async()=>{
-            const response = await registerUser(firstname,lastname,birthdate,email,phone,password,identifiant)
+            const response = await registerUser(firstname,lastname,birthdate,email,phone,password,gender)
             console.log(response)
             response.json()
             .then((data)=>{

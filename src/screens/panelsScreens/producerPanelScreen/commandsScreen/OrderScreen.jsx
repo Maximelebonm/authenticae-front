@@ -7,6 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { Check } from 'lucide-react';
 import { InitRequest } from "../../../../api/initRequest";
 import { configStorage } from "../../../../helpers/config";
+import { createLabelMrApi } from "../../../../api/backEnd/buyProcess/mr.backend";
 
 export const OrderScreen =()=> {
     const { userDetails } = useAuthContext();
@@ -14,6 +15,14 @@ export const OrderScreen =()=> {
     const [reload, setReload] = useState(false)
     const [errorMail,setErrorMail] = useState(false)
     const base_URL = import.meta.env.VITE_BASE_URL_BACK
+
+    const fetchmr = async()=>{
+        const resp = await getMrApi()
+        resp.json()
+        .then((data)=>{
+            console.log(data)
+        })
+    }
 
     useEffect(()=>{
         (async ()=>{
@@ -35,6 +44,7 @@ export const OrderScreen =()=> {
         })()
     },[userDetails,reload])
 
+    // prise en charge du produit
     const handleProduction = async(idOrderProduct,userEmail,userName,productName)=>{
         try {
 
@@ -55,6 +65,7 @@ export const OrderScreen =()=> {
         }
     }
 
+    // annulation de la prise en charge du produit
     const cancelProduction = async(idOrderProduct,userEmail,userName,productName)=> {
         try {
     
@@ -75,9 +86,24 @@ export const OrderScreen =()=> {
         }
     }
 
+    // creation d'une étiquette
+    const handleLabel = async(location,locationName,user,numberFacture,idOrderProduct)=> {
+        try {
+            const resp = await createLabelMrApi(location, locationName, user, numberFacture, idOrderProduct)
+            resp.json()
+            .then((data)=>{
+                if(data.message === 'label created'){
+                    toast.success('étiquette créée', {autoClose : 3000})
+                    setReload(!reload)
+                }})
+        } catch (error) {
+            toast.error('Une erreure est survenu', {autoClose : 3000})
+        }
+    }
+
+    // envoie du produit
     const handleProductSend = async(id,mail,idPayment,stripeId,price,userName,productName,productAccount,idOrder)=> {
         try {
-            console.log(id, mail)
             const resp = await sendProductApi(id,mail,idPayment,stripeId,price,userName,productName,productAccount,idOrder)
             resp.json()
             .then((data)=>{
@@ -140,30 +166,34 @@ export const OrderScreen =()=> {
     }
 
     const ReturnSendButton = ({state,idOrder,idOrderProduct,userEmail,paymentid,stripe,price,userName,productName,productAccount})=> {
-        if(state === 'production'){
-            console.log(idOrder)
+     if( state ==='labelised'){
+            // envoi du produit
             return <button onClick={()=>{handleProductSend(idOrderProduct,userEmail,paymentid,stripe,price,userName,productName,productAccount,idOrder)}}>Envoyé</button>
-        } else if (state === 'canceled'){
+        }
+        else if (state === 'canceled'){
             return <div>Produit annulé</div>
         }
-        else if (state === 'send'){
+        else if (state === 'shipped' || state === 'delivered'){
             return <div>produit envoyé</div>
         }
     }
 
     const ChargeButton = ({state,idOrderProduct,userEmail,userName,productName})=> {
-        if(state === 'wait'){
-            return <button onClick={()=>{handleProduction(idOrderProduct,userEmail,userName,productName)}}>Pris en charge</button>
+        if(state === 'paid'){
+            // Prise en charge du produit
+            return <button onClick={()=>{handleProduction(idOrderProduct,userEmail,userName,productName)}}>Commencer</button>
         }
-        else if (state === 'production'){
+        else if (state === 'processing'){
+            // annulation de la prise en charge du produit
             return <button onClick={()=> {cancelProduction(idOrderProduct,userEmail,userName,productName)}}>annuler prise en charge</button>
-        } else if (state === 'canceled' || state === 'send'){
+        } else if (state === 'canceled' || state === 'shipped' || state === 'delivered'){
+            // Produit annulé ou envoyé pas de bouton
             return null
         }
     }
 
     return (
-    <div >
+    <div id='orderScreenContainer'>
     <ToastContainer/>
         {order !== null ? order?.map((itemOrder,indexOrder)=>{
            return ( 
@@ -173,24 +203,39 @@ export const OrderScreen =()=> {
                     <div> {itemOrder.user.firstname}</div>     
                     <div> {itemOrder.user.lastname}</div>
                 </div>
-                <div className='adressInfo'>
-                    <div> {itemOrder.DeliveryAddress.country}</div> 
-                    <div> {itemOrder.DeliveryAddress.cityCode}</div> 
-                    <div> {itemOrder.DeliveryAddress.city}</div>     
-                </div>
-                    <div className='adressInfo'>
-                        <div> {itemOrder.DeliveryAddress.number}</div> 
-                        <div> {itemOrder.DeliveryAddress.street}</div>
-                        <div> {itemOrder.DeliveryAddress.additional}</div>
+                {
+                    itemOrder.deliverymethod.name === 'Mondial Relay' ?
+                    <div className='InfoDelivery'> 
+                    Livraison : 
+                        <div> {itemOrder.deliverymethod.name}</div>
+                        <div> {itemOrder.pickup_location_name}</div>  
+                          <div> {itemOrder.pickup_location}</div>
+                    </div> 
+                    : 
+                    <div>
+                        <div className='adressInfo'>
+                            <div> {itemOrder.DeliveryAddress.country}</div> 
+                            <div> {itemOrder.DeliveryAddress.cityCode}</div> 
+                            <div> {itemOrder.DeliveryAddress.city}</div>     
+                        </div>
+                            <div className='adressInfo'>
+                                <div> {itemOrder.DeliveryAddress.number}</div> 
+                                <div> {itemOrder.DeliveryAddress.street}</div>
+                                <div> {itemOrder.DeliveryAddress.additional}</div>
+                        </div>
                     </div>
+                }
             </div>
             {itemOrder.orderproducts.map((item,index)=>{
                 return (
                     <div key={index} className='orderProductContainer'>
                         <div className='orderProductSection'>
                             <div className='orderProductItem'>
-                                <div>
+                                <div className="orderProductMainLine">
+                                <p>
                                     {item.product.name}
+                                </p>
+                                     {item.label_link !== ''&& <a href={item.label_link} className="download-label" target="_blank" rel="noopener noreferrer">Télécharger l&apos;étiquette</a>}
                                 </div>   
                                 {<img src={item?.product?.productImages?.[0]?.storage ? configStorage() + '/' + item.product.productImages[0].storage : Logo} id='orderImage' alt='Product Image'/>}
                             </div>
@@ -229,24 +274,26 @@ export const OrderScreen =()=> {
                             }
                             </div>
                             <form onSubmit={(e)=>handleSubmit(e,item.Id_order_product,itemOrder.payment_id,itemOrder.refund,item.price,itemOrder.Id_order,itemOrder.orderproducts.length)}>
-                            {item.order_state === "waitingCancel" && <div>
-                            <input type='number' max={80} min={0} name='percent' id='orderInput' placeholder="0"/>
-                                <button type='submit' ><Check/></button>
-                            </div>
-                            }
-
+                                {
+                                item.order_state === "waitingCancel" && <div>
+                                <input type='number' max={80} min={0} name='percent' id='orderInput' placeholder="0"/>
+                                    <button type='submit' ><Check/></button>
+                                </div>
+                                }
                             </form>
                         </div>
                         <div className='orderProductButtons'>
                         <div>
-                            <ChargeButton state={item.order_state} idOrderProduct={item.Id_order_product} productName={item.product.name} userEmail={itemOrder.user.email} userName={itemOrder.user.firstname} />
+                            <ChargeButton state={item.orderproductstate.name} idOrderProduct={item.Id_order_product} productName={item.product.name} userEmail={itemOrder.user.email} userName={itemOrder.user.firstname} />
 
-                            {/* {item.order_state == 'wait' ? <button onClick={()=>{handleProduction(item.Id_order_product,itemOrder.user.email)}}>Pris en charge</button> : <button onClick={()=> {cancelProduction(item.Id_order_product,itemOrder.user.email)}}>annuler prise en charge</button>} */}
+                            {
+                                item.orderproductstate.name == 'processing' && item.label_link == '' ? <button onClick={()=>{handleLabel(itemOrder.pickup_location, itemOrder.pickup_location_name, itemOrder.user, itemOrder.number_facture,item.Id_order_product)}}> Etiquette</button> : null
+                            }
                         </div>
                             <div>
-                            <ReturnSendButton state={item.order_state} idOrder={itemOrder.Id_order} idOrderProduct={item.Id_order_product} userEmail={itemOrder.user.email} paymentid={itemOrder.payment_id} stripe={item.product.user.Stripe_ID} price={item.price} productName={item.product.name} userName={itemOrder.user.firstname} productAccount={itemOrder.orderproducts.length} />
+                            <ReturnSendButton state={item.orderproductstate.name} idOrder={itemOrder.Id_order} idOrderProduct={item.Id_order_product} userEmail={itemOrder.user.email} paymentid={itemOrder.payment_id} stripe={item.product.user.Stripe_ID} price={item.price} productName={item.product.name} userName={itemOrder.user.firstname} productAccount={itemOrder.orderproducts.length} />
                             </div>
-                        </div>
+                        </div> 
                     </div>
                 )
             })}

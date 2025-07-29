@@ -1,35 +1,36 @@
+/* mobile first */
 #footerContainer {
-    height : 150px;
-    bottom : 0;
+    display: flex;
+    flex-direction: column;
     color : var(--nuance_color1);
     background-color: var(--nuance_color5);
     width : auto;
     padding: 20px;
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content:space-around; 
+    bottom : 0;
 }
+
 #footerInfo{
     display: flex;
     flex-direction: column;
     & a {
-
         color : var(--nuance_color1);
         & a:hover {
-            color : white
-    
+            color : white    
         }
     }
 }
+
 #footerContact{
     display: flex;
     flex-direction: column;
 }
-@media (max-width : 840px){
-    #footerContainer {
-        display: flex;
-        flex-direction: column;
-    }
 
+@media (min-width : 840px){
+    #footerContainer {
+    height : 150px;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content:space-around; 
+    }
 }

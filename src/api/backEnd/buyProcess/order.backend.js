@@ -3,7 +3,6 @@ import ky from "ky";
 
 export const getOrderApi = async (id)=> {
     try {
-        console.log("order pass" , id)
         const response = await ky.get(`${InitRequest()}/order/producer/${id}`,{
             credentials : 'include'
         })
@@ -14,9 +13,9 @@ export const getOrderApi = async (id)=> {
     }
 }
 
+// prise en charge du produit
 export const inProductionApi = (id,email,firstname,productname)=>{
     try {
-        console.log("pass")
         const req = ky.post(`${InitRequest()}/order/producer/accepted/${id}`,{
             json : {
                 email : email,
@@ -31,6 +30,7 @@ export const inProductionApi = (id,email,firstname,productname)=>{
     }
 }
 
+// annulation de la prise en charge du produit
 export const cancelProductionApi = (id,email,firstname,productname)=>{
     try {
         const req = ky.post(`${InitRequest()}/order/producer/cancelAccepted/${id}`,{
@@ -47,6 +47,7 @@ export const cancelProductionApi = (id,email,firstname,productname)=>{
     }
 }
 
+// envoie du produit
 export const sendProductApi = (id,email,idPayment,stripeId,price,userName,productName,productAccount,idOrder)=>{
     try {
         console.log(idOrder)

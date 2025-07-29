@@ -9,7 +9,7 @@ export const CheckOutForm = ({props}) => {
     const elements = useElements();
     const navigate = useNavigate()
     let clicked = 0
-    const {cart,user,userChoicePaymentMethod,address_billing,address_delivery} = props
+    const {cart,user,userChoicePaymentMethod,address_billing,address_delivery,livraisonMode,livraisonPrice} = props
     if(Object.keys(cart).length === 0){
         console.log('vide')
         navigate('/cart')
@@ -44,7 +44,7 @@ export const CheckOutForm = ({props}) => {
                               const {id} = paymentMethod
                               const priceInCents = Math.round(cart.price * 100)
                               
-                              const response = await paymentStripeApi(id,priceInCents, cart, user,address_delivery,address_billing)
+                              const response = await paymentStripeApi(id,priceInCents, cart, user,address_delivery,address_billing,livraisonMode)
                               response.json()
                               .then((data)=>{
                                   console.log(data.success)
@@ -80,6 +80,7 @@ export const CheckOutForm = ({props}) => {
                     </div>
                 )
             })}
+            <div  className='checkoutLine'> <div> Livraison (2.99 € / article) : </div> {livraisonPrice} € </div>
             <div className="checkOutformRecap"> TOTAL : {cart.price} € TTC</div>
             </div>
             <div id="checkoutCardNumber">N° de carte bancaire</div>

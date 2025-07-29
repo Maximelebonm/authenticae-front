@@ -1,7 +1,7 @@
 import { InitRequest } from "../../initRequest";
 import ky from "ky";
 
-export const paymentStripeApi = (id,price,cart, user, address_delivery,address_billing)=> {
+export const paymentStripeApi = (id,price,cart, user, address_delivery,address_billing,livraisonMode)=> {
     try {
         const stripeReq = ky.post(`${InitRequest()}/order/stripe/charge`,{
             json : {
@@ -12,6 +12,7 @@ export const paymentStripeApi = (id,price,cart, user, address_delivery,address_b
                 user : user,
                 address_delivery : address_delivery,
                 address_billing : address_billing,
+                livraisonMode : livraisonMode,
             },
             credentials : 'include'
         })

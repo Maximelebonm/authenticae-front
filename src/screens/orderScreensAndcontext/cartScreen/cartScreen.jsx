@@ -18,12 +18,21 @@ export const CartScreen = ()=> {
     const navigate = useNavigate()
     const { orderDetails, setOrderDetails } = useOrder();
     const { userDetails } = useAuthContext()
+
     useEffect(()=>{
+        if(localStorage.getItem('orderDetails')){
+            localStorage.removeItem('orderDetails');
+            setOrderDetails({
+                    cart : {},
+                    user : {},
+                    address_delivery : {},
+                    userChoicePaymentMethod: {}
+                })
+        }
                 const fetch =async()=>{
                     const resp = await getUserById(userDetails.Id_user)
                     resp.json()
                     .then(async(dataUser)=>{
-                        console.log(dataUser)
                         if(dataUser.carts.length === 0){
                             document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                         }
@@ -33,17 +42,17 @@ export const CartScreen = ()=> {
                             respProd.json()
                             .then((dataCart)=> {
                                 setProducts(dataCart.data)
-                                setOrderDetails({...orderDetails, cart : dataCart.data, user : dataUser})
+                                setOrderDetails({ cart : dataCart.data, user : dataUser})
                             })
                         }
                     })
                 }
                 fetch()
-                // setCart(cookie)  
     },[reload])
 
     const handleOrder = ()=> {
-        navigate('/cartvalidation')
+           localStorage.setItem('orderDetails', JSON.stringify(orderDetails));
+        navigate('/livraison')
     }
 
     const deleteProduct = (product)=> {

@@ -14,48 +14,48 @@ export const RegisterScreen = ()=> {
     let counter = 0
     const handleSubmit =async (e)=>{
         e.preventDefault()
-        toast.error("l'inscription n'est pas disponible pour le moment", {autoClose : 3000})
-        // try {
-        //     if(counter === 0){
-        //         const form = e.target
-        //         const elements = e.target.elements
-        //         console.log(elements)
-        //         const formData = new FormData(form);
-        //         const firstname = formData.get("registerScreenName");
-        //         const lastname = formData.get("registerScreenSurname");
-        //         const birthdate = formData.get("registerScreenBirthDate");
-        //         const email = formData.get("registerScreenEmail");
-        //         const phone = formData.get("registerScreenPhone");
-        //         const password1 = formData.get("registerScreenPassword");
-        //         const password2 = formData.get("registerScreenPassword2");
-        //         console.log(birthdate)
-        //         if(password1==password2){
-        //             console.log('pass')
-        //             const fetch = async ()=>{
-        //                const log = await ValidationUser(firstname,lastname,birthdate,email,phone,password1)
-        //                log.json()
-        //                .then((data)=>{
-        //                     if(data.message == 'email exist'){
-        //                         toast.error("l'email existe déjà veuillez changer d'email", {autoClose : 3000})
-        //                     }
-        //                     else if(data.message == 'email envoyé'){
-        //                         toast.success("Email envoyé, veuillez valider votre addresse email", {autoClose : 5000})
-        //                         counter = 1
-        //                         setTimeout(()=>{window.location.href = '/login'},6000 )
+        try {
+            if(counter === 0){
+                const form = e.target
+                const elements = e.target.elements
+                console.log(elements)
+                const formData = new FormData(form);
+                const gender = formData.get("registerGender");
+                const firstname = formData.get("registerScreenName");
+                const lastname = formData.get("registerScreenSurname");
+                const birthdate = formData.get("registerScreenBirthDate");
+                const email = formData.get("registerScreenEmail");
+                const phone = formData.get("registerScreenPhone");
+                const password1 = formData.get("registerScreenPassword");
+                const password2 = formData.get("registerScreenPassword2");
+                console.log(gender)
+                if(password1==password2){
+                    console.log('pass')
+                    const fetch = async ()=>{
+                       const log = await ValidationUser(firstname,lastname,birthdate,email,phone,password1,gender)
+                       log.json()
+                       .then((data)=>{
+                            if(data.message == 'email exist'){
+                                toast.error("l'email existe déjà veuillez changer d'email", {autoClose : 3000})
+                            }
+                            else if(data.message == 'email envoyé'){
+                                toast.success("Email envoyé, veuillez valider votre addresse email", {autoClose : 5000})
+                                counter = 1
+                                setTimeout(()=>{window.location.href = '/login'},6000 )
                                 
-        //                     } else {
-        //                         toast.error('une erreur est survenue, veuillez reessayer', {autoClose : 3000})
-        //                     }
-        //                })
-        //             } 
-        //             fetch()
-        //         } else {
-        //             toast.error("vérifier vos mot de passe", {autoClose : 3000})
-        //         }
-        //     }
-        // } catch (err) {
-        //     alert('une erreur est survenu',err)
-        // }
+                            } else {
+                                toast.error('une erreur est survenue, veuillez reessayer', {autoClose : 3000})
+                            }
+                       })
+                    } 
+                    fetch()
+                } else {
+                    toast.error("vérifier vos mot de passe", {autoClose : 3000})
+                }
+            }
+        } catch (err) {
+            alert('une erreur est survenu',err)
+        }
     }
 
     const handleChange =(e)=>{
@@ -70,6 +70,12 @@ export const RegisterScreen = ()=> {
         <form onChange={handleChange}  onSubmit={handleSubmit} id='registerScreenForm'>
         <h1>L&apos;inscription n&apos;est pas disponible pour le moment</h1>
             <div className="registerScreenContainer">
+                <div className='registerScreenItemContainer'>
+                    <input type='radio' id='registerScreenGenderMale' name='registerGender' value='Mr' required />
+                    <label htmlFor='registerScreenGenderMale'>Mr</label>
+                    <input type='radio' id='registerScreenGenderFemale' name='registerGender' value='Mme' required />
+                    <label htmlFor='registerScreenGenderFemale'>Mme</label>
+                </div>
                 <div className='registerScreenItemContainer'>
                     <InputFloatLabel  className='InputBorderLeftOff' placeholder="Jean" type='text' labelName='Prénom' inputName='registerScreenName' required='yes' minLength={1} maxLength={50} pattern='^(?!.*\s)(?!.*[\d])(?!.*[^a-zA-ZÀ-ÿ-]).+$'/>
                     <span id='registerScreenSpan'><User /></span>

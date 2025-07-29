@@ -26,12 +26,18 @@
     width : 100%;
 }
 
-.cartValidItem{
+.cartValidationItem{
     width : 100%;
     margin-top : 10px;
     border : 2px solid var(--nuance_color5);
     padding : 10px;
     border-radius : 25px;
+    &>img {
+        width: 100px;
+        height: 100px;
+        border-radius: 15px;
+        object-fit: cover;
+    }
     &>div{
         display: flex;
         justify-content: space-between;
@@ -45,6 +51,31 @@
         &>input[type="radio"]:checked{
             background-color: var(--nuance_color5);
         }
+    }
+}
+
+#deliveryContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-top: 20px;
+    &>div>p{
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+}
+
+#totalPrice{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+       &>p{
+        font-size: 2em;
+        font-weight: bold;
     }
 }
 

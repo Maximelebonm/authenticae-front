@@ -11,6 +11,8 @@ import { toastError, toastSuccess } from "../../../helpers/toast.helper";
 import Modal from "../../../components/modals/modal";
 import { deleteUserApi } from './../../../api/backEnd/user.backend';
 import { useNavigate } from "react-router-dom";
+import { useRefreshUserAuth } from "../../authContext";
+
 export const ProfilScreen = ()=>{
     
     // const [pseudo,setPseudo] = useState(false)
@@ -23,6 +25,7 @@ export const ProfilScreen = ()=>{
     const [showModalDeleteAdress, setshowModalDeleteAdress] = useState(null)
     const navigate = useNavigate()
     const { userDetails } = useAuthContext();
+     const refresh = useRefreshUserAuth()
 
     useEffect(()=>{
         if(userDetails?.Id_user){
@@ -34,37 +37,13 @@ export const ProfilScreen = ()=>{
                         console.log(data)
                         setUser(data)
                         setAddress(data.addresses)
+                        
                     })
                 }
             }
             fetch()
         }
     },[reload])
-
-    // const pseudoSubmit = async (e)=>{
-    //     e.preventDefault()
-    //     try {
-    //         const form = e.target
-    //         const formData = new FormData(form);
-    //         const pseudo = formData.get("pseudo");
-    //         const id = token.Id_user
-    //         const fetch = async ()=> {                       
-    //             const response = await createPseudo(id,pseudo)
-    //             if(response){
-    //                 console.log(response)
-    //                 response.json()
-    //                 .then((data)=>{
-    //                         if(data.message === 'pseudo created'){
-    //                             setPseudo(true)
-    //                         }
-    //                     })
-    //                 }
-    //             }
-    //             fetch()
-    //         } catch (err) {
-    //             alert(err)
-    //         }
-    // }
 
     const addAdress = () => {
         const Id_address = uuidv4()
@@ -103,10 +82,12 @@ export const ProfilScreen = ()=>{
                 response.json()
                 .then((data)=>{
                     if(['address created','address updated'].includes(data.message)){
+                        console.log('pass')
                         toastSuccess('adresse mis à jour !')
                         setNewAddress([])
                         setformSwitch(false)
-                        setReload(!reload)           
+                        setReload(!reload)
+                        refresh()
                     } else {
                         toastError('Une erreur est survenu')
                     }
@@ -157,6 +138,7 @@ export const ProfilScreen = ()=>{
                             if(data.message === 'user updated'){
                                 setUser(data.data)
                                 toastSuccess('Profil mis à jour')
+                                   refresh()
                             }
                         })
                     }
@@ -212,6 +194,7 @@ export const ProfilScreen = ()=>{
                     toast.success('adresse supprimé', {autoclose : 2000});
                     setshowModalDeleteAdress(null)
                     setReload(!reload)
+                    refresh()
             })
         })()
     }
@@ -250,6 +233,14 @@ export const ProfilScreen = ()=>{
         <div className="profileScreenContainer">
                 <ToastContainer/>
                 <form onSubmit={handleSubmitProfile}>
+                <div>
+                Genre
+                <select value={user?.gender}>
+                    <option value="Mr">Mr</option>
+                    <option value="Mme">Mme</option>
+                </select>
+                </div>
+                {user?.gender}
                     votre addresse email : {user?.email}
                     <InputFloatLabel placeholder="Ex : John" onchange={(e)=>handleChangeProfile(e,'firstname')} type='text' labelName='prénom' inputName='firstname' inputValue={user?.firstname ?? ''} required='yes' maxLength={30} minLength={1}/>
                     <InputFloatLabel placeholder="ex : Dupont" onchange={(e)=>handleChangeProfile(e,'lastname')} type='text' labelName='Nom' inputName='lastname' inputValue={user?.lastname ?? ''} required='yes' minLength={1} maxLength={50}/>
@@ -284,10 +275,14 @@ export const ProfilScreen = ()=>{
                             </div>
                         )
                     })}
-                <button type="button" onClick={addAdress} >ajouter une addresse</button>
+                    {
+                    address.length === 0 &&
+                        <button type="button" onClick={addAdress} >ajouter une addresse</button>
+                    }
                     {newAddress.map((item,index)=>{
                         return <AddressComponent props={item} key={index} onChange={(e,obj,id)=>handleChangeAddress(e,obj,id,'new')} submitAdress={(e,Id_address)=>{handleSubmitAdress(e,Id_address,'new');setformSwitch(false)}} deleteAddress={()=>modalDeleteAdress(item.Id_address)}/>
                     })}
+
                     
                     {showModalDeleteAdress && (
                         <Modal show={true} onClose={()=>setshowModalDeleteAdress(null)} onConfirm={()=>deleteAdress(showModalDeleteAdress)}>

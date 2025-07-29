@@ -90,7 +90,7 @@ export const ProductScreen = () => {
                 ...prevProduct,
                 options: updatedOptions
             }));
-        }else {
+        } else {
             const selectedOption = JSON.parse(event.target.value);
             const optionWasSelected = selectedProduct.options.find((item)=> item.option === idOption)
             console.log(optionWasSelected)
@@ -101,7 +101,7 @@ export const ProductScreen = () => {
                     ...prevProduct,
                     options: updatedOptions
                 }));
-            }else {
+            } else {
                 const updatedOptions = selectedProduct.options.map((item) => {
                     if (item.option === idOption) {
                         return { ...item, subOption: selectedOption.Id_subOption, price: selectedOption.price };
@@ -169,23 +169,27 @@ export const ProductScreen = () => {
         e.preventDefault()
         try {
             if(product?.product.quantity_available  > 0){
-                let optionObligatorySelected = false;
-                product.option.forEach((item)=>{
-                    if(item.obligatory === true){
-                        optionObligatorySelected = selectedProduct.options.some(option => option.option === item.Id_product_option);
-                        //selectedProduct.options.includes(item.Id_product_option)
-                        console.log('boucle : ',item.Id_product_option)
+                let optionObligatorySelected = null;
+                
+                for(const option of product.option){
+                    if(option.obligatory){
+                        optionObligatorySelected = selectedProduct.options.some(s_option => s_option.option === option.Id_product_option)
+                        
+                        if(!optionObligatorySelected) {
+                            break;
+                        }
                     }
-                })
+                }
+                
                 
                 console.log(optionObligatorySelected)
-                if (!optionObligatorySelected) {
-                    toastError('Vous devez selectionner une option obligatoire')
+                if(optionObligatorySelected === false){
+                    toastError('Vous devez selectionner les options obligatoire')
                     return;
                 }
 
                 if(userDetails.Id_user){
-                    if(optionObligatorySelected == true && selectedProduct.product.quantity){
+                    if(selectedProduct.product.quantity){
                     const fetch = async ()=> {
                         const response = await addCartApi(selectedProduct,price.finalPrice)
                         if(response){
@@ -228,7 +232,7 @@ export const ProductScreen = () => {
     const tvaRate = product?.product?.tva?.tva_rate ?? 0;
     const prixTTC = (price.finalPrice + (price.finalPrice * tvaRate / 100)) || 
                (price?.mainPrice + (price?.mainPrice * tvaRate / 100));
-    const prixHT = price.finalPrice || price.mainPrice
+
     return (
         <div className="productContainerFlex">
             <ToastContainer/>
@@ -237,9 +241,6 @@ export const ProductScreen = () => {
                 <ProductSwiper props={imgDisplay}/>
                 { product.option &&  
                 <div className="productInfoContainer">
-                <h2>
-                   prix HT : {prixHT.toFixed(2)} €
-                </h2>   
                 <h3>
                    prix TTC : {prixTTC.toFixed(2)}€
                 </h3>
@@ -254,7 +255,9 @@ export const ProductScreen = () => {
                     {product?.product.detail}
                 </p>
             
-                    {product?.product.working_days > 0 &&     <p> Jours de travails (indicatif) : {product?.product.working_days} jours </p>}
+                    {
+                        product?.product.working_days > 0 && <p> Jours de travails (indicatif) : {product?.product.working_days} jours </p>
+                    }
          
                 <form onSubmit={handleSubmit}>
                     {
@@ -275,10 +278,10 @@ export const ProductScreen = () => {
                  
                     {product?.option.map((item,index)=>{
                         if(item.optionActive == true){                       
-                            return(
+                            return (
                                 <div key={index}>
                                 <div> {item.name} {item.obligatory ? "(option obligatoire)" : null}  </div>
-                                    <select className='productOption' name='optionSelected' value={selectedOptions[item.Id_product_option] || 'none'} onChange={(e)=>handleOptionChange(e,item.Id_product_option)}>
+                                    <select className='productOption' name='optionSelected' value={selectedOptions[item.Id_product_option] || 'none'} onChange={(e)=> handleOptionChange(e,item.Id_product_option)}>
                                         <option value="none">Selectionner une option</option>
                                         {item.subOptions.map((subItem,subIndex)=>{
                                                 if(subItem){
